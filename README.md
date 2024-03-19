@@ -33,7 +33,7 @@ var result = new ExpressValidatorBuilder<ObjWithTwoProps>()
 				.Build()
 	 			//And finally validate the object
 				.Validate(new ObjWithTwoProps() { I = i, S = s });
-if(!results.IsValid)
+if(!result.IsValid)
 {
     //As usual with validation result...
 }

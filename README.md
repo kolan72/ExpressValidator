@@ -31,7 +31,7 @@ var result = new ExpressValidatorBuilder<ObjWithTwoProps>()
 				.WithValidation(o => o.MaximumLength(1))
 				//We get IExpressValidator<ObjWithTwoProps> after calling the Build method
 				.Build()
-    			//And finally validate the object
+	 			//And finally validate the object
 				.Validate(new ObjWithTwoPublicProps() { I = i, S = s });
 if(!results.IsValid)
 {

@@ -9,6 +9,10 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright 2024 Andrey Kolesnichenko</Copyright>
     <PackageTags>FluentValidation Validation</PackageTags>
+    <PackageProjectUrl>https://github.com/kolan72/ExpressValidator.git</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kolan72/ExpressValidator.git</RepositoryUrl>
+    <PackageIcon>ExpressValidator.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,5 +23,12 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
     <_Parameter1>ExpressValidator.Tests</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\ExpressValidator.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>

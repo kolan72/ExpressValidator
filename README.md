@@ -14,7 +14,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 
 ```csharp
 //Class we want to validate
-public class ObjWithTwoPProps
+public class ObjWithTwoProps
 {
     public int I { get; set; }
     public string S { get; set; }
@@ -32,7 +32,7 @@ var result = new ExpressValidatorBuilder<ObjWithTwoProps>()
 				//We get IExpressValidator<ObjWithTwoProps> after calling the Build method
 				.Build()
 	 			//And finally validate the object
-				.Validate(new ObjWithTwoPublicProps() { I = i, S = s });
+				.Validate(new ObjWithTwoProps() { I = i, S = s });
 if(!results.IsValid)
 {
     //As usual with validation result...

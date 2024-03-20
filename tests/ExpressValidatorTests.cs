@@ -130,6 +130,40 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_Work_When_Nullable_And_Value_Prop_Values_Validated_WithNullValidator(bool propValueIsNull)
+		{
+			ObjWithTwoPublicProps objToTest = null;
+
+			if (propValueIsNull)
+			{
+				objToTest = new ObjWithTwoPublicProps() { I = -1 };
+			}
+			else
+			{
+				objToTest = new ObjWithTwoPublicProps() { I = -1, S = "ab" };
+			}
+			
+			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+					   .AddProperty(o => o.I)
+					   .WithValidation(o => o.GreaterThan(0))
+					   .AddProperty(o => o.S)
+					   .WithValidation(o => o.Null())
+					   .Build()
+					   .Validate(objToTest);
+
+			if (propValueIsNull)
+			{
+				ClassicAssert.AreEqual(1, result.Errors.Count);
+			}
+			else
+			{
+				ClassicAssert.AreEqual(2, result.Errors.Count);
+			}
+		}
+
+		[Test]
 		public void Should_Throw_When_Non_Property()
 		{
 			Assert.Throws<ArgumentException>

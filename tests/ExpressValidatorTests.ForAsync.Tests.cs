@@ -18,7 +18,8 @@ namespace ExpressValidator.Tests
 						   .AddProperty(o => o.I)
 						   .WithAsyncValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return true; }))
 						   .Build();
-			Assert.Throws<InvalidOperationException>(() => builder.Validate(new ObjWithTwoPublicProps() { I = 1, S = "b" }));
+			var exc = Assert.Throws<InvalidOperationException>(() => builder.Validate(new ObjWithTwoPublicProps() { I = 1, S = "b" }));
+			Assert.That(exc.Message, Does.StartWith("Object validator has a property with asynchronous validation rules."));
 		}
 	}
 }

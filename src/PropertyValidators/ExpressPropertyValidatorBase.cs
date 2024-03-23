@@ -80,7 +80,7 @@ namespace ExpressValidator
 
 		protected PropertyInfo PropInfo { get; set; }
 
-		protected bool HasOnlyNullOrEmptyValidators { get; set; }
+		private bool HasOnlyNullOrEmptyValidators { get; set; }
 
 		protected bool ShouldValidate(T value) => value != null || !HasOnlyNullOrEmptyValidators;
 

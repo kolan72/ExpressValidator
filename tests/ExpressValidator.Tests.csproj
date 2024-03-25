@@ -75,6 +75,7 @@
     <Compile Include="NotNullValidationMessageProviderTests.cs" />
     <Compile Include="ObjectsToTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UtilitiesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressValidatorTests.ForAsync.Tests.cs" />

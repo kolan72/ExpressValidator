@@ -183,6 +183,31 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_Work_When_TheSamePropertyValidators_In_A_Row(bool isValid)
+		{
+			int i  = isValid ? 3 : -1;
+			var validator = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+							.AddProperty(o => o.I)
+							.WithValidation(o => o.GreaterThan(1))
+							.AddProperty(o => o.I)
+							.WithValidation(o => o.GreaterThan(2))
+							.Build();
+
+			var result = validator.Validate(new ObjWithTwoPublicProps() { I = i });
+			if (isValid)
+			{
+				Assert.That(result.IsValid, Is.True);
+			}
+			else
+			{
+				Assert.That(result.Errors.Count, Is.EqualTo(2));
+				Assert.That(result.IsValid, Is.False);
+			}
+		}
+
+		[Test]
 		[TestCase(SetPropertyNameType.WithName)]
 		[TestCase(SetPropertyNameType.NotSetExplicitly)]
 		[TestCase(SetPropertyNameType.Override)]

@@ -12,7 +12,7 @@ namespace ExpressValidator
 	{
 		public ExpressAsyncPropertyValidator(PropertyInfo propertyInfo) : base(propertyInfo)
 		{
-			_ruleBuilderInitial = RuleFor(i => i).MustAsync((_, __) => Task.FromResult(true));
+			_typeValidator = new TypeAsyncValidator<T>();
 		}
 
 		public bool IsAsync => true;
@@ -24,7 +24,12 @@ namespace ExpressValidator
 
 		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync<TObj>(TObj obj, CancellationToken token = default)
 		{
-			return ValidateExAsync(GetPropertyValue(obj), token);
+			return _typeValidator.ValidateExAsync(GetPropertyValue(obj), token);
+		}
+
+		public void SetValidation(Action<IRuleBuilderOptions<T, T>> action)
+		{
+			_typeValidator.SetValidation(action, _propName);
 		}
 	}
 }

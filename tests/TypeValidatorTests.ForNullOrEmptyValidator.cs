@@ -4,7 +4,7 @@ using NUnit.Framework.Legacy;
 
 namespace ExpressValidator.Tests
 {
-	internal partial class ExpressPropertyValidatorTests
+	internal partial class TypeValidatorTests
     {
 		[Test]
 		[TestCase(true, null, true)]
@@ -13,11 +13,11 @@ namespace ExpressValidator.Tests
 		[TestCase(false, "t", false)]
 		public void Should_OnlyNullValidation_Be_Corect_ForNull_And_NotNull(bool single, string valueToTest, bool isValid)
 		{
-			var validator = new ExpressPropertyValidator<string>(null);
+			var validator = new TypeValidator<string>();
 			if (single)
-				validator.SetValidation(o => o.Null());
+				validator.SetValidation(o => o.Null(), "someprop");
 			else
-				validator.SetValidation(o => o.Null().Null());
+				validator.SetValidation(o => o.Null().Null(), "someprop");
 
 			var res = validator.ValidateEx(valueToTest);
 			ClassicAssert.AreEqual(isValid, res.IsValid);
@@ -30,11 +30,11 @@ namespace ExpressValidator.Tests
 		[TestCase(false, "t", false)]
 		public void Should_OnlyEmptyValidation_Be_Corect_ForNull_And_NotNull(bool single, string valueToTest, bool isValid)
 		{
-			var validator = new ExpressPropertyValidator<string>(null);
+			var validator = new TypeValidator<string>();
 			if (single)
-				validator.SetValidation(o => o.Empty());
+				validator.SetValidation(o => o.Empty(), "someprop");
 			else
-				validator.SetValidation(o => o.Empty().Empty());
+				validator.SetValidation(o => o.Empty().Empty(), "someprop");
 
 			var res = validator.ValidateEx(valueToTest);
 			ClassicAssert.AreEqual(isValid, res.IsValid);
@@ -45,8 +45,8 @@ namespace ExpressValidator.Tests
 		[TestCase("t", false)]
 		public void Should_NullAndEmptyValidation_Be_Corect_ForNull_And_NotNull(string valueToTest, bool isValid)
 		{
-			var validator = new ExpressPropertyValidator<string>(null);
-			validator.SetValidation(o => o.Empty().Null().Null().Empty());
+			var validator = new TypeValidator<string>();
+			validator.SetValidation(o => o.Empty().Null().Null().Empty(), "someprop");
 			var (IsValid, _) = validator.ValidateEx(valueToTest);
 			ClassicAssert.AreEqual(isValid, IsValid);
 		}
@@ -56,11 +56,11 @@ namespace ExpressValidator.Tests
 		[TestCase(false)]
 		public void Should_NotOnlyNullValidation_Be_NotValid_ForNullValue(bool single)
 		{
-			var validator = new ExpressPropertyValidator<string>(null);
+			var validator = new TypeValidator<string>();
 			if (single)
-				validator.SetValidation(o => o.Null().MinimumLength(1));
+				validator.SetValidation(o => o.Null().MinimumLength(1), "someprop");
 			else
-				validator.SetValidation(o => o.Null().Null().MinimumLength(1));
+				validator.SetValidation(o => o.Null().Null().MinimumLength(1), "someprop");
 
 			var res = validator.ValidateEx(null);
 			ClassicAssert.AreEqual(false, res.IsValid);

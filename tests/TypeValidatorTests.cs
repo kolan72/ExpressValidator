@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExpressValidator.Tests
 {
-	internal partial class ExpressPropertyValidatorTests
+	internal partial class TypeValidatorTests
 	{
 		[Test]
 		[TestCase("t", true)]
@@ -15,13 +15,13 @@ namespace ExpressValidator.Tests
 		{
 			PropertyInfoParser.TryParse<ObjWithNullable, string>(o => o.Value, out PropertyInfo propertyInfo);
 
-			var validator = new ExpressPropertyValidator<string>(propertyInfo);
-			validator.SetValidation(o => o.MaximumLength(1));
-			var res = validator.Validate(new ObjWithNullable() { Value = whatToTest });
+			var validator = new TypeValidator<string>();
+			validator.SetValidation(o => o.MaximumLength(1), propertyInfo.Name);
+			var res = validator.Validate(whatToTest);
 			ClassicAssert.AreEqual(result, res.IsValid);
 			if (!result)
 			{
-				ClassicAssert.AreEqual(1, res.Failures.Count);
+				ClassicAssert.AreEqual(1, res.Errors.Count);
 			}
 		}
 
@@ -32,13 +32,13 @@ namespace ExpressValidator.Tests
 		{
 			PropertyInfoParser.TryParse<ObjWithNullable, string>(o => o.Value, out PropertyInfo propertyInfo);
 
-			var validator = new ExpressPropertyValidator<string>(propertyInfo);
-			validator.SetValidation(o => o.MaximumLength(1));
-			var res = await validator.ValidateAsync(new ObjWithNullable() { Value = whatToTest });
+			var validator = new TypeValidator<string>();
+			validator.SetValidation(o => o.MaximumLength(1), propertyInfo.Name);
+			var res = await validator.ValidateAsync(whatToTest);
 			ClassicAssert.AreEqual(result, res.IsValid);
 			if (!result)
 			{
-				ClassicAssert.AreEqual(1, res.Failures.Count);
+				ClassicAssert.AreEqual(1, res.Errors.Count);
 			}
 		}
 	}

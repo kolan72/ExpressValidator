@@ -65,12 +65,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExpressAsyncPropertyValidatorTests.cs" />
-    <Compile Include="ExpressAsyncPropertyValidatorTests.ForNullOrEmptyValidator.cs" />
+    <Compile Include="TypeAsyncValidatorTests.cs" />
+    <Compile Include="TypeAsyncValidatorTests.ForNullOrEmptyValidator.cs" />
     <Compile Include="ExpressAsyncValidatorTests.cs" />
-    <Compile Include="ExpressPropertyValidatorTests.cs" />
-    <Compile Include="ExpressPropertyValidatorTests.ForNullOrEmptyValidator.cs" />
-    <Compile Include="ExpressPropertyValidatorTests.ForNullOrEmptyWithOtherValidator.cs" />
+    <Compile Include="TypeValidatorTests.cs" />
+    <Compile Include="TypeValidatorTests.ForNullOrEmptyValidator.cs" />
+    <Compile Include="TypeValidatorTests.ForNullOrEmptyWithOtherValidator.cs" />
     <Compile Include="ExpressValidatorTests.cs" />
     <Compile Include="NotNullValidationMessageProviderTests.cs" />
     <Compile Include="ObjectsToTests.cs" />
@@ -80,7 +80,7 @@
   <ItemGroup>
     <Compile Include="ExpressValidatorTests.ForAsync.Tests.cs" />
     <None Include="app.config" />
-    <Compile Include="ExpressAsyncPropertyValidatorTests.ForNullOrEmptyWithOtherValidator.cs" />
+    <Compile Include="TypeAsyncValidatorTests.ForNullOrEmptyWithOtherValidator.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

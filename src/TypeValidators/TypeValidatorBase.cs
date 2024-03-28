@@ -90,9 +90,9 @@ namespace ExpressValidator
 			}
 		}
 
-		private bool HasOnlyNullOrEmptyValidators { get; set; }
-
 		protected bool ShouldValidate(T value) => value != null || !HasOnlyNullOrEmptyValidators;
+
+		private bool HasOnlyNullOrEmptyValidators { get; set; }
 
 		private bool AllValidatorsAreNullOrEmpty()
 		{

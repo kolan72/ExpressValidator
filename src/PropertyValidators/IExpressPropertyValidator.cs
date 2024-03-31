@@ -1,4 +1,4 @@
 ﻿namespace ExpressValidator
 {
-	public interface IExpressPropertyValidator<T> :  IExpressPropertyValidatorBase<T>, IObjectValidator{}
+	internal interface IExpressPropertyValidator<T> :  IExpressPropertyValidatorBase<T>, IObjectValidator{}
 }

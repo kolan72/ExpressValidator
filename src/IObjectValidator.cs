@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ExpressValidator
 {
-	public interface IObjectValidator
+	internal interface IObjectValidator
 	{
 		(bool IsValid, List<ValidationFailure> Failures) Validate<TObj>(TObj obj);
 		Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync<TObj>(TObj obj, CancellationToken token = default);

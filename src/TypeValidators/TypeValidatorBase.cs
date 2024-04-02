@@ -90,6 +90,8 @@ namespace ExpressValidator
 			}
 		}
 
+		internal abstract bool? IsAsync { get; }
+
 		protected bool ShouldValidate(T value) => value != null || !HasOnlyNullOrEmptyValidators;
 
 		private bool HasOnlyNullOrEmptyValidators { get; set; }

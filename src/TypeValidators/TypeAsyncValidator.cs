@@ -9,5 +9,7 @@ namespace ExpressValidator
 		{
 			_ruleBuilderInitial = RuleFor(i => i).MustAsync((_, __) => Task.FromResult(true));
 		}
+
+		internal override bool? IsAsync => true;
 	}
 }

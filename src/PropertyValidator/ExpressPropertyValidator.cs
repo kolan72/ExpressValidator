@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace ExpressValidator
 {
-	internal abstract class ExpressPropertyValidatorBase<T> : IExpressPropertyValidator<T>
+	internal class ExpressPropertyValidator<T> : IExpressPropertyValidator<T>
 	{
 		protected readonly string _propName;
 		protected TypeValidatorBase<T> _typeValidator;
 
-		protected ExpressPropertyValidatorBase(PropertyInfo propertyInfo)
+		public ExpressPropertyValidator(PropertyInfo propertyInfo, TypeValidatorBase<T> typeValidator)
 		{
 			PropInfo = propertyInfo;
 			_propName = propertyInfo?.Name ?? string.Empty;
+			_typeValidator = typeValidator;
 		}
 
 		public void SetValidation(Action<IRuleBuilderOptions<T, T>> action)
@@ -26,7 +27,7 @@ namespace ExpressValidator
 
 		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync<TObj>(TObj obj, CancellationToken token = default)
 		{
-			return _typeValidator.ValidateExAsync(GetPropertyValue(obj), token);
+			return _typeValidator.ValidateExAsync(PropInfo.GetTypedValue<TObj, T>(obj), token);
 		}
 
 		public (bool IsValid, List<ValidationFailure> Failures) Validate<TObj>(TObj obj)
@@ -35,12 +36,7 @@ namespace ExpressValidator
 			{
 				throw new InvalidOperationException();
 			}
-			return _typeValidator.ValidateEx(GetPropertyValue(obj));
-		}
-
-		protected T GetPropertyValue<TObj>(TObj obj)
-		{
-			return PropInfo.GetTypedValue<TObj, T>(obj);
+			return _typeValidator.ValidateEx(PropInfo.GetTypedValue<TObj, T>(obj));
 		}
 
 		protected PropertyInfo PropInfo { get; set; }

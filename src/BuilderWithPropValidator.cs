@@ -37,12 +37,12 @@ namespace ExpressValidator
 
 		private IExpressPropertyValidator<T> GetExpressAsyncPropertyValidator()
 		{
-			return new ExpressAsyncPropertyValidator<T>(_propertyInfo);
+			return new ExpressPropertyValidator<T>(_propertyInfo, new TypeAsyncValidator<T>());
 		}
 
 		private IExpressPropertyValidator<T> GetExpressPropertyValidator()
 		{
-			return new ExpressPropertyValidator<T>(_propertyInfo);
+			return new ExpressPropertyValidator<T>(_propertyInfo, new TypeValidator<T>());
 		}
 
 		internal ExpressValidatorBuilder<TObj> ExpressValidatorBuilder { get; }

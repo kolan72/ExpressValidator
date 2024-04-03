@@ -19,30 +19,20 @@ namespace ExpressValidator
 
 		public ExpressValidatorBuilder<TObj> WithValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, GetExpressPropertyValidator);
+			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_propertyInfo, new TypeValidator<T>()));
 		}
 
 		public ExpressValidatorBuilder<TObj> WithAsyncValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, GetExpressAsyncPropertyValidator);
+			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_propertyInfo, new TypeAsyncValidator<T>()));
 		}
 
-		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, Func<IExpressPropertyValidator<T>> propertyValidatorProvider)
+		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<T> expressPropertyValidator)
 		{
-			PropertyValidator = propertyValidatorProvider();
+			PropertyValidator = expressPropertyValidator;
 			PropertyValidator.SetValidation(action);
 			ExpressValidatorBuilder.AddValidator(PropertyValidator);
 			return ExpressValidatorBuilder;
-		}
-
-		private IExpressPropertyValidator<T> GetExpressAsyncPropertyValidator()
-		{
-			return new ExpressPropertyValidator<T>(_propertyInfo, new TypeAsyncValidator<T>());
-		}
-
-		private IExpressPropertyValidator<T> GetExpressPropertyValidator()
-		{
-			return new ExpressPropertyValidator<T>(_propertyInfo, new TypeValidator<T>());
 		}
 
 		internal ExpressValidatorBuilder<TObj> ExpressValidatorBuilder { get; }

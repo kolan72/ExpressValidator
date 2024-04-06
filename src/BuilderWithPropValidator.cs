@@ -29,13 +29,12 @@ namespace ExpressValidator
 
 		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<T> expressPropertyValidator)
 		{
-			PropertyValidator = expressPropertyValidator;
-			PropertyValidator.SetValidation(action);
-			ExpressValidatorBuilder.AddValidator(PropertyValidator);
+			var propertyValidator = expressPropertyValidator;
+			propertyValidator.SetValidation(action);
+			ExpressValidatorBuilder.AddValidator(propertyValidator);
 			return ExpressValidatorBuilder;
 		}
 
-		internal ExpressValidatorBuilder<TObj> ExpressValidatorBuilder { get; }
-		internal IExpressPropertyValidator<T> PropertyValidator { get; private set; }
+		private ExpressValidatorBuilder<TObj> ExpressValidatorBuilder { get; }
 	}
 }

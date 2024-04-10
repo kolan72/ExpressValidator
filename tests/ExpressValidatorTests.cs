@@ -17,8 +17,10 @@ namespace ExpressValidator.Tests
 						   .WithValidation(o => o.GreaterThan(0))
 						   .AddProperty(o => o.S)
 						   .WithValidation(o => o.MaximumLength(1))
+						   .AddField(o=>o._testField)
+						   .WithValidation(o => o.MinimumLength(1))
 						   .Build()
-						   .Validate(new ObjWithTwoPublicProps() { I = 1, S = "b" });
+						   .Validate(new ObjWithTwoPublicProps() { I = 1, S = "b", _testField = "1" });
 			ClassicAssert.AreEqual(true, result.IsValid);
 		}
 
@@ -169,6 +171,16 @@ namespace ExpressValidator.Tests
 			Assert.Throws<ArgumentException>
 						(() => new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
 						.AddProperty(o => o)
+						.WithValidation(o => o.NotNull())
+						.Build());
+		}
+
+		[Test]
+		public void Should_Throw_When_Non_Field()
+		{
+			Assert.Throws<ArgumentException>
+						(() => new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						.AddField(o => o)
 						.WithValidation(o => o.NotNull())
 						.Build());
 		}

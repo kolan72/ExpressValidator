@@ -27,11 +27,26 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, T> AddProperty<T>(Expression<Func<TObj, T>> func)
 		{
-			if (!PropertyInfoParser.TryParse(func, out PropertyInfo propInfo))
+			if (!MemberInfoParser.TryParse(func, MemberTypes.Property, out MemberInfo memInfo))
 			{
 				throw new ArgumentException("Can not get property from expression.");
 			}
-			return new BuilderWithPropValidator<TObj, T>(this, propInfo);
+			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
+		}
+
+		/// <summary>
+		/// Add field to validate.
+		/// </summary>
+		/// <typeparam name="T">A type of field <typeparamref name="TObj"/>.</typeparam>
+		/// <param name="func">An expression to get field.</param>
+		/// <returns></returns>
+		public IBuilderWithPropValidator<TObj, T> AddField<T>(Expression<Func<TObj, T>> func)
+		{
+			if (!MemberInfoParser.TryParse(func, MemberTypes.Field, out MemberInfo memInfo))
+			{
+				throw new ArgumentException("Can not get property from expression.");
+			}
+			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
 		}
 
 		/// <summary>

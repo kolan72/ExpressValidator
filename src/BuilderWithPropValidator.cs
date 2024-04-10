@@ -9,22 +9,22 @@ namespace ExpressValidator
 	/// </summary>
 	public class BuilderWithPropValidator<TObj, T> : IBuilderWithPropValidator<TObj, T>
 	{
-		private readonly PropertyInfo _propertyInfo;
+		private readonly MemberInfo _validatingInfo;
 
-		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, PropertyInfo propertyInfo)
+		public BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, MemberInfo memberInfo)
 		{
 			ExpressValidatorBuilder = expressValidatorBuilder;
-			_propertyInfo = propertyInfo;
+			_validatingInfo = memberInfo;
 		}
 
 		public ExpressValidatorBuilder<TObj> WithValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_propertyInfo, new TypeValidator<T>()));
+			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_validatingInfo, new TypeValidator<T>()));
 		}
 
 		public ExpressValidatorBuilder<TObj> WithAsyncValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_propertyInfo, new TypeAsyncValidator<T>()));
+			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_validatingInfo, new TypeAsyncValidator<T>()));
 		}
 
 		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<T> expressPropertyValidator)

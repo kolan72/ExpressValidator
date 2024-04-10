@@ -13,10 +13,10 @@ namespace ExpressValidator
 		protected readonly string _propName;
 		protected TypeValidatorBase<T> _typeValidator;
 
-		public ExpressPropertyValidator(PropertyInfo propertyInfo, TypeValidatorBase<T> typeValidator)
+		public ExpressPropertyValidator(MemberInfo memberInfo, TypeValidatorBase<T> typeValidator)
 		{
-			PropInfo = propertyInfo;
-			_propName = propertyInfo?.Name ?? string.Empty;
+			ValidatingInfo = memberInfo;
+			_propName = ValidatingInfo?.Name ?? string.Empty;
 			_typeValidator = typeValidator;
 		}
 
@@ -27,7 +27,7 @@ namespace ExpressValidator
 
 		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync<TObj>(TObj obj, CancellationToken token = default)
 		{
-			return _typeValidator.ValidateExAsync(PropInfo.GetTypedValue<TObj, T>(obj), token);
+			return _typeValidator.ValidateExAsync(ValidatingInfo.GetTypedValue<TObj, T>(obj), token);
 		}
 
 		public (bool IsValid, List<ValidationFailure> Failures) Validate<TObj>(TObj obj)
@@ -36,10 +36,10 @@ namespace ExpressValidator
 			{
 				throw new InvalidOperationException();
 			}
-			return _typeValidator.ValidateEx(PropInfo.GetTypedValue<TObj, T>(obj));
+			return _typeValidator.ValidateEx(ValidatingInfo.GetTypedValue<TObj, T>(obj));
 		}
 
-		protected PropertyInfo PropInfo { get; set; }
+		protected MemberInfo ValidatingInfo { get; set; }
 
 		public bool IsAsync => _typeValidator.IsAsync == true;
 	}

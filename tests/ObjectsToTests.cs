@@ -21,6 +21,7 @@ namespace ExpressValidator.Tests
     {
         public int I { get; set; }
         public string S { get; set; }
+        public string _testField;
     }
 
     public class ContactValidator : AbstractValidator<Contact>
@@ -36,6 +37,8 @@ namespace ExpressValidator.Tests
     {
         public string Name { get; set; }
         public string Email { get; set; }
+
+        public string K { get; set; }
     }
 
     class ObjWithNullable

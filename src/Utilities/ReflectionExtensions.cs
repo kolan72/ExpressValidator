@@ -8,5 +8,11 @@ namespace ExpressValidator
 		{
 			return (T)propertyInfo.GetValue(obj);
 		}
+
+		public static T GetTypedValue<TObj, T>(this MemberInfo memberInfo, TObj obj)
+		{
+			return memberInfo.MemberType == MemberTypes.Property ? (T)((PropertyInfo)memberInfo).GetValue(obj)
+																 : (T)((FieldInfo)memberInfo).GetValue(obj);
+		}
 	}
 }

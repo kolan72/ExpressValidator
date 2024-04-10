@@ -25,7 +25,7 @@ namespace ExpressValidator
 		{
 			if (_validators.Any(v => v.IsAsync))
 			{
-				throw new InvalidOperationException($"Object validator has a property with asynchronous validation rules. Please use {nameof(ValidateAsync)} method.");
+				throw new InvalidOperationException($"Object validator has a property or field with asynchronous validation rules. Please use {nameof(ValidateAsync)} method.");
 			}
 			return _validationMode == OnFirstPropertyValidatorFailed.Break ? ValidateWithBreak(obj) : ValidateWithContinue(obj);
 		}

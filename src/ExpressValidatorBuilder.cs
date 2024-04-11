@@ -44,7 +44,7 @@ namespace ExpressValidator
 		{
 			if (!MemberInfoParser.TryParse(func, MemberTypes.Field, out MemberInfo memInfo))
 			{
-				throw new ArgumentException("Can not get property from expression.");
+				throw new ArgumentException("Can not get field from expression.");
 			}
 			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
 		}

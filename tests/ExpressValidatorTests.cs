@@ -4,6 +4,7 @@ using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ExpressValidator.Tests
 {
@@ -17,10 +18,10 @@ namespace ExpressValidator.Tests
 						   .WithValidation(o => o.GreaterThan(0))
 						   .AddProperty(o => o.S)
 						   .WithValidation(o => o.MaximumLength(1))
-						   .AddField(o=>o._testField)
+						   .AddField(o=>o._sField)
 						   .WithValidation(o => o.MinimumLength(1))
 						   .Build()
-						   .Validate(new ObjWithTwoPublicProps() { I = 1, S = "b", _testField = "1" });
+						   .Validate(new ObjWithTwoPublicProps() { I = 1, S = "b", _sField = "1" });
 			ClassicAssert.AreEqual(true, result.IsValid);
 		}
 
@@ -220,13 +221,25 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
-		[TestCase(SetPropertyNameType.WithName)]
-		[TestCase(SetPropertyNameType.NotSetExplicitly)]
-		[TestCase(SetPropertyNameType.Override)]
-		public void Should_Preserve_Property_Name(SetPropertyNameType setPropertyNameType)
+		[TestCase(SetPropertyNameType.WithName, MemberTypes.Property)]
+		[TestCase(SetPropertyNameType.NotSetExplicitly, MemberTypes.Property)]
+		[TestCase(SetPropertyNameType.Override, MemberTypes.Property)]
+		[TestCase(SetPropertyNameType.WithName, MemberTypes.Field)]
+		[TestCase(SetPropertyNameType.NotSetExplicitly, MemberTypes.Field)]
+		[TestCase(SetPropertyNameType.Override, MemberTypes.Field)]
+		public void Should_Preserve_Property_Name(SetPropertyNameType setPropertyNameType, MemberTypes memberTypes)
 		{
 			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>();
-			var builderWithProperty = builder.AddProperty(o => o.I);
+			IBuilderWithPropValidator<ObjWithTwoPublicProps, int> builderWithProperty = null;
+
+			if (memberTypes == MemberTypes.Property)
+			{
+				builderWithProperty = builder.AddProperty(o => o.I);
+			}
+			else
+			{
+				builderWithProperty = builder.AddField(o => o._iField);
+			}
 
 			switch (setPropertyNameType)
 			{
@@ -248,7 +261,7 @@ namespace ExpressValidator.Tests
 			{
 				case SetPropertyNameType.NotSetExplicitly:
 				case SetPropertyNameType.WithName:
-					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("I"));
+					Assert.That(result.Errors.FirstOrDefault().PropertyName, memberTypes == MemberTypes.Property ? Is.EqualTo("I") : Is.EqualTo("_iField"));
 					break;
 				case SetPropertyNameType.Override:
 					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("TestPropName"));

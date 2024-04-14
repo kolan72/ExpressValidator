@@ -19,9 +19,27 @@ namespace ExpressValidator.Tests
 						   .WithValidation(o => o.GreaterThan(0))
 						   .AddProperty(o => o.S)
 						   .WithValidation(o => o.MaximumLength(1))
+						   .AddField(o => o._sField)
+						   .WithValidation(o => o.MinimumLength(1))
 						   .Build()
-						   .ValidateAsync(new ObjWithTwoPublicProps() { I = 2, S = "b" });
+						   .ValidateAsync(new ObjWithTwoPublicProps() { I = 2, S = "b", _sField = "a"});
 			ClassicAssert.AreEqual(true, result.IsValid);
+		}
+
+		[Test]
+		public async Task Should_Work_For_When_IsValid_Eq_False_And_AllValidatorsSync()
+		{
+			var result = await new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddProperty(o => o.I)
+						   .WithValidation(o => o.GreaterThan(0))
+						   .AddProperty(o => o.S)
+						   .WithValidation(o => o.MaximumLength(1))
+						   .AddField(o => o._sField)
+						   .WithValidation(o => o.MinimumLength(1))
+						   .Build()
+						   .ValidateAsync(new ObjWithTwoPublicProps() { I = -2, S = "ab", _sField = "" });
+			ClassicAssert.AreEqual(false, result.IsValid);
+			ClassicAssert.AreEqual(3, result.Errors.Count);
 		}
 
 		[Test]

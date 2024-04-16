@@ -119,8 +119,10 @@ namespace ExpressValidator.Tests
 						   .WithValidation(o => o.GreaterThan(0))
 						   .AddProperty(o => o.S)
 						   .WithValidation(o => o.MaximumLength(1))
+						   .AddField(o => o._sField)
+						   .WithValidation(o => o.MinimumLength(1))
 						   .Build()
-						   .Validate(new ObjWithTwoPublicProps() { I = -1, S = "ab" });
+						   .Validate(new ObjWithTwoPublicProps() { I = -1, S = "ab", _sField = ""});
 			ClassicAssert.AreEqual(false, result.IsValid);
 			if (validationMode == OnFirstPropertyValidatorFailed.Break)
 			{
@@ -128,7 +130,7 @@ namespace ExpressValidator.Tests
 			}
 			else
 			{
-				ClassicAssert.AreEqual(2, result.Errors.Count);
+				ClassicAssert.AreEqual(3, result.Errors.Count);
 			}
 		}
 

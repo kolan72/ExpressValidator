@@ -18,8 +18,8 @@ ExpressValidator is a library that provides the ability to validate objects usin
 //Class we want to validate
 public class ObjWithTwoProps
 {
-    public int I { get; set; }
-    public string S { get; set; }
+	public int I { get; set; }
+	public string S { get; set; }
 	public string _sField;
 }
 

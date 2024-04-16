@@ -20,6 +20,7 @@ public class ObjWithTwoProps
 {
     public int I { get; set; }
     public string S { get; set; }
+	public string _sField;
 }
 
 var result = new ExpressValidatorBuilder<ObjWithTwoProps>()
@@ -31,6 +32,10 @@ var result = new ExpressValidatorBuilder<ObjWithTwoProps>()
 				.AddProperty(o => o.S)
 				//And set rules again
 				.WithValidation(o => o.MaximumLength(1))
+				//Choose field to validate
+				.AddField(o => o._sField)
+				//And set rules for the field
+				.WithValidation(o => o.MinimumLength(1))
 				//We get IExpressValidator<ObjWithTwoProps> after calling the Build method
 				.Build()
 	 			//And finally validate the object

@@ -9,7 +9,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 
 - Easy on-the-fly creation of object validator class called `ExpressValidator` by using `ExpressValidatorBuilder`.
 - Supports asynchronous validation.
-- Controls for a property expression to be a property.
+- Verifies that a property expression is a property and a field expression is a field, and throws `ArgumentException` if it is not.
 - Targets .NET Standard 2.0+
 
 ## Usage

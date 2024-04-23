@@ -16,7 +16,7 @@ public class ObjWithTwoProps
 {
     public int I { get; set; }
     public string S { get; set; }
-	public string _sField;
+    public string _sField;
 }
 
 var result = new ExpressValidatorBuilder<ObjWithTwoProps>()

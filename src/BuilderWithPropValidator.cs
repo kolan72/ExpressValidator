@@ -11,7 +11,7 @@ namespace ExpressValidator
 	{
 		private readonly MemberInfo _validatingInfo;
 
-		public BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, MemberInfo memberInfo)
+		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, MemberInfo memberInfo)
 		{
 			ExpressValidatorBuilder = expressValidatorBuilder;
 			_validatingInfo = memberInfo;

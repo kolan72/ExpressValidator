@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExpressValidator
 {
-	internal class ExpressPropertyValidator<T> : IExpressPropertyValidator<T>
+	internal class ExpressPropertyValidator<TObj, T> : IExpressPropertyValidator<TObj, T>
 	{
 		protected readonly string _propName;
 		protected TypeValidatorBase<T> _typeValidator;
@@ -25,12 +25,12 @@ namespace ExpressValidator
 			_typeValidator.SetValidation(action, _propName);
 		}
 
-		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync<TObj>(TObj obj, CancellationToken token = default)
+		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync(TObj obj, CancellationToken token = default)
 		{
 			return _typeValidator.ValidateExAsync(ValidatingInfo.GetTypedValue<TObj, T>(obj), token);
 		}
 
-		public (bool IsValid, List<ValidationFailure> Failures) Validate<TObj>(TObj obj)
+		public (bool IsValid, List<ValidationFailure> Failures) Validate(TObj obj)
 		{
 			if (IsAsync)
 			{

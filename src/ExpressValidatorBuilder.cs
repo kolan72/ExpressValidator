@@ -12,7 +12,7 @@ namespace ExpressValidator
 	public class ExpressValidatorBuilder<TObj>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
-		private readonly List<IObjectValidator> _objectValidators = new List<IObjectValidator>();
+		private readonly List<IObjectValidator<TObj>> _objectValidators = new List<IObjectValidator<TObj>>();
 
 		public ExpressValidatorBuilder(OnFirstPropertyValidatorFailed validationMode = OnFirstPropertyValidatorFailed.Continue)
 		{
@@ -58,7 +58,7 @@ namespace ExpressValidator
 			return new ExpressValidator<TObj>(_objectValidators, _validationMode);
 		}
 
-		internal void AddValidator(IObjectValidator objectValidator)
+		internal void AddValidator(IObjectValidator<TObj> objectValidator)
 		{
 			_objectValidators.Add(objectValidator);
 		}

@@ -19,15 +19,15 @@ namespace ExpressValidator
 
 		public ExpressValidatorBuilder<TObj> WithValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_validatingInfo, new TypeValidator<T>()));
+			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, T>(_validatingInfo, new TypeValidator<T>()));
 		}
 
 		public ExpressValidatorBuilder<TObj> WithAsyncValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_validatingInfo, new TypeAsyncValidator<T>()));
+			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, T>(_validatingInfo, new TypeAsyncValidator<T>()));
 		}
 
-		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<T> expressPropertyValidator)
+		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<TObj, T> expressPropertyValidator)
 		{
 			var propertyValidator = expressPropertyValidator;
 			propertyValidator.SetValidation(action);

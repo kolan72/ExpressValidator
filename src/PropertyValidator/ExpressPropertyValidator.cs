@@ -10,8 +10,8 @@ namespace ExpressValidator
 {
 	internal class ExpressPropertyValidator<TObj, T> : IExpressPropertyValidator<TObj, T>
 	{
-		protected readonly string _propName;
-		protected TypeValidatorBase<T> _typeValidator;
+		private readonly string _propName;
+		private readonly TypeValidatorBase<T> _typeValidator;
 
 		public ExpressPropertyValidator(MemberInfo memberInfo, TypeValidatorBase<T> typeValidator)
 		{

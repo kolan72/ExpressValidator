@@ -21,6 +21,13 @@ namespace ExpressValidator
 			_typeValidator = typeValidator;
 		}
 
+		public ExpressPropertyValidator(Func<TObj, T> propertyFunc, string propName, TypeValidatorBase<T> typeValidator)
+		{
+			_propertyFunc = propertyFunc;
+			_propName = propName;
+			_typeValidator = typeValidator;
+		}
+
 		public void SetValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
 			_typeValidator.SetValidation(action, _propName);

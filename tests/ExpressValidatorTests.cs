@@ -20,8 +20,10 @@ namespace ExpressValidator.Tests
 						   .WithValidation(o => o.MaximumLength(1))
 						   .AddField(o=>o._sField)
 						   .WithValidation(o => o.MinimumLength(1))
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
+						   .WithValidation(o => o.InclusiveBetween(0, 100))
 						   .Build()
-						   .Validate(new ObjWithTwoPublicProps() { I = 1, S = "b", _sField = "1" });
+						   .Validate(new ObjWithTwoPublicProps() { I = 1, S = "b", _sField = "1", PercentValue1 = 20, PercentValue2 = 80 });
 			ClassicAssert.AreEqual(true, result.IsValid);
 		}
 
@@ -121,8 +123,10 @@ namespace ExpressValidator.Tests
 						   .WithValidation(o => o.MaximumLength(1))
 						   .AddField(o => o._sField)
 						   .WithValidation(o => o.MinimumLength(1))
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
+						   .WithValidation(o => o.InclusiveBetween(0, 100))
 						   .Build()
-						   .Validate(new ObjWithTwoPublicProps() { I = -1, S = "ab", _sField = ""});
+						   .Validate(new ObjWithTwoPublicProps() { I = -1, S = "ab", _sField = "", PercentValue1 = 2, PercentValue2 = 101});
 			ClassicAssert.AreEqual(false, result.IsValid);
 			if (validationMode == OnFirstPropertyValidatorFailed.Break)
 			{
@@ -130,7 +134,7 @@ namespace ExpressValidator.Tests
 			}
 			else
 			{
-				ClassicAssert.AreEqual(3, result.Errors.Count);
+				ClassicAssert.AreEqual(4, result.Errors.Count);
 			}
 		}
 
@@ -264,6 +268,51 @@ namespace ExpressValidator.Tests
 				case SetPropertyNameType.NotSetExplicitly:
 				case SetPropertyNameType.WithName:
 					Assert.That(result.Errors.FirstOrDefault().PropertyName, memberTypes == MemberTypes.Property ? Is.EqualTo("I") : Is.EqualTo("_iField"));
+					break;
+				case SetPropertyNameType.Override:
+					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("TestPropName"));
+					break;
+			}
+
+			if (setPropertyNameType == SetPropertyNameType.WithName)
+			{
+				Assert.That(result.Errors.FirstOrDefault().ErrorMessage, Does.Contain("TestName"));
+			}
+		}
+
+		[Test]
+		[TestCase(SetPropertyNameType.WithName)]
+		[TestCase(SetPropertyNameType.NotSetExplicitly)]
+		[TestCase(SetPropertyNameType.Override)]
+		public void Should_AddFunc_Preserve_Property_Name(SetPropertyNameType setPropertyNameType)
+		{
+			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>();
+			var builderWithProperty = builder.AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum");
+
+			switch (setPropertyNameType)
+			{
+				case SetPropertyNameType.NotSetExplicitly:
+					builder = builderWithProperty.WithValidation(o => o.InclusiveBetween(0, 100));
+					break;
+				case SetPropertyNameType.Override:
+					builder = builderWithProperty.WithValidation(o => o.InclusiveBetween(0, 100)
+													.OverridePropertyName("TestPropName"));
+					break;
+				case SetPropertyNameType.WithName:
+					builder = builderWithProperty.WithValidation(o => o.InclusiveBetween(0, 100)
+													.WithName("TestName"));
+					break;
+			}
+
+			var result = builder.Build().Validate(new ObjWithTwoPublicProps() { PercentValue1 = 1, PercentValue2 = 100 });
+
+			Assert.That(result.IsValid, Is.False);
+
+			switch (setPropertyNameType)
+			{
+				case SetPropertyNameType.NotSetExplicitly:
+				case SetPropertyNameType.WithName:
+					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("percentSum"));
 					break;
 				case SetPropertyNameType.Override:
 					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("TestPropName"));

@@ -47,7 +47,7 @@ var result = new ExpressValidatorBuilder<ObjToValidate>()
 				//We get IExpressValidator<ObjToValidate> after calling the Build method
 				.Build()
 	 			//And finally validate the object
-				.Validate(new ObjToValidate() { I = i, S = s });
+				.Validate(new ObjToValidate() { I = i, S = s, PercentValue1 = pv1, PercentValue2 = pv2 });
 if(!result.IsValid)
 {
     //As usual with validation result...

@@ -8,15 +8,23 @@ using System.Threading.Tasks;
 
 namespace ExpressValidator
 {
-	internal class ExpressPropertyValidator<T> : IExpressPropertyValidator<T>
+	internal class ExpressPropertyValidator<TObj, T> : IExpressPropertyValidator<TObj, T>
 	{
-		protected readonly string _propName;
-		protected TypeValidatorBase<T> _typeValidator;
+		private readonly string _propName;
+		private readonly TypeValidatorBase<T> _typeValidator;
+		private readonly Func<TObj, T> _propertyFunc;
 
 		public ExpressPropertyValidator(MemberInfo memberInfo, TypeValidatorBase<T> typeValidator)
 		{
-			ValidatingInfo = memberInfo;
-			_propName = ValidatingInfo?.Name ?? string.Empty;
+			_propertyFunc = memberInfo.GetTypedValue<TObj, T>;
+			_propName = memberInfo?.Name ?? string.Empty;
+			_typeValidator = typeValidator;
+		}
+
+		public ExpressPropertyValidator(Func<TObj, T> propertyFunc, string propName, TypeValidatorBase<T> typeValidator)
+		{
+			_propertyFunc = propertyFunc;
+			_propName = propName;
 			_typeValidator = typeValidator;
 		}
 
@@ -25,21 +33,19 @@ namespace ExpressValidator
 			_typeValidator.SetValidation(action, _propName);
 		}
 
-		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync<TObj>(TObj obj, CancellationToken token = default)
+		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync(TObj obj, CancellationToken token = default)
 		{
-			return _typeValidator.ValidateExAsync(ValidatingInfo.GetTypedValue<TObj, T>(obj), token);
+			return _typeValidator.ValidateExAsync(_propertyFunc(obj), token);
 		}
 
-		public (bool IsValid, List<ValidationFailure> Failures) Validate<TObj>(TObj obj)
+		public (bool IsValid, List<ValidationFailure> Failures) Validate(TObj obj)
 		{
 			if (IsAsync)
 			{
 				throw new InvalidOperationException();
 			}
-			return _typeValidator.ValidateEx(ValidatingInfo.GetTypedValue<TObj, T>(obj));
+			return _typeValidator.ValidateEx(_propertyFunc(obj));
 		}
-
-		protected MemberInfo ValidatingInfo { get; set; }
 
 		public bool IsAsync => _typeValidator.IsAsync == true;
 	}

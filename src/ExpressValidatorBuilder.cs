@@ -12,7 +12,7 @@ namespace ExpressValidator
 	public class ExpressValidatorBuilder<TObj>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
-		private readonly List<IObjectValidator> _objectValidators = new List<IObjectValidator>();
+		private readonly List<IObjectValidator<TObj>> _objectValidators = new List<IObjectValidator<TObj>>();
 
 		public ExpressValidatorBuilder(OnFirstPropertyValidatorFailed validationMode = OnFirstPropertyValidatorFailed.Continue)
 		{
@@ -22,7 +22,7 @@ namespace ExpressValidator
 		/// <summary>
 		/// Adds property to validate.
 		/// </summary>
-		/// <typeparam name="T">A type of property <typeparamref name="TObj"/>.</typeparam>
+		/// <typeparam name="T">A type of <typeparamref name="TObj"/> object property.</typeparam>
 		/// <param name="func">An expression to get property.</param>
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, T> AddProperty<T>(Expression<Func<TObj, T>> func)
@@ -37,7 +37,7 @@ namespace ExpressValidator
 		/// <summary>
 		/// Add field to validate.
 		/// </summary>
-		/// <typeparam name="T">A type of field <typeparamref name="TObj"/>.</typeparam>
+		/// <typeparam name="T">A type of <typeparamref name="TObj"/> object field.</typeparam>
 		/// <param name="func">An expression to get field.</param>
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, T> AddField<T>(Expression<Func<TObj, T>> func)
@@ -50,6 +50,18 @@ namespace ExpressValidator
 		}
 
 		/// <summary>
+		/// Add Func for object to get value to validate.
+		/// </summary>
+		/// <typeparam name="T">A type of value.</typeparam>
+		/// <param name="func">Func for object</param>
+		/// <param name="propName">A name of the property if the validation failed.</param>
+		/// <returns></returns>
+		public IBuilderWithPropValidator<TObj, T> AddFunc<T>(Func<TObj, T> func, string propName)
+		{
+			return new BuilderWithPropValidator<TObj, T>(this, func, propName);
+		}
+
+		/// <summary>
 		/// Builds the <see cref="IExpressValidator{TObj}"/>.
 		/// </summary>
 		/// <returns></returns>
@@ -58,7 +70,7 @@ namespace ExpressValidator
 			return new ExpressValidator<TObj>(_objectValidators, _validationMode);
 		}
 
-		internal void AddValidator(IObjectValidator objectValidator)
+		internal void AddValidator(IObjectValidator<TObj> objectValidator)
 		{
 			_objectValidators.Add(objectValidator);
 		}

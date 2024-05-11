@@ -23,6 +23,8 @@ namespace ExpressValidator.Tests
         public string S { get; set; }
         public string _sField;
         public int _iField;
+        public int PercentValue1 { get; set; }
+        public int PercentValue2 { get; set; }
     }
 
     public class ContactValidator : AbstractValidator<Contact>

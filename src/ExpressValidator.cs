@@ -12,10 +12,10 @@ namespace ExpressValidator
 	/// </summary>
 	public class ExpressValidator<TObj> : IExpressValidator<TObj>
 	{
-		private readonly IEnumerable<IObjectValidator> _validators;
+		private readonly IEnumerable<IObjectValidator<TObj>> _validators;
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
 
-		internal ExpressValidator(IEnumerable<IObjectValidator> validators, OnFirstPropertyValidatorFailed validationMode)
+		internal ExpressValidator(IEnumerable<IObjectValidator<TObj>> validators, OnFirstPropertyValidatorFailed validationMode)
 		{
 			_validators = validators;
 			_validationMode = validationMode;

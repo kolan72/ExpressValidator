@@ -9,25 +9,31 @@ namespace ExpressValidator
 	/// </summary>
 	public class BuilderWithPropValidator<TObj, T> : IBuilderWithPropValidator<TObj, T>
 	{
-		private readonly MemberInfo _validatingInfo;
+		private readonly string _propName;
+		private readonly Func<TObj, T> _propertyFunc;
 
-		public BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, MemberInfo memberInfo)
+		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, MemberInfo memberInfo) 
+										: this(expressValidatorBuilder, memberInfo.GetTypedValue<TObj, T>, memberInfo?.Name ?? string.Empty)
+		{}
+
+		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, Func<TObj, T> propertyFunc, string propName)
 		{
 			ExpressValidatorBuilder = expressValidatorBuilder;
-			_validatingInfo = memberInfo;
+			_propertyFunc = propertyFunc;
+			_propName = propName;
 		}
 
 		public ExpressValidatorBuilder<TObj> WithValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_validatingInfo, new TypeValidator<T>()));
+			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, T>(_propertyFunc, _propName, new TypeValidator<T>()));
 		}
 
 		public ExpressValidatorBuilder<TObj> WithAsyncValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<T>(_validatingInfo, new TypeAsyncValidator<T>()));
+			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, T>(_propertyFunc, _propName, new TypeAsyncValidator<T>()));
 		}
 
-		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<T> expressPropertyValidator)
+		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<TObj, T> expressPropertyValidator)
 		{
 			var propertyValidator = expressPropertyValidator;
 			propertyValidator.SetValidation(action);

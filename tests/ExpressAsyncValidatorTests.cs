@@ -21,8 +21,10 @@ namespace ExpressValidator.Tests
 						   .WithValidation(o => o.MaximumLength(1))
 						   .AddField(o => o._sField)
 						   .WithValidation(o => o.MinimumLength(1))
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
+						   .WithValidation(o => o.InclusiveBetween(0, 100))
 						   .Build()
-						   .ValidateAsync(new ObjWithTwoPublicProps() { I = 2, S = "b", _sField = "a"});
+						   .ValidateAsync(new ObjWithTwoPublicProps() { I = 2, S = "b", _sField = "a", PercentValue1 = 99, PercentValue2 = 1});
 			ClassicAssert.AreEqual(true, result.IsValid);
 		}
 
@@ -36,10 +38,12 @@ namespace ExpressValidator.Tests
 						   .WithValidation(o => o.MaximumLength(1))
 						   .AddField(o => o._sField)
 						   .WithValidation(o => o.MinimumLength(1))
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
+						   .WithValidation(o => o.InclusiveBetween(0, 100))
 						   .Build()
-						   .ValidateAsync(new ObjWithTwoPublicProps() { I = -2, S = "ab", _sField = "" });
+						   .ValidateAsync(new ObjWithTwoPublicProps() { I = -2, S = "ab", _sField = "", PercentValue1 = 100, PercentValue2 = 2 });
 			ClassicAssert.AreEqual(false, result.IsValid);
-			ClassicAssert.AreEqual(3, result.Errors.Count);
+			ClassicAssert.AreEqual(4, result.Errors.Count);
 		}
 
 		[Test]
@@ -101,7 +105,7 @@ namespace ExpressValidator.Tests
 													.WithName("TestName"));
 					break;
 			}
-			var result = await builder.Build().ValidateAsync(new ObjWithTwoPublicProps() { I = -1 });
+			var result = await builder.Build().ValidateAsync(new ObjWithTwoPublicProps());
 
 			Assert.That(result.IsValid, Is.False);
 
@@ -110,6 +114,51 @@ namespace ExpressValidator.Tests
 				case SetPropertyNameType.NotSetExplicitly:
 				case SetPropertyNameType.WithName:
 					Assert.That(result.Errors.FirstOrDefault().PropertyName, memberTypes == MemberTypes.Property ? Is.EqualTo("I") : Is.EqualTo("_iField"));
+					break;
+				case SetPropertyNameType.Override:
+					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("TestPropName"));
+					break;
+			}
+
+			if (setPropertyNameType == SetPropertyNameType.WithName)
+			{
+				Assert.That(result.Errors.FirstOrDefault().ErrorMessage, Does.Contain("TestName"));
+			}
+		}
+
+		[Test]
+		[TestCase(SetPropertyNameType.WithName)]
+		[TestCase(SetPropertyNameType.NotSetExplicitly)]
+		[TestCase(SetPropertyNameType.Override)]
+		public async Task Should_AddFunc_Preserve_Property_Name(SetPropertyNameType setPropertyNameType)
+		{
+			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>();
+			var builderWithProperty = builder.AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum");
+
+			switch (setPropertyNameType)
+			{
+				case SetPropertyNameType.NotSetExplicitly:
+					builder = builderWithProperty.WithAsyncValidation(o => o.InclusiveBetween(0, 100).MustAsync(async (_, __) => { await Task.Delay(1); return true; }));
+					break;
+				case SetPropertyNameType.Override:
+					builder = builderWithProperty.WithAsyncValidation(o => o.InclusiveBetween(0, 100).MustAsync(async (_, __) => { await Task.Delay(1); return true; })
+													.OverridePropertyName("TestPropName"));
+					break;
+				case SetPropertyNameType.WithName:
+					builder = builderWithProperty.WithAsyncValidation(o => o.InclusiveBetween(0, 100).MustAsync(async (_, __) => { await Task.Delay(1); return true; })
+													.WithName("TestName"));
+					break;
+			}
+
+			var result = await builder.Build().ValidateAsync(new ObjWithTwoPublicProps() { PercentValue1 = 1, PercentValue2 = 100 });
+
+			Assert.That(result.IsValid, Is.False);
+
+			switch (setPropertyNameType)
+			{
+				case SetPropertyNameType.NotSetExplicitly:
+				case SetPropertyNameType.WithName:
+					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("percentSum"));
 					break;
 				case SetPropertyNameType.Override:
 					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("TestPropName"));

@@ -34,7 +34,7 @@ namespace ExpressValidator
 		/// <returns></returns>
 		protected override bool PreValidate(ValidationContext<T> context, ValidationResult result)
 		{
-			if ((typeof(T).IsClass || typeof(T).IsInterface) && context.InstanceToValidate == null)
+			if (context.InstanceToValidate == null)
 			{
 				result.Errors.Add(new ValidationFailure(_propName, _nullMessageProvider.GetMessage(context)));
 				return false;

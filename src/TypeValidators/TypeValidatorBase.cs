@@ -12,10 +12,10 @@ namespace ExpressValidator
 	internal abstract class TypeValidatorBase<T> : AbstractValidator<T>
 	{
 		protected IRuleBuilderOptions<T, T> _ruleBuilderInitial;
-		protected NotNullValidationMessageProvider<T> _nullMessageProvider;
+		private NotNullValidationMessageProvider<T> _nullMessageProvider;
 
-		protected IValidationRule<T> _rule;
-		protected string _propName;
+		private IValidationRule<T> _rule;
+		private string _propName;
 
 		protected TypeValidatorBase()
 		{

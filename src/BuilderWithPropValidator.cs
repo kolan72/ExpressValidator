@@ -12,7 +12,7 @@ namespace ExpressValidator
 		private readonly string _propName;
 		private readonly Func<TObj, T> _propertyFunc;
 
-		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, MemberInfo memberInfo) 
+		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj> expressValidatorBuilder, MemberInfo memberInfo)
 										: this(expressValidatorBuilder, memberInfo.GetTypedValue<TObj, T>, memberInfo?.Name ?? string.Empty)
 		{}
 

@@ -14,13 +14,6 @@ namespace ExpressValidator
 		private readonly TypeValidatorBase<T> _typeValidator;
 		private readonly Func<TObj, T> _propertyFunc;
 
-		public ExpressPropertyValidator(MemberInfo memberInfo, TypeValidatorBase<T> typeValidator)
-		{
-			_propertyFunc = memberInfo.GetTypedValue<TObj, T>;
-			_propName = memberInfo?.Name ?? string.Empty;
-			_typeValidator = typeValidator;
-		}
-
 		public ExpressPropertyValidator(Func<TObj, T> propertyFunc, string propName, TypeValidatorBase<T> typeValidator)
 		{
 			_propertyFunc = propertyFunc;

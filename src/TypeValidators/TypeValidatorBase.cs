@@ -12,10 +12,10 @@ namespace ExpressValidator
 	internal abstract class TypeValidatorBase<T> : AbstractValidator<T>
 	{
 		protected IRuleBuilderOptions<T, T> _ruleBuilderInitial;
-		protected NotNullValidationMessageProvider<T> _nullMessageProvider;
+		private NotNullValidationMessageProvider<T> _nullMessageProvider;
 
-		protected IValidationRule<T> _rule;
-		protected string _propName;
+		private IValidationRule<T> _rule;
+		private string _propName;
 
 		protected TypeValidatorBase()
 		{
@@ -34,7 +34,7 @@ namespace ExpressValidator
 		/// <returns></returns>
 		protected override bool PreValidate(ValidationContext<T> context, ValidationResult result)
 		{
-			if ((typeof(T).IsClass || typeof(T).IsInterface) && context.InstanceToValidate == null)
+			if (context.InstanceToValidate == null)
 			{
 				result.Errors.Add(new ValidationFailure(_propName, _nullMessageProvider.GetMessage(context)));
 				return false;

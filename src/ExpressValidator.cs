@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace ExpressValidator
 {
 	/// <summary>
-	/// Holds property validator collection for validating object.
+	///  Defines a validator for an object.
 	/// </summary>
 	public class ExpressValidator<TObj> : IExpressValidator<TObj>
 	{

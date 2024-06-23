@@ -65,6 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpressAsyncValidatorWithOptionsTests.cs" />
+    <Compile Include="ExpressValidatorWithOptionsTests.cs" />
     <Compile Include="TypeAsyncValidatorTests.cs" />
     <Compile Include="TypeAsyncValidatorTests.ForNullOrEmptyValidator.cs" />
     <Compile Include="ExpressAsyncValidatorTests.cs" />

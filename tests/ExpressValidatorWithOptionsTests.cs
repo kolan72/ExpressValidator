@@ -51,5 +51,15 @@ namespace ExpressValidator.Tests
 			ClassicAssert.AreEqual(false, result3.IsValid);
 			ClassicAssert.AreEqual(2, result3.Errors.Count);
 		}
+
+		[Test]
+		public void Should_IsValid_Equals_True_WhenNoValidators()
+		{
+			var options = new ObjWithTwoPublicPropsOptions() { IGreaterThanValue = 0, SMaximumLengthValue = 1 };
+			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps, ObjWithTwoPublicPropsOptions>()
+							.Build(options)
+							.Validate(new ObjWithTwoPublicProps());
+			Assert.That(result.IsValid, Is.True);
+		}
 	}
 }

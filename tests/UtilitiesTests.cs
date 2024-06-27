@@ -8,15 +8,15 @@ namespace ExpressValidator.Tests
 		[Test]
 		public void Should_PropertyInfoParser_TryParse_Work_Correctly()
 		{
-			var resParseS = MemberInfoParser.TryParse<ObjWithTwoPublicProps, string>(s => s.S, out PropertyInfo propertyInfoS);
+			var resParseS = MemberInfoParser.TryParse<ObjWithTwoPublicProps, string>(s => s.S, MemberTypes.Property, out MemberInfo propertyInfoS);
 			Assert.That(resParseS, Is.True);
 			Assert.That(propertyInfoS.Name, Is.EqualTo("S"));
 
-			var resParseI = MemberInfoParser.TryParse<ObjWithTwoPublicProps, int>(s => s.I, out PropertyInfo propertyInfoI);
+			var resParseI = MemberInfoParser.TryParse<ObjWithTwoPublicProps, int>(s => s.I, MemberTypes.Property, out MemberInfo propertyInfoI);
 			Assert.That(resParseI, Is.True);
 			Assert.That(propertyInfoI.Name, Is.EqualTo("I"));
 
-			var resParse = MemberInfoParser.TryParse<ObjWithTwoPublicProps, ObjWithTwoPublicProps>(s => s, out PropertyInfo propertyInfo);
+			var resParse = MemberInfoParser.TryParse<ObjWithTwoPublicProps, ObjWithTwoPublicProps>(s => s, MemberTypes.Property, out MemberInfo propertyInfo);
 			Assert.That(resParse, Is.False);
 		}
 

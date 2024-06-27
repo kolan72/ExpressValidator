@@ -14,7 +14,7 @@ namespace ExpressValidator.Tests
 		[TestCase("tt", false)]
 		public async Task Should_ValidateAsync_ForUsualRules_Work(string whatToTest, bool result)
 		{
-			MemberInfoParser.TryParse<ObjWithNullable, string>(o => o.Value, out PropertyInfo propertyInfo);
+			MemberInfoParser.TryParse<ObjWithNullable, string>(o => o.Value, MemberTypes.Property, out MemberInfo propertyInfo);
 
 			var validator = new TypeAsyncValidator<string>();
 			validator.SetValidation(o => o.MaximumLength(1), propertyInfo.Name);
@@ -29,7 +29,7 @@ namespace ExpressValidator.Tests
 		[Test]
 		public void Should_Validate_Throw()
 		{
-			MemberInfoParser.TryParse<ObjWithNullable, string>(o => o.Value, out PropertyInfo propertyInfo);
+			MemberInfoParser.TryParse<ObjWithNullable, string>(o => o.Value, MemberTypes.Property, out MemberInfo propertyInfo);
 
 			var validator = new TypeAsyncValidator<string>();
 			validator.SetValidation(o => o.MaximumLength(1), propertyInfo.Name);

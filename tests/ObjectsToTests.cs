@@ -27,6 +27,13 @@ namespace ExpressValidator.Tests
         public int PercentValue2 { get; set; }
     }
 
+    public class ObjWithTwoPublicPropsOptions
+    {
+        public int IGreaterThanValue { get; set; }
+        public int IGreaterThanValue2 { get; set; }
+        public int SMaximumLengthValue { get; set; }
+    }
+
     public class ContactValidator : AbstractValidator<Contact>
     {
         public ContactValidator()

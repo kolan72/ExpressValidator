@@ -23,10 +23,7 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, TOptions, T> AddProperty<T>(Expression<Func<TObj, T>> func)
 		{
-			if (!MemberInfoParser.TryParse(func, MemberTypes.Property, out MemberInfo memInfo))
-			{
-				throw new ArgumentException("Can not get property from expression.");
-			}
+			var memInfo = MemberInfoParser.ParseProperty(func);
 			return new BuilderWithPropValidator<TObj, TOptions, T>(this, memInfo);
 		}
 

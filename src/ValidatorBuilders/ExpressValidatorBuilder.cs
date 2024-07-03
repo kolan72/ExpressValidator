@@ -27,10 +27,7 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, T> AddProperty<T>(Expression<Func<TObj, T>> func)
 		{
-			if (!MemberInfoParser.TryParse(func, MemberTypes.Property, out MemberInfo memInfo))
-			{
-				throw new ArgumentException("Can not get property from expression.");
-			}
+			var memInfo = MemberInfoParser.ParseProperty(func);
 			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
 		}
 
@@ -42,10 +39,7 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, T> AddField<T>(Expression<Func<TObj, T>> func)
 		{
-			if (!MemberInfoParser.TryParse(func, MemberTypes.Field, out MemberInfo memInfo))
-			{
-				throw new ArgumentException("Can not get field from expression.");
-			}
+			var memInfo = MemberInfoParser.ParseField(func);
 			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
 		}
 

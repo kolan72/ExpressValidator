@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace ExpressValidator
 {
@@ -24,6 +23,18 @@ namespace ExpressValidator
 		public IBuilderWithPropValidator<TObj, TOptions, T> AddProperty<T>(Expression<Func<TObj, T>> func)
 		{
 			var memInfo = MemberInfoParser.ParseProperty(func);
+			return new BuilderWithPropValidator<TObj, TOptions, T>(this, memInfo);
+		}
+
+		// <summary>
+		// Add field to validate.
+		// </summary>
+		// <typeparam name="T">A type of <typeparamref name="TObj"/> object field.</typeparam>
+		// <param name="func">An expression to get field.</param>
+		// <returns></returns>
+		public IBuilderWithPropValidator<TObj, TOptions, T> AddField<T>(Expression<Func<TObj, T>> func)
+		{
+			var memInfo = MemberInfoParser.ParseField(func);
 			return new BuilderWithPropValidator<TObj, TOptions, T>(this, memInfo);
 		}
 

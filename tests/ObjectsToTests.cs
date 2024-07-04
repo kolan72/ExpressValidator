@@ -1,13 +1,9 @@
 ﻿using FluentValidation;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExpressValidator.Tests
 {
-    public class SubObjWithComplexProperty : ObjWithTwoPublicProps
+	public class SubObjWithComplexProperty : ObjWithTwoPublicProps
     {
         public Contact Contact { get; set; }
     }
@@ -32,6 +28,7 @@ namespace ExpressValidator.Tests
         public int IGreaterThanValue { get; set; }
         public int IGreaterThanValue2 { get; set; }
         public int SMaximumLengthValue { get; set; }
+        public int SFieldMaximumLengthValue { get; set; }
     }
 
     public class ContactValidator : AbstractValidator<Contact>

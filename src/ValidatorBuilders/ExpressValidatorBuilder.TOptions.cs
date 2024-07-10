@@ -38,6 +38,18 @@ namespace ExpressValidator
 			return new BuilderWithPropValidator<TObj, TOptions, T>(this, memInfo);
 		}
 
+		/// <summary>
+		/// Add Func for object to get value to validate.
+		/// </summary>
+		/// <typeparam name="T">A type of value.</typeparam>
+		/// <param name="func">Func for object.</param>
+		/// <param name="propName">A name of the property if the validation failed.</param>
+		/// <returns></returns>
+		public IBuilderWithPropValidator<TObj, TOptions, T> AddFunc<T>(Func<TObj, T> func, string propName)
+		{
+			return new BuilderWithPropValidator<TObj, TOptions, T>(this, func, propName);
+		}
+
 		internal TOptions Options { get; set; }
 
 		/// <summary>

@@ -29,6 +29,8 @@ namespace ExpressValidator.Tests
         public int IGreaterThanValue2 { get; set; }
         public int SMaximumLengthValue { get; set; }
         public int SFieldMaximumLengthValue { get; set; }
+        public int PercentSumMinValue { get; set; }
+        public int PercentSumMaxValue { get; set; }
     }
 
     public class ContactValidator : AbstractValidator<Contact>

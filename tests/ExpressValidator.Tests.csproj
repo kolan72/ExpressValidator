@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\NUnit3TestAdapter.4.5.0\build\net462\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.4.5.0\build\net462\NUnit3TestAdapter.props')" />
   <Import Project="..\packages\NUnit.4.1.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.4.1.0\build\NUnit.props')" />
@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="ExpressAsyncValidatorWithOptionsTests.cs" />
     <Compile Include="ExpressValidatorWithOptionsTests.cs" />
+    <Compile Include="ExpressValidatorWithOptionsTests.ForAsync.Tests.cs" />
     <Compile Include="TypeAsyncValidatorTests.cs" />
     <Compile Include="TypeAsyncValidatorTests.ForNullOrEmptyValidator.cs" />
     <Compile Include="ExpressAsyncValidatorTests.cs" />

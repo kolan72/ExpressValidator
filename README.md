@@ -31,19 +31,19 @@ var result = new ExpressValidatorBuilder<ObjToValidate>()
 				//Choose property to validate
 				.AddProperty(o => o.I)
 				//Usual FluentValidation rules here
-				.WithValidation(o => o.GreaterThan(0))
+				.WithValidation(rbo => rbo.GreaterThan(0))
 				//Choose other property
 				.AddProperty(o => o.S)
 				//And set rules again
-				.WithValidation(o => o.MaximumLength(1))
+				.WithValidation(rbo => rbo.MaximumLength(1))
 				//Choose field to validate
 				.AddField(o => o._sField)
 				//And set rules for the field
-				.WithValidation(o => o.MinimumLength(1))
+				.WithValidation(rbo => rbo.MinimumLength(1))
 				//Add the Func that returns sum of percentage properties for validation
 				.AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
 				//And set rules for the sum of percentages
-				.WithValidation(o => o.InclusiveBetween(0, 100))
+				.WithValidation(rbo => rbo.InclusiveBetween(0, 100))
 				//We get IExpressValidator<ObjToValidate> after calling the Build method
 				.Build()
 	 			//And finally validate the object

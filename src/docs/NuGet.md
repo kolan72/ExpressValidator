@@ -97,7 +97,7 @@ if(!result.IsValid)
 ...
 }		
 
-var objToValidateOptions2 = new ObjToValidateOptions() {...}
+var objToValidateOptions2 = new ObjToValidateOptions() {...};
 
 var result2 = builder	
 			//Pass other options in the Build method

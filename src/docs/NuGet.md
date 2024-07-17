@@ -4,6 +4,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 ## Key Features
 
 - Easy on-the-fly creation of object validator class called `ExpressValidator` by using `ExpressValidatorBuilder`.
+- Possibility to dynamically change the parameters of the `FluentValidation` validators.
 - Supports adding a property or field for validation.
 - Verifies that a property expression is a property and a field expression is a field, and throws `ArgumentException` if it is not.
 - Supports adding a `Func` that provides a value for validation.
@@ -47,5 +48,65 @@ var result = new ExpressValidatorBuilder<ObjToValidate>()
 if(!result.IsValid)
 {
     //As usual with validation result...
+}
+```
+
+To dynamically change the parameters of the `FluentValidation` validators:  
+
+1. Create an options object that contains the parameters of validators.  
+2. Configure the `ExpressValidatorBuilder<TObj, TOptions>` class instance using the options object.  
+3. Pass the options instance to the builder's `Build` method, which creates an `IExpressValidator<TObj>` validator that validates an object using parameters from the options object.
+
+To validate an object with different parameters, simply rebuild the builder with the different options.  
+
+See example below.  
+```csharp
+//Object with options
+var objToValidateOptions = new ObjToValidateOptions()
+			{
+				IGreaterThanValue = 0,
+				SMaximumLengthValue = 1,
+				SFieldMaximumLengthValue = 1,
+				PercentSumMinValue = 0,
+				PercentSumMaxValue = 100,
+			};
+
+
+var builder = new ExpressValidatorBuilder<ObjToValidate, ObjToValidateOptions>()
+			.AddProperty(o => o.I)
+			//Get Greater Than validator parameter from options
+			.WithValidation((to, p) => p.GreaterThan(to.IGreaterThanValue))
+			.AddProperty(o => o.S)
+			//Get MaxLength validator parameter from options
+			.WithValidation((to, p)=> p.MaximumLength(to.SMaximumLengthValue))
+			.AddField(o => o._sField)
+			//Get MaxLength validator parameter from options for field
+			.WithValidation((to, f) => f.MaximumLength(to.SFieldMaximumLengthValue))
+			.AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
+			//Get InclusiveBetween validator parameters from options
+			.WithValidation((to, f) => f.InclusiveBetween(to.PercentSumMinValue, to.PercentSumMaxValue));
+
+//ValidationResult with parameters from objToValidateOptions
+var result = builder	
+			//Pass options in the Build method
+			.Build(objToValidateOptions)
+			.Validate(new ObjToValidate() { I = i, S = s, _sField = sf, PercentValue1 = pv1, PercentValue2 = pv2 });
+				
+if(!result.IsValid)
+{
+...
+}		
+
+var objToValidateOptions2 = new ObjToValidateOptions() {...}
+
+var result2 = builder	
+			//Pass other options in the Build method
+			.Build(objToValidateOptions2)
+			.Validate(new ObjToValidate() { I = i, S = s, _sField = sf, PercentValue1 = pv1, PercentValue2 = pv2 });
+
+//Check IsValid after rebuild
+if(!result2.IsValid)
+{
+...
 }
 ```

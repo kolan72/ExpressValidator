@@ -54,10 +54,11 @@ if(!result.IsValid)
 To dynamically change the parameters of the `FluentValidation` validators:  
 
 1. Create an options object that contains the parameters of validators.  
-2. Configure the `ExpressValidatorBuilder<TObj, TOptions>` class instance using the options object.  
-3. Pass the options instance to the builder's `Build` method, which creates an `IExpressValidator<TObj>` validator that validates an object using parameters from the options object.
+2. Configure the `ExpressValidatorBuilder<TObj, TOptions>` builder using the options object.  
+3. Pass the options to the builder's `Build` method.
+4. Created `IExpressValidator<TObj>` validator will validate an a `TObj` object using parameters from the options object.
 
-To validate an object with different parameters, simply rebuild the builder with the different options.  
+To validate an object with different parameters, simply rebuild the validator using the same builder with the different options.  
 
 See example below.  
 ```csharp

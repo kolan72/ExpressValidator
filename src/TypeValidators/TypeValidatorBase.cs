@@ -17,8 +17,11 @@ namespace ExpressValidator
 		private IValidationRule<T> _rule;
 		private string _propName;
 
+		private readonly bool _shouldBeComparedToNull;
+
 		protected TypeValidatorBase()
 		{
+			_shouldBeComparedToNull = !typeof(T).IsValueType || (Nullable.GetUnderlyingType(typeof(T)) != null);
 		}
 
 		protected override void OnRuleAdded(IValidationRule<T> rule)
@@ -34,7 +37,7 @@ namespace ExpressValidator
 		/// <returns></returns>
 		protected override bool PreValidate(ValidationContext<T> context, ValidationResult result)
 		{
-			if (context.InstanceToValidate == null)
+			if (_shouldBeComparedToNull && EqualityComparer<T>.Default.Equals(context.InstanceToValidate, default))
 			{
 				result.Errors.Add(new ValidationFailure(_propName, _nullMessageProvider.GetMessage(context)));
 				return false;
@@ -92,7 +95,7 @@ namespace ExpressValidator
 
 		internal abstract bool? IsAsync { get; }
 
-		protected bool ShouldValidate(T value) => value != null || !HasOnlyNullOrEmptyValidators;
+		protected bool ShouldValidate(T value) =>!_shouldBeComparedToNull || !EqualityComparer<T>.Default.Equals(value, default) || !HasOnlyNullOrEmptyValidators;
 
 		private bool HasOnlyNullOrEmptyValidators { get; set; }
 

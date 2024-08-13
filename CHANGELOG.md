@@ -1,3 +1,12 @@
+## 0.0.16
+
+- Support validation for nullable value types.
+- Slightly improved performance by removing the restriction on the type of instance to validate in the `TypeValidatorBase<T>.Prevalidate` method.
+- Make `_nullMessageProvider`, `_propName` and `_rule` `TypeValidatorBase<T>` class fields private instead of protected.
+- Remove `IExpressPropertyValidatorBase` interface.
+- Remove redundant `ExpressPropertyValidator` constructor.  
+
+
 ## 0.0.14
 
 - Introduce `ExpressValidatorBuilder.AddFunc` method.

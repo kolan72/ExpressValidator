@@ -1,3 +1,18 @@
+## 0.0.21
+
+- Introduce the possibility to dynamically change the parameters of the 'FluentValidation' validators. (via `ExpressValidatorBuilder<TObj, TOptions>`, `ExpressValidator<TObj, TOptions>` classes).  
+- Do not compare a non-nullable value type to null during pre-validation.  
+- Refactor adding object member to validate by introducing `MemberInfoParser.ParseProperty`, `MemberInfoParser.ParseField` methods.  
+- Slightly improve performance by using `PropertyInfo.GetGetMethod` to get a property from an object.  
+- Add benchmark to get the fastest way to get `Func` from `PropertyInfo`.
+- Remove redundant overload of the `PropertyInfo.GetTypedValue` extension method.  
+- Remove redundant `MemberInfoParser.TryParse` method overload.  
+- Update to 'FluentValidation' 11.9.2.  
+- 'NUnit3TestAdapter' from 4.5.0 to 4.6.0.  
+- Move builder-related classes to the new 'ValidatorBuilders' folder.  
+- Update README.md and NuGet README.
+
+
 ## 0.0.16
 
 - Support validation for nullable value types.

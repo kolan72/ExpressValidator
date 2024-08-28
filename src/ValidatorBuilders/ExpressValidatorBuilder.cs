@@ -9,7 +9,7 @@ namespace ExpressValidator
 	/// Builder class that holds the collection of <typeparamref name="TObj"/> properties to be validated, along with validation rules.
 	/// </summary>
 	/// <typeparam name="TObj">A type of object to validate.</typeparam>
-	public class ExpressValidatorBuilder<TObj>
+	public class ExpressValidatorBuilder<TObj> : IExpressValidatorBuilder<TObj>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
 		private readonly List<IObjectValidator<TObj>> _objectValidators = new List<IObjectValidator<TObj>>();

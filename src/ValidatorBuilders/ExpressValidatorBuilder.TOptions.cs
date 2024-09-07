@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace ExpressValidator
 {
-	public class ExpressValidatorBuilder<TObj, TOptions>
+	public class ExpressValidatorBuilder<TObj, TOptions> : IExpressValidatorBuilder<TObj, TOptions>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
 		private readonly List<IObjectValidator<TObj, TOptions>> _objectValidators = new List<IObjectValidator<TObj, TOptions>>();

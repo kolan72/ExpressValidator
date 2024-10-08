@@ -49,16 +49,14 @@ namespace ExpressValidator.Tests
 		[Test]
 		public void Should_ValidateAsyncThrow_If_Cancellation_Occurs()
 		{
-			using (var ctSource = new CancellationTokenSource())
-			{
-				ctSource.Cancel();
-				var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
-					   .AddProperty(o => o.I)
-					   .WithValidation(o => o.GreaterThan(0))
-					   .Build();
+			using var ctSource = new CancellationTokenSource();
+			ctSource.Cancel();
+			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+				   .AddProperty(o => o.I)
+				   .WithValidation(o => o.GreaterThan(0))
+				   .Build();
 
-				Assert.ThrowsAsync<OperationCanceledException>(async () => await builder.ValidateAsync(new ObjWithTwoPublicProps() { I = 2, S = "b" }, ctSource.Token));
-			}
+			Assert.ThrowsAsync<OperationCanceledException>(async () => await builder.ValidateAsync(new ObjWithTwoPublicProps() { I = 2, S = "b" }, ctSource.Token));
 		}
 
 		[Test]

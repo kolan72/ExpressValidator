@@ -14,7 +14,7 @@ namespace ExpressValidator.Tests
 		[Test]
 		public void Should_GetMessage_Returns_CorrectMessage_For_Null_Instance()
 		{
-			var propName = "TestPropName";
+			const string propName = "TestPropName";
 			var notNullMsgProvider = new NotNullValidationMessageProvider<string>(propName);
 			var res = notNullMsgProvider.GetMessage(new ValidationContext<string>(null));
 			Assert.That(res.Contains(propName), Is.True);

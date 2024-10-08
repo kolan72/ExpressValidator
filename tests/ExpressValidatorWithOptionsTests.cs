@@ -9,7 +9,7 @@ namespace ExpressValidator.Tests
 {
 	internal partial class ExpressValidatorWithOptonsTests
 	{
-		private readonly ObjWithTwoPublicPropsOptions _objWithTwoPublicPropsOptions = new ObjWithTwoPublicPropsOptions()
+		private readonly ObjWithTwoPublicPropsOptions _objWithTwoPublicPropsOptions = new()
 		{
 			IGreaterThanValue = 0,
 			SMaximumLengthValue = 1,

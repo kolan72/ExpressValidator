@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressValidator.Tests", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "bench\Benchmark\Benchmark.csproj", "{163D81E7-128E-431F-B827-F2AA2BD1D077}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressValidator.Extensions.DependencyInjection", "src\ExpressValidator.Extensions.DependencyInjection\ExpressValidator.Extensions.DependencyInjection.csproj", "{A4EA326F-0946-4489-8064-1317B4D41EAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{163D81E7-128E-431F-B827-F2AA2BD1D077}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{163D81E7-128E-431F-B827-F2AA2BD1D077}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{163D81E7-128E-431F-B827-F2AA2BD1D077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4EA326F-0946-4489-8064-1317B4D41EAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4EA326F-0946-4489-8064-1317B4D41EAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4EA326F-0946-4489-8064-1317B4D41EAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4EA326F-0946-4489-8064-1317B4D41EAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

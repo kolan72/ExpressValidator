@@ -2,21 +2,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ExpressValidator
 {
 	/// <summary>
-	///  Defines a validator for an object.
+	///  Defines a validator for an object with options.
 	/// </summary>
-	public class ExpressValidator<TObj> : IExpressValidator<TObj>
+	/// <typeparam name="TObj"></typeparam>
+	/// <typeparam name="TOptions"></typeparam>
+	public class ExpressValidator<TObj, TOptions> : IExpressValidator<TObj>
 	{
-		private readonly IEnumerable<IObjectValidator<TObj>> _validators;
+		private readonly TOptions _options;
+		private readonly IEnumerable<IObjectValidator<TObj, TOptions>> _validators;
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
 
-		internal ExpressValidator(IEnumerable<IObjectValidator<TObj>> validators, OnFirstPropertyValidatorFailed validationMode)
+		internal ExpressValidator(TOptions options, IEnumerable<IObjectValidator<TObj, TOptions>> validators, OnFirstPropertyValidatorFailed validationMode)
 		{
+			_options = options;
 			_validators = validators;
 			_validationMode = validationMode;
 		}
@@ -41,6 +46,7 @@ namespace ExpressValidator
 			{
 				token.ThrowIfCancellationRequested();
 
+				validator.ApplyOptions(_options);
 				var (IsValid, Failures) = await validator.ValidateAsync(obj, token).ConfigureAwait(false);
 				if (!IsValid)
 				{
@@ -57,6 +63,7 @@ namespace ExpressValidator
 			{
 				token.ThrowIfCancellationRequested();
 
+				validator.ApplyOptions(_options);
 				var (IsValid, Failures) = await validator.ValidateAsync(obj, token).ConfigureAwait(false);
 				if (!IsValid)
 				{
@@ -70,6 +77,7 @@ namespace ExpressValidator
 		{
 			foreach (var validator in _validators)
 			{
+				validator.ApplyOptions(_options);
 				var (IsValid, Failures) = validator.Validate(obj);
 				if (!IsValid)
 				{
@@ -84,6 +92,7 @@ namespace ExpressValidator
 			var currentFailures = new List<ValidationFailure>();
 			foreach (var validator in _validators)
 			{
+				validator.ApplyOptions(_options);
 				var (IsValid, Failures) = validator.Validate(obj);
 				if (!IsValid)
 				{

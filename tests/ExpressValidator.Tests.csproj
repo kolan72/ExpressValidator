@@ -87,8 +87,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\ExpressValidator.csproj">
-      <Project>{122B59EB-48C6-47BE-A478-B7F034EBE488}</Project>
+    <ProjectReference Include="..\src\ExpressValidator\ExpressValidator.csproj">
+      <Project>{144f9f5c-235f-4b57-8a03-e9d681feef89}</Project>
       <Name>ExpressValidator</Name>
     </ProjectReference>
   </ItemGroup>

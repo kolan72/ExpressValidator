@@ -50,12 +50,12 @@ namespace ExpressValidator.Tests
         public string K { get; set; }
     }
 
-    class ObjWithNullable
+    internal class ObjWithNullable
     {
         public string Value { get; set; } = "Test";
     }
 
-    enum SetPropertyNameType
+    internal enum SetPropertyNameType
     {
         NotSetExplicitly,
         Override,

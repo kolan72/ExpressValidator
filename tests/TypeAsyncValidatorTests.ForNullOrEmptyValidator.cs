@@ -20,8 +20,8 @@ namespace ExpressValidator.Tests
 			else
 				validator.SetValidation(o => o.Null().Null(), "someprop");
 
-			var res = await validator.ValidateExAsync(valueToTest);
-			ClassicAssert.AreEqual(isValid, res.IsValid);
+			var (IsValid, _) = await validator.ValidateExAsync(valueToTest);
+			ClassicAssert.AreEqual(isValid, IsValid);
 		}
 
 		[Test]
@@ -37,8 +37,8 @@ namespace ExpressValidator.Tests
 			else
 				validator.SetValidation(o => o.Null().Null(), "someprop");
 
-			var res = await validator.ValidateExAsync(valueToTest);
-			ClassicAssert.AreEqual(isValid, res.IsValid);
+			var (IsValid, _) = await validator.ValidateExAsync(valueToTest);
+			ClassicAssert.AreEqual(isValid, IsValid);
 		}
 
 		[Test]
@@ -54,8 +54,8 @@ namespace ExpressValidator.Tests
 			else
 				validator.SetValidation(o => o.Empty().Empty(), string.Empty);
 
-			var res = await validator.ValidateExAsync(valueToTest);
-			ClassicAssert.AreEqual(isValid, res.IsValid);
+			var (IsValid, _) = await validator.ValidateExAsync(valueToTest);
+			ClassicAssert.AreEqual(isValid, IsValid);
 		}
 
 		[Test]
@@ -71,8 +71,8 @@ namespace ExpressValidator.Tests
 			else
 				validator.SetValidation(o => o.Empty().Empty(), string.Empty);
 
-			var res = await validator.ValidateExAsync(valueToTest);
-			ClassicAssert.AreEqual(isValid, res.IsValid);
+			var (IsValid, _) = await validator.ValidateExAsync(valueToTest);
+			ClassicAssert.AreEqual(isValid, IsValid);
 		}
 
 		[Test]
@@ -82,8 +82,8 @@ namespace ExpressValidator.Tests
 		{
 			var validator = new TypeAsyncValidator<string>();
 			validator.SetValidation(o => o.Empty().Null().Null().Empty(), "someprop");
-			var res = await validator.ValidateExAsync(valueToTest);
-			ClassicAssert.AreEqual(isValid, res.IsValid);
+			var (IsValid, _) = await validator.ValidateExAsync(valueToTest);
+			ClassicAssert.AreEqual(isValid, IsValid);
 		}
 
 		[Test]
@@ -93,8 +93,8 @@ namespace ExpressValidator.Tests
 		{
 			var validator = new TypeAsyncValidator<int?>();
 			validator.SetValidation(o => o.Empty().Null().Null().Empty(), "someprop");
-			var res = await validator.ValidateExAsync(valueToTest);
-			ClassicAssert.AreEqual(isValid, res.IsValid);
+			var (IsValid, _) = await validator.ValidateExAsync(valueToTest);
+			ClassicAssert.AreEqual(isValid, IsValid);
 		}
 	}
 }

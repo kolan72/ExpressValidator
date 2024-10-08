@@ -177,7 +177,7 @@
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ExpressValidator.csproj">
+    <ProjectReference Include="..\..\src\ExpressValidator\ExpressValidator.csproj">
       <Project>{144F9F5C-235F-4B57-8A03-E9D681FEEF89}</Project>
       <Name>ExpressValidator</Name>
     </ProjectReference>

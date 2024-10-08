@@ -19,8 +19,8 @@ namespace ExpressValidator.Tests
 			else
 				validator.SetValidation(o => o.Null().Null(), "someprop");
 
-			var res = validator.ValidateEx(valueToTest);
-			ClassicAssert.AreEqual(isValid, res.IsValid);
+			var (IsValid, _) = validator.ValidateEx(valueToTest);
+			ClassicAssert.AreEqual(isValid, IsValid);
 		}
 
 		[Test]
@@ -36,8 +36,8 @@ namespace ExpressValidator.Tests
 			else
 				validator.SetValidation(o => o.Empty().Empty(), "someprop");
 
-			var res = validator.ValidateEx(valueToTest);
-			ClassicAssert.AreEqual(isValid, res.IsValid);
+			var (IsValid, _) = validator.ValidateEx(valueToTest);
+			ClassicAssert.AreEqual(isValid, IsValid);
 		}
 
 		[Test]
@@ -62,8 +62,8 @@ namespace ExpressValidator.Tests
 			else
 				validator.SetValidation(o => o.Null().Null().MinimumLength(1), "someprop");
 
-			var res = validator.ValidateEx(null);
-			ClassicAssert.AreEqual(false, res.IsValid);
+			var (IsValid, _) = validator.ValidateEx(null);
+			ClassicAssert.AreEqual(false, IsValid);
 		}
 	}
 }

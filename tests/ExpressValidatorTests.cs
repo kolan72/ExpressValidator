@@ -153,7 +153,6 @@ namespace ExpressValidator.Tests
 			{
 				objToTest = new ObjWithTwoPublicProps() { I = -1, S = "ab" };
 			}
-			
 			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
 					   .AddProperty(o => o.I)
 					   .WithValidation(o => o.GreaterThan(0))

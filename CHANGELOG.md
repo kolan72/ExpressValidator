@@ -1,3 +1,10 @@
+## 0.0.24
+
+- Update to FluentValidation 11.10.0.
+- Fix warnings in tests.
+- Update to NUnit 4.2.2.
+
+
 ## 0.0.23
 
 - Extract `IExpressValidatorBuilder<TObj>` interface.  

@@ -1,3 +1,9 @@
+## 0.0.23
+
+- Extract `IExpressValidatorBuilder<TObj>` interface.  
+- Extract `IExpressValidatorBuilder<TObj, TOptions>` interface.
+
+
 ## 0.0.21
 
 - Introduce the possibility to dynamically change the parameters of the 'FluentValidation' validators. (via `ExpressValidatorBuilder<TObj, TOptions>`, `ExpressValidator<TObj, TOptions>` classes).  

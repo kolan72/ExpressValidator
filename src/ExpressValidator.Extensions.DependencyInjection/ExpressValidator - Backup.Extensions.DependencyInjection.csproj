@@ -9,7 +9,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/kolan72/ExpressValidator.git</PackageProjectUrl>
     <PackageIcon>ExpressValidator.png</PackageIcon>
-    <PackageReadmeFile>NuGet.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/kolan72/ExpressValidator.git</RepositoryUrl>
     <PackageTags>FluentValidation Validation</PackageTags>
@@ -46,7 +46,7 @@
   <ItemGroup>
     <None Update="README.md">
       <PackagePath>\</PackagePath>
-      <Pack>true</Pack>
+      <Pack>True</Pack>
     </None>
   </ItemGroup>
 

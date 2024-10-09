@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.34301.259
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressValidator", "src\ExpressValidator\ExpressValidator.csproj", "{144F9F5C-235F-4B57-8A03-E9D681FEEF89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressValidator.Tests", "tests\ExpressValidator.Tests.csproj", "{E229F013-1B99-49E7-BD20-9041F1E8D92F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressValidator.Tests", "tests\ExpressValidator.Tests\ExpressValidator.Tests.csproj", "{E229F013-1B99-49E7-BD20-9041F1E8D92F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "bench\Benchmark\Benchmark.csproj", "{163D81E7-128E-431F-B827-F2AA2BD1D077}"
 EndProject

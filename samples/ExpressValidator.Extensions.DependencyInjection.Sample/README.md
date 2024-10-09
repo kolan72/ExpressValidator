@@ -1,0 +1,1 @@
+﻿The application tries to "/guess" the number for you, validates it and gives you response whether it is correct or not.

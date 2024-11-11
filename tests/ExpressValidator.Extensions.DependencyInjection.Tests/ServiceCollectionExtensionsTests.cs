@@ -19,9 +19,28 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
             Assert.That(service, Is.Not.Null);
         }
 
+        [Test]
+        public void Should_AddExpressValidatorBuilder_Register()
+        {
+            var services = new ServiceCollection();
+            services.AddExpressValidatorBuilder<ObjectToValidate, ObjectToValidateOptions>((builder) =>
+                                                            builder
+                                                            .AddProperty(o => o.I)
+                                                            .WithValidation((to, v) => v.GreaterThan(to.IGreaterThanValue)));
+            var serviceProvider = services.BuildServiceProvider();
+
+            var service = serviceProvider.GetService<IExpressValidatorBuilder<ObjectToValidate, ObjectToValidateOptions>>();
+            Assert.That(service, Is.Not.Null);
+        }
+
         public class ObjectToValidate
         {
             public int I { get; }
+        }
+
+        public class ObjectToValidateOptions
+        {
+            public int IGreaterThanValue { get; set; }
         }
     }
 }

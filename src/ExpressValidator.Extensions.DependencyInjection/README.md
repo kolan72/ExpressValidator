@@ -20,15 +20,30 @@ var app = builder.Build();
 
 ...
 
+interface ISomeServiceThatUseIExpressValidator
+{
+	void ValidateByValidator(ObjToValidate objToValidate);
+	void ValidateByBuilder(ObjToValidate objToValidate);
+}
+
+
 class SomeServiceThatUseIExpressValidator : ISomeServiceThatUseIExpressValidator
 {
 	private readonly IExpressValidator<ObjToValidate> _expressValidator;
-	public SomeServiceThatUseIExpressValidator(IExpressValidator<ObjToValidate> expressValidator)
+	private readonly IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> _expressValidatorBuilder;
+
+	private readonly ObjectToValidateOptions _validateOptions;
+
+	public SomeServiceThatUseIExpressValidator(	IExpressValidator<ObjToValidate> expressValidator,
+												IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> expressValidatorBuilder, 
+												IOptions<ObjectToValidateOptions> validateOptions)
 	{
 		_expressValidator = expressValidator;
+		_validateOptions = validateOptions.Value;
+		_expressValidatorBuilder = expressValidatorBuilder;
 	}
 
-	public void DoSomething()
+	public void ValidateByValidator(ObjToValidate objToValidate)
 	{
 		var vr = _expressValidator.Validate(objToValidate);
 		if(vr.IsValid)
@@ -36,6 +51,33 @@ class SomeServiceThatUseIExpressValidator : ISomeServiceThatUseIExpressValidator
 		...
 		}
 	}
+
+	public void ValidateByBuilder(ObjToValidate objToValidate)
+	{
+		ChangeOptions();
+		var vr = _expressValidatorBuilder
+				.Build(_validateOptions)
+				.Validate(objToValidate);
+		if(vr.IsValid)
+		{
+		...
+		}						
+	}
+
+	private void ChangeOptions()
+	{
+		_validateOptions.IGreaterThanValue = ...;
+	}
+}
+
+class ObjToValidate
+{
+	public int I { get; set; }
+}
+
+class ObjectToValidateOptions
+{
+	public int IGreaterThanValue { get; set; }
 }
 ```
 

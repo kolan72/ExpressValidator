@@ -14,6 +14,11 @@ builder.Services.AddExpressValidator<ObjToValidate>(b =>
 	    .WithValidation(o => o.GreaterThan(5)
 	    .WithMessage("Must be greater than 5!")));
 
+builder.Services.AddExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions>
+		(b => b.AddProperty(o => o.I)
+		.WithValidation((to, rbo) => rbo.GreaterThan(to.IGreaterThanValue)
+		.WithMessage($"Must be greater than {to.IGreaterThanValue}!")));
+
 builder.Services.AddTransient<ISomeServiceThatUseIExpressValidator, SomeServiceThatUseIExpressValidator>();
 
 var app = builder.Build();
@@ -25,7 +30,6 @@ interface ISomeServiceThatUseIExpressValidator
 	void ValidateByValidator(ObjToValidate objToValidate);
 	void ValidateByBuilder(ObjToValidate objToValidate);
 }
-
 
 class SomeServiceThatUseIExpressValidator : ISomeServiceThatUseIExpressValidator
 {

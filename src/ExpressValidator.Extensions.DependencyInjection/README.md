@@ -34,9 +34,10 @@ class SomeServiceThatUseIExpressValidator : ISomeServiceThatUseIExpressValidator
 
 	private readonly ObjectToValidateOptions _validateOptions;
 
-	public SomeServiceThatUseIExpressValidator(	IExpressValidator<ObjToValidate> expressValidator,
-												IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> expressValidatorBuilder, 
-												IOptions<ObjectToValidateOptions> validateOptions)
+	public SomeServiceThatUseIExpressValidator(
+				IExpressValidator<ObjToValidate> expressValidator,
+				IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> expressValidatorBuilder, 
+				IOptions<ObjectToValidateOptions> validateOptions)
 	{
 		_expressValidator = expressValidator;
 		_validateOptions = validateOptions.Value;

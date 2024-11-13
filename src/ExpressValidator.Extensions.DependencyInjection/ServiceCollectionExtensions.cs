@@ -26,5 +26,26 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			services.Add(new ServiceDescriptor(typeof(IExpressValidator<T>), func, serviceLifetime));
 			return services;
 		}
+
+		public static IServiceCollection AddExpressValidatorBuilder<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
+		{
+			return AddExpressValidatorBuilder(services, configure, new ExpressValidatorOptions() { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, serviceLifetime);
+		}
+
+		public static IServiceCollection AddExpressValidatorBuilder<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, ExpressValidatorOptions expressValidatorOptions, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
+		{
+			ExpressValidatorBuilder<T, TOptions> func(IServiceProvider sp)
+			{
+				var s = sp.GetRequiredService<IOptions<ExpressValidatorOptions>>();
+				var eb = new ExpressValidatorBuilder<T, TOptions>(s.Value.OnFirstPropertyValidatorFailed);
+				configure(eb);
+				return eb;
+			}
+			services.AddOptions<ExpressValidatorOptions>()
+					.Configure(options =>
+										options.OnFirstPropertyValidatorFailed = expressValidatorOptions.OnFirstPropertyValidatorFailed);
+			services.Add(new ServiceDescriptor(typeof(IExpressValidatorBuilder<T, TOptions>), func, serviceLifetime));
+			return services;
+		}
 	}
 }

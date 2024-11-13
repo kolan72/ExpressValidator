@@ -1,2 +1,2 @@
-﻿The application tries to "/guess" the number for you, validates it and gives you response whether it is correct or not. 
-he "/complexguess" endpoint validates the number by `IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions>` using options that change dynamically.
+﻿The application tries to "/guess" the number for you, validates it and gives you response whether it is correct or not.  
+The "/complexguess" endpoint validates the number by `IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions>` using options that change dynamically.

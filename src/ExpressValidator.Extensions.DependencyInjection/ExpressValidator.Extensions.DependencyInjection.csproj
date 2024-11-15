@@ -7,7 +7,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Andrey Kolesnichenko</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/kolan72/ExpressValidator.git</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/kolan72/ExpressValidator/tree/main/src/ExpressValidator.Extensions.DependencyInjection</PackageProjectUrl>
     <PackageIcon>ExpressValidator.png</PackageIcon>
     <PackageReadmeFile>NuGet.md</PackageReadmeFile>
     <PackageIconUrl />

@@ -5,11 +5,6 @@ using System.Threading.Tasks;
 
 namespace ExpressValidator
 {
-	internal interface IObjectValidator<TObj, TOptions> : IObjectValidator<TObj>
-	{
-		void ApplyOptions(TOptions options);
-	}
-
 	internal interface IObjectValidator<TObj>
 	{
 		(bool IsValid, List<ValidationFailure> Failures) Validate(TObj obj);

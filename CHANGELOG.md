@@ -1,3 +1,15 @@
+## 0.1.0
+
+- Update to FluentValidation 11.11.0.
+- Made the TOptions parameter of the `IObjectValidator<TObj, TOptions>` contravariant.
+- Made the TObj parameter of the IObjectValidator<TObj>, `IObjectValidator<TObj, TOptions>` interfaces contravariant.
+- ExpressValidator codebase size reduced by moving `PropertyInfoToFuncConverter` class to bench project.
+- Unreference the Benchmark.csproj project from reference to the 'ExpressValidator.csproj' project.
+- Add the Rider-related .gitignore.
+- Remove unused using directives.
+- Update Benchmark.csproj nuget packages.
+
+
 ## 0.0.24
 
 - Update to FluentValidation 11.10.0.

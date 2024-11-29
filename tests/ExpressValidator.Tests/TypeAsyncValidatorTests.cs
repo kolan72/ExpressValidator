@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using FluentValidation;
 using System.Reflection;
 using NUnit.Framework.Legacy;
-using System;
 
 namespace ExpressValidator.Tests
 {

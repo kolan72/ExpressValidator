@@ -36,6 +36,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+    <_Parameter1>ExpressValidator.Extensions.DependencyInjection.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\..\ExpressValidator.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

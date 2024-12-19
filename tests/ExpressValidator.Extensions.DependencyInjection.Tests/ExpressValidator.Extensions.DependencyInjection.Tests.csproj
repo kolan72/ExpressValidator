@@ -93,6 +93,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpressValidatorWithReloadTests.cs" />
+    <Compile Include="ObjectsToTests.cs" />
     <Compile Include="OptionsMonitorContextTests.cs" />
     <Compile Include="ServiceCollectionExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

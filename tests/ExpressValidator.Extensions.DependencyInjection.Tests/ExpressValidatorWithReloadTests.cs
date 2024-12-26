@@ -33,7 +33,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 			Assert.That(result.IsValid, Is.True);
 		}
 
-		class TestOptionsMonitorContext : IOptionsMonitorContext<ObjectToValidateOptions>
+		private class TestOptionsMonitorContext : IOptionsMonitorContext<ObjectToValidateOptions>
 		{
 			public DateTimeOffset LastUpdated { get; set; }
 			public ObjectToValidateOptions Options { get; set; }

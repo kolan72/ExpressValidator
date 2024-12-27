@@ -1,7 +1,6 @@
 using ExpressValidator;
 using ExpressValidator.Extensions.DependencyInjection;
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +14,14 @@ builder.Services.AddExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptio
 								b.AddProperty(o => o.I)
 								.WithValidation((to, rbo) => rbo.GreaterThan(to.IGreaterThanValue)
 								.WithMessage($"Must be greater than {to.IGreaterThanValue}!")));
+
+builder.Services.AddExpressValidatorWithReload<ObjToValidate, ObjectToValidateOptions>(b =>
+								b.AddProperty(o => o.I)
+								.WithValidation((to, rbo) => rbo.GreaterThan(to.IGreaterThanValue)
+								.WithMessage($"Must be greater than {to.IGreaterThanValue}!")),
+								new ExpressValidatorOptions() { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Break },
+								"ObjectToValidateOptions");
+
 
 builder.Services.AddTransient<IGuessTheNumberService, GuessTheNumberService>();
 
@@ -48,6 +55,32 @@ app.MapGet("/complexguess", (IGuessTheNumberService service) =>
 	}
 });
 
+app.MapGet("/guesswithreload", (IGuessTheNumberService service) =>
+{
+	var (Result, Message) = service.GuessWithReload();
+	if (!Result)
+	{
+		return Results.BadRequest(Message);
+	}
+	else
+	{
+		return Results.Ok(Message);
+	}
+});
+
+app.MapGet("/guesswithreloadasync", async (IGuessTheNumberService service) =>
+{
+	var (Result, Message) = await service.GuessWithReloadAsync();
+	if (!Result)
+	{
+		return Results.BadRequest(Message);
+	}
+	else
+	{
+		return Results.Ok(Message);
+	}
+});
+
 await app.RunAsync();
 
 
@@ -56,12 +89,15 @@ public interface IGuessTheNumberService
 {
 	(bool Result, string Message) Guess();
 	(bool Result, string Message) ComplexGuess();
+	(bool Result, string Message) GuessWithReload();
+	Task<(bool Result, string Message)> GuessWithReloadAsync();
 }
 
 public class GuessTheNumberService : IGuessTheNumberService
 {
 	private readonly IExpressValidator<ObjToValidate> _expressValidator;
 	private readonly IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> _expressValidatorBuilder;
+	private readonly IExpressValidatorWithReload<ObjToValidate> _expressValidatorWithReload;
 
 	private readonly ObjectToValidateOptions _validateOptions;
 
@@ -69,12 +105,14 @@ public class GuessTheNumberService : IGuessTheNumberService
 	private const string LOSE_PHRASE = "Sorry, the rules changed in the middle of the game.";
 
 	public GuessTheNumberService(IExpressValidator<ObjToValidate> expressValidator, 
-								IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> expressValidatorBuilder, 
+								IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> expressValidatorBuilder,
+								IExpressValidatorWithReload<ObjToValidate> expressValidatorWithReload,
 								IOptions<ObjectToValidateOptions> validateOptions)
 	{
 		_expressValidator = expressValidator;
 		_validateOptions = validateOptions.Value;
 		_expressValidatorBuilder = expressValidatorBuilder;
+		_expressValidatorWithReload = expressValidatorWithReload;
 	}
 
 	public (bool Result, string Message) Guess()
@@ -82,6 +120,36 @@ public class GuessTheNumberService : IGuessTheNumberService
 		var i = Random.Shared.Next(1, 11);
 		var objToValidate = new ObjToValidate() { I = i };
 		var vr = _expressValidator.Validate(objToValidate);
+		if (vr.IsValid)
+		{
+			return (true, $"You guessed {i} and it is correct!");
+		}
+		else
+		{
+			return (false, $"You have chosen {i} and it is wrong. " + vr.ToString());
+		}
+	}
+
+	public (bool Result, string Message) GuessWithReload()
+	{
+		var i = Random.Shared.Next(1, 11);
+		var objToValidate = new ObjToValidate() { I = i };
+		var vr = _expressValidatorWithReload.Validate(objToValidate);
+		if (vr.IsValid)
+		{
+			return (true, $"You guessed {i} and it is correct!");
+		}
+		else
+		{
+			return (false, $"You have chosen {i} and it is wrong. " + vr.ToString());
+		}
+	}
+
+	public async Task<(bool Result, string Message)> GuessWithReloadAsync()
+	{
+		var i = Random.Shared.Next(1, 11);
+		var objToValidate = new ObjToValidate() { I = i };
+		var vr = await _expressValidatorWithReload.ValidateAsync(objToValidate).ConfigureAwait(false);
 		if (vr.IsValid)
 		{
 			return (true, $"You guessed {i} and it is correct!");
@@ -118,10 +186,10 @@ public class GuessTheNumberService : IGuessTheNumberService
 	}
 }
 
-public class ObjToValidate
-{
-	public int I { get; set; }
-}
+	public class ObjToValidate
+	{
+		public int I { get; set; }
+	}
 
 public class ObjectToValidateOptions
 {

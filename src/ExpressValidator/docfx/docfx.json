@@ -39,6 +39,7 @@
     "globalMetadata": {
       "_appName": "ExpressValidator",
       "_appTitle": "ExpressValidator",
+      "_appLogoPath": "images/ExpressValidator.png",
       "_enableSearch": true,
       "pdf": false
     }

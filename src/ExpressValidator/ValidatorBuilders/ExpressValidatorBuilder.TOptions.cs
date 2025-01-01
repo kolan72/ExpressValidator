@@ -50,8 +50,6 @@ namespace ExpressValidator
 			return new BuilderWithPropValidator<TObj, TOptions, T>(this, func, propName);
 		}
 
-		internal TOptions Options { get; set; }
-
 		/// <summary>
 		/// Builds the <see cref="IExpressValidator{TObj}"/>.
 		/// </summary>

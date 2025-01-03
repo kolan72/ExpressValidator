@@ -22,7 +22,7 @@
         "exclude": [
           "_site/**"
         ],
-        "src": "../docfx"
+        "src": "./"
       }
     ],
     "resource": [

@@ -4,6 +4,13 @@ using System.Linq.Expressions;
 
 namespace ExpressValidator
 {
+	/// <summary>
+	/// Represents the class that creates an object that implements <see cref="IExpressValidatorBuilder{TObj}"/>
+	/// by using the collection of <typeparamref name="TObj"/> properties to validate and options,
+	/// along with validation rules.
+	/// </summary>
+	/// <typeparam name="TObj">A type of object to validate.</typeparam>
+	/// <typeparam name="TOptions">A type of and options for use when creating an object that implements the <see cref="IExpressValidator{TObj}"/>.</typeparam>
 	public class ExpressValidatorBuilder<TObj, TOptions> : IExpressValidatorBuilder<TObj, TOptions>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;

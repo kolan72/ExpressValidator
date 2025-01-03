@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Represents the interface for a builder to create an instance of an object that implements <see cref="IExpressValidator{TOb}"/>.
 	/// </summary>
-	/// <typeparam name="TObj">Object to validate.</typeparam>
+	/// <typeparam name="TObj">A type of and object to validate.</typeparam>
 	public interface IExpressValidatorBuilder<TObj>
 	{
 		/// <summary>

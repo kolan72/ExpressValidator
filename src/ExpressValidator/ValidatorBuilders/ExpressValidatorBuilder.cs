@@ -5,7 +5,9 @@ using System.Linq.Expressions;
 namespace ExpressValidator
 {
 	/// <summary>
-	/// Builder class that holds the collection of <typeparamref name="TObj"/> properties to be validated, along with validation rules.
+	/// Represents the class that creates an object that implements <see cref="IExpressValidatorBuilder{TObj}"/>
+	/// by using the collection of <typeparamref name="TObj"/> properties to validate,
+	/// along with validation rules.
 	/// </summary>
 	/// <typeparam name="TObj">A type of object to validate.</typeparam>
 	public class ExpressValidatorBuilder<TObj> : IExpressValidatorBuilder<TObj>

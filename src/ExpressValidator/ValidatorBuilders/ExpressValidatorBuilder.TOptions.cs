@@ -8,7 +8,7 @@ namespace ExpressValidator
 	/// Represents the class that creates an object that implements <see cref="IExpressValidatorBuilder{TObj}"/>by using the collection of <typeparamref name="TObj"/> properties to validate and <typeparamref name="TOptions"/>, along with validation rules.
 	/// </summary>
 	/// <typeparam name="TObj">A type of object to validate.</typeparam>
-	/// <typeparam name="TOptions">A type of and options for use when creating an object that implements the <see cref="IExpressValidator{TObj}"/>.</typeparam>
+	/// <typeparam name="TOptions">A type of the options to use when creating an object that implements the <see cref="IExpressValidator{TObj}"/>.</typeparam>
 	public class ExpressValidatorBuilder<TObj, TOptions> : IExpressValidatorBuilder<TObj, TOptions>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;

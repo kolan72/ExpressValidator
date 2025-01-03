@@ -36,7 +36,7 @@ jobs:
         run: dotnet tool update -g docfx
 
       - name: Build documentation
-        run: docfx ./src/ExpressValidator/docfx/docfx.json
+        run: docfx ./src/ExpressValidator/docfx/docfx.json -f
 
       - name: Upload documentation
         uses: actions/upload-pages-artifact@v3

@@ -24,7 +24,14 @@
         ],
         "src": "./"
       },
-      {"files": ["api/*.yml", "api/*.md"], "exclude": [ "_site/**"], "src": "./", "dest": "api" }
+      {
+        "files": [ "**/*.yml", "**/*.md" ],
+        "exclude": [
+          "_site/**"
+        ],
+        "src": "..",
+        "dest": "api"
+      }
     ],
     "resource": [
       {

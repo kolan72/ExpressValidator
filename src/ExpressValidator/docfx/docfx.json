@@ -23,7 +23,8 @@
           "_site/**"
         ],
         "src": "./"
-      }
+      },
+      {"files": ["**/*.yml", "*.md"], "exclude": ["**/*Private*"], "src": "../api", "dest": "api" }
     ],
     "resource": [
       {

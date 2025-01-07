@@ -17,19 +17,12 @@
     "content": [
       {
         "files": [
-           "*.yml", "*.md", "docs/*.yml", "docs/*.md"
+           "*.yml", "*.md", "docs/*.yml", "docs/*.md", "**/*.yml", "**/*.md" 
         ],
         "exclude": [
           "_site/**"
         ],
-        "src": "./",
-        "dest": "docs"
-      },
-      {
-        "files": [ "**/*.yml", "**/*.md" ],
-        "exclude": [
-          "_site/**"
-        ]
+        "src": "./"
       }
     ],
     "resource": [

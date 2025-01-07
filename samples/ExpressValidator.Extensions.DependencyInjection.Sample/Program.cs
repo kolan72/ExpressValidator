@@ -19,7 +19,6 @@ builder.Services.AddExpressValidatorWithReload<ObjToValidate, ObjectToValidateOp
 								b.AddProperty(o => o.I)
 								.WithValidation((to, rbo) => rbo.GreaterThan(to.IGreaterThanValue)
 								.WithMessage($"Must be greater than {to.IGreaterThanValue}!")),
-								new ExpressValidatorOptions() { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Break },
 								"ObjectToValidateOptions");
 
 

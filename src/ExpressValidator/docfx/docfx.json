@@ -23,13 +23,21 @@
         "exclude": [
           "_site/**"
         ],
-        "src": "./",
-        "dest": "docs"
+        "src": "./"
       },
       {
         "files": [
           "*.yml",
           "*.md"
+        ],
+        "exclude": [
+          "_site/**"
+        ]
+      },
+      {
+        "files": [
+          "api/*.yml",
+          "api/index.md"
         ],
         "exclude": [
           "_site/**"

@@ -29,8 +29,7 @@
         "files": [ "**/*.yml", "**/*.md" ],
         "exclude": [
           "_site/**"
-        ],
-        "dest": "api"
+        ]
       }
     ],
     "resource": [

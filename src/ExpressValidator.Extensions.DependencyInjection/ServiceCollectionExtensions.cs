@@ -55,8 +55,9 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		}
 
 		/// <summary>
-		/// Enables dynamic rebuilding of the validator whenever the <typeparamref name="TOptions"/> options are changed.
-		/// This is achieved by the proxy validator that uses <see cref="IOptionsMonitor{TOptions}"/> and <see cref="ExpressValidatorBuilder{T, TOptions}"/> behind the scenes.
+		/// Registers a singleton <see cref="IExpressValidatorWithReload{T}"/> in the <see cref="IServiceCollection"/>.
+		/// Enables dynamic rebuilding of the validator whenever the configuration values of the <paramref name="configSectionPath"/> section bound to the <typeparamref name="TOptions"/> options are changed.
+		/// This is achieved by the proxy validator that implements the <see cref="IExpressValidatorWithReload{T}"/> interface using <see cref="IOptionsMonitor{TOptions}"/> and <see cref="ExpressValidatorBuilder{T, TOptions}"/> behind the scenes.
 		/// </summary>
 		/// <typeparam name="T">Object to validate.</typeparam>
 		/// <typeparam name="TOptions">Options for use by <see cref="ExpressValidatorBuilder{T, TOptions}"/> to build a validator.</typeparam>

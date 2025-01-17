@@ -1,0 +1,67 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "..",
+          "files": [
+            "**/*.csproj"
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "docs/*.yml",
+          "docs/*.md"
+        ],
+        "exclude": [
+          "_site/**"
+        ],
+        "src": "./"
+      },
+      {
+        "files": [
+          "*.yml",
+          "*.md"
+        ],
+        "exclude": [
+          "_site/**"
+        ]
+      },
+      {
+        "files": [
+          "api/*.yml",
+          "api/index.md"
+        ],
+        "exclude": [
+          "_site/**"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "output": "_site",
+    "template": [
+      "default",
+      "modern"
+    ],
+    "globalMetadata": {
+      "_appName": "ExpressValidator",
+      "_appTitle": "ExpressValidator",
+      "_appLogoPath": "images/Logo.png",
+      "_enableSearch": true,
+      "pdf": false
+    }
+  }
+}

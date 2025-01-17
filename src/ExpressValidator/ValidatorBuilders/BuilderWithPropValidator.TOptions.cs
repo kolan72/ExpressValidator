@@ -4,6 +4,9 @@ using System.Reflection;
 
 namespace ExpressValidator
 {
+	/// <summary>
+	/// This class is primarily for internal use by ExpressValidator.
+	/// </summary>
 	public class BuilderWithPropValidator<TObj, TOptions, T> : IBuilderWithPropValidator<TObj, TOptions, T>
 	{
 		private readonly string _propName;

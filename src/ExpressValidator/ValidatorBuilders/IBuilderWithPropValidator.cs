@@ -7,8 +7,8 @@ namespace ExpressValidator
 	/// Represents a contract for an object that holds <see cref="ExpressValidatorBuilder{TObj}"/> along with the current property to be validated.
 	/// This interface is primarily for internal use by ExpressValidator.
 	/// </summary>
-	/// <typeparam name="TObj"></typeparam>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="TObj">A type of object to validate.</typeparam>
+	/// <typeparam name="T">A type of the current property.</typeparam>
 	public interface IBuilderWithPropValidator<TObj, T>
 	{
 		/// <summary>

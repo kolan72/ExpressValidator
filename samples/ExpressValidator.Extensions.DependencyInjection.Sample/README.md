@@ -1,2 +1,3 @@
 ﻿The application tries to "/guess" the number for you, validates it and gives you response whether it is correct or not.  
-The "/complexguess" endpoint validates the number by `IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions>` using options that change dynamically.
+The "/complexguess" endpoint validates the number by `IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions>` using options that change dynamically.  
+Use "/guesswithreload" or "/guesswithreloadasync" to change the parameters of the `FluentValidation` validators in real time after configuration changes, without having to restart your application.

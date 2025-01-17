@@ -10,21 +10,21 @@ builder.Services.AddExpressValidator<ObjToValidate>(b =>
 								.WithValidation(o => o.GreaterThan(5)
 								.WithMessage("Must be greater than 5!")));
 
-builder.Services.AddExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions>(b =>
+builder.Services.AddExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions>(b =>
 								b.AddProperty(o => o.I)
 								.WithValidation((to, rbo) => rbo.GreaterThan(to.IGreaterThanValue)
 								.WithMessage($"Must be greater than {to.IGreaterThanValue}!")));
 
-builder.Services.AddExpressValidatorWithReload<ObjToValidate, ObjectToValidateOptions>(b =>
+builder.Services.AddExpressValidatorWithReload<ObjToValidate, ValidationParametersOptions>(b =>
 								b.AddProperty(o => o.I)
 								.WithValidation((to, rbo) => rbo.GreaterThan(to.IGreaterThanValue)
 								.WithMessage($"Must be greater than {to.IGreaterThanValue}!")),
-								"ObjectToValidateOptions");
+								"ValidationParameters");
 
 
 builder.Services.AddTransient<IGuessTheNumberService, GuessTheNumberService>();
 
-builder.Services.Configure<ObjectToValidateOptions>(builder.Configuration.GetSection("ObjectToValidateOptions"));
+builder.Services.Configure<ValidationParametersOptions>(builder.Configuration.GetSection("ValidationParameters"));
 
 var app = builder.Build();
 
@@ -95,18 +95,18 @@ public interface IGuessTheNumberService
 public class GuessTheNumberService : IGuessTheNumberService
 {
 	private readonly IExpressValidator<ObjToValidate> _expressValidator;
-	private readonly IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> _expressValidatorBuilder;
+	private readonly IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions> _expressValidatorBuilder;
 	private readonly IExpressValidatorWithReload<ObjToValidate> _expressValidatorWithReload;
 
-	private readonly ObjectToValidateOptions _validateOptions;
+	private readonly ValidationParametersOptions _validateOptions;
 
 	private const string WIN_PHRASE = "The rules have changed in the middle of the game, but you still win!";
 	private const string LOSE_PHRASE = "Sorry, the rules changed in the middle of the game.";
 
 	public GuessTheNumberService(IExpressValidator<ObjToValidate> expressValidator, 
-								IExpressValidatorBuilder<ObjToValidate, ObjectToValidateOptions> expressValidatorBuilder,
+								IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions> expressValidatorBuilder,
 								IExpressValidatorWithReload<ObjToValidate> expressValidatorWithReload,
-								IOptions<ObjectToValidateOptions> validateOptions)
+								IOptions<ValidationParametersOptions> validateOptions)
 	{
 		_expressValidator = expressValidator;
 		_validateOptions = validateOptions.Value;
@@ -190,7 +190,7 @@ public class GuessTheNumberService : IGuessTheNumberService
 		public int I { get; set; }
 	}
 
-public class ObjectToValidateOptions
+public class ValidationParametersOptions
 {
 	public int IGreaterThanValue { get; set; }
 }

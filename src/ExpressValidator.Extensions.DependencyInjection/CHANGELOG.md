@@ -1,3 +1,15 @@
+## 0.3.0
+
+- Add ability to dynamically update the validator parameters from options bound to the configuration section without restarting the application.
+- Introduce the `IServiceCollection. AddExpressValidatorWithReload<T, TOptions>` extension method.
+- Introduce `IExpressValidatorWithReload<TObj>` interface to dynamically rebuild `IExpressValidatorBuilder{TObj, TOptions}` to get new validator when options are changed.
+- Update the README to illustrate the use of the new AddExpressValidatorWithReload method.
+- Add 'Key Features' README Chapter.
+- Update nuget README.
+- Add the "/guesswithreload" and "/guesswithreloadasync" endpoints to the sample.
+- Update sample README.
+
+
 ## 0.2.1
 
 - Update ExpressValidator.Extensions.DependencyInjection to ExpressValidator 0.1.0.  

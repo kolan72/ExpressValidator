@@ -1,5 +1,11 @@
 ﻿The `ExpressValidator.Extensions.DependencyInjection` package extends `ExpressValidator` to provide integration with Microsoft Dependency Injection.
 
+## Key Features
+
+- Configures and adds the `IExpressValidator<ObjToValidate>` interface in Microsoft's Dependency Injection (DI) container.
+- Additionally, the `IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions>` interface can be configured and registered to update the validator parameters when the `ValidationParametersOptions` change.
+- Ability to dynamically update the validator parameters from options bound to the configuration section without restarting the application by configuring the `IExpressValidatorWithReload<ObjToValidate>` interface.
+
 ## Usage
 
 ```csharp

@@ -28,6 +28,7 @@
       {
         "files": [
           "*.yml",
+          "toc.yml",
           "*.md"
         ],
         "exclude": [

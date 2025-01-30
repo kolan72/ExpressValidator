@@ -2,6 +2,7 @@
 _layout: landing
 ---
 
-# Welcome to **ExpressValidator** library documentation!
+# Welcome to **ExpressValidator** library!
 
-![ExpressValidator logo][images/Logo.png]
+
+Read the [introduction](docs/introduction.md) and [get started](docs/getting-started.md).

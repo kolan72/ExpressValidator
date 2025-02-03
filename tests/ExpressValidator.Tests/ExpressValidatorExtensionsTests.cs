@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using FluentValidation;
 using ExpressValidator.Extensions;
+using System.Threading.Tasks;
 
 namespace ExpressValidator.Tests
 {
@@ -18,6 +19,22 @@ namespace ExpressValidator.Tests
 			   .AddProperty((o) => o.I)
 			   .WithValidation((opt) => opt.GreaterThan(0))
 			   .BuildAndValidate(objToValidate);
+
+			Assert.That(result.IsValid, Is.EqualTo(isValid));
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public async Task Should_BuildAndValidateAsync_Work(bool isValid)
+		{
+			int i = isValid ? 1 : -1;
+			var objToValidate = new ObjWithTwoPublicProps() { I = i };
+
+			var result = await new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+			   .AddProperty((o) => o.I)
+			   .WithAsyncValidation((opt) => opt.GreaterThan(0).MustAsync(async(_, __) => { await Task.Delay(1); return true; }))
+			   .BuildAndValidateAsync(objToValidate);
 
 			Assert.That(result.IsValid, Is.EqualTo(isValid));
 		}

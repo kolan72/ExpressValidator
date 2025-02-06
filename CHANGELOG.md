@@ -1,3 +1,17 @@
+## 0.2.0
+
+- Introduce `IExpressValidatorBuilder<TObj>.BuildAndValidate(TObj obj)` extension method.
+- Introduce `IExpressValidatorBuilder<TObj>.BuildAndValidateAsync(TObj, CancellationToken)` extension method.
+- Remove unused internal `ExpressValidatorBuilder<TObj, TOptions>.Options` property.
+- Made the `TObj` parameter of the `IExpressPropertyValidator<TObj, T>`, `IExpressPropertyValidator<in TObj, TOptions, T>` interfaces contravariant.
+- Add doc comments to the `IExpressValidatorBuilder<TObj>` interface.
+- Add doc comments to the `IExpressValidatorBuilder<TObj, TOptions>` and `ExpressValidatorBuilder<TObj, TOptions>`.
+- Add doc comments to the `IBuilderWithPropValidator<TObj, TOptions, T>` and `BuilderWithPropValidator<TObj, TOptions, T>`.
+- Add documentation for the full API.
+- Add documentation README Chapter.
+- Change logo.
+
+
 ## 0.1.0
 
 - Update to FluentValidation 11.11.0.  

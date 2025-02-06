@@ -28,6 +28,7 @@
       {
         "files": [
           "*.yml",
+          "toc.yml",
           "*.md"
         ],
         "exclude": [
@@ -60,6 +61,7 @@
       "_appName": "ExpressValidator",
       "_appTitle": "ExpressValidator",
       "_appLogoPath": "images/Logo.png",
+      "_appFaviconPath": "images/Favicon.png",
       "_enableSearch": true,
       "pdf": false
     }

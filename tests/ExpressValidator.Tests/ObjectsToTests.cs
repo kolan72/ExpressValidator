@@ -61,4 +61,12 @@ namespace ExpressValidator.Tests
         Override,
         WithName
     }
+
+    public class Customer
+    {
+        public int CustomerId { get; set; }
+        public string Name { get; set; }
+        public decimal CustomerDiscount { get; set; }
+        public bool IsPreferredCustomer { get; set; }
+    }
 }

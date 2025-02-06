@@ -219,5 +219,31 @@ namespace ExpressValidator.Tests
 				Assert.That(result.Errors.FirstOrDefault().ErrorMessage, Does.Contain("TestName"));
 			}
 		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_Workaround_For_Condition_Using_Validating_Object_Work(bool isValid)
+		{
+			var customer = new Customer() { CustomerDiscount = 0, IsPreferredCustomer = !isValid };
+
+			var result = new ExpressValidatorBuilder<Customer, Customer>()
+							.AddProperty(c => c.CustomerDiscount)
+							.WithValidation((c, p) => p.GreaterThan(0)
+													.When((_) => c.IsPreferredCustomer))
+							.Build(customer)
+							.Validate(customer);
+
+			if (isValid)
+			{
+				Assert.That(result.IsValid, Is.True);
+			}
+			else
+			{
+				Assert.That(result.IsValid, Is.False);
+				Assert.That(result.Errors.Count, Is.EqualTo(1));
+				Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo(nameof(Customer.CustomerDiscount)));
+			}
+		}
 	}
 }

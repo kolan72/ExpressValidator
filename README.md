@@ -15,6 +15,11 @@ ExpressValidator is a library that provides the ability to validate objects usin
 - Supports asynchronous validation.
 - Targets .NET Standard 2.0+
 
+## Documentation
+
+For details, please check the [API documentation](https://kolan72.github.io/ExpressValidator/api/ExpressValidator.html).
+
+
 ## Usage
 
 ```csharp

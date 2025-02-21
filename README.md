@@ -1,8 +1,11 @@
 # ExpressValidator
 
+ExpressValidator is a library that provides the ability to validate objects using the `FluentValidation` library, but without object inheritance from `AbstractValidator`.  
+
+![ExpressValidator](ExpressValidator.png)
+
 [![nuget](https://img.shields.io/nuget/v/ExpressValidator?style=plastic)](https://www.nuget.org/packages/ExpressValidator/) [![nuget](https://img.shields.io/nuget/v/ExpressValidator.Extensions.DependencyInjection?style=plastic&labelColor=lightblue&color=blue)](https://www.nuget.org/packages/ExpressValidator.Extensions.DependencyInjection)    
 
-ExpressValidator is a library that provides the ability to validate objects using the `FluentValidation` library, but without object inheritance from `AbstractValidator`.
 
 
 ## Key Features

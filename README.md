@@ -20,7 +20,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 
 ## Documentation
 
-For details, please check the [API documentation](https://kolan72.github.io/ExpressValidator/api/ExpressValidator.html).
+For details, please check the [API documentation](https://www.tmfexplorer.com/ExpressValidator/api/ExpressValidator.html).
 
 
 ## Usage

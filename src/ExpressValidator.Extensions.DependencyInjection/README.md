@@ -127,4 +127,4 @@ In the *appsettings.json*
 ```
 
 
-See samples folder for concrete example.
+See samples folder for concrete example. [![CSharp](https://img.shields.io/badge/C%23-code-blue.svg)](../../samples/ExpressValidator.Extensions.DependencyInjection.Sample)

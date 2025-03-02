@@ -13,11 +13,14 @@ namespace ExpressValidator
 		private readonly TypeValidatorBase<T> _typeValidator;
 		private readonly Func<TObj, T> _propertyFunc;
 
-		public ExpressPropertyValidator(Func<TObj, T> propertyFunc, string propName, TypeValidatorBase<T> typeValidator)
+		private readonly Action<T> _onSuccessValidation;
+
+		public ExpressPropertyValidator(Func<TObj, T> propertyFunc, string propName, TypeValidatorBase<T> typeValidator, Action<T> onSuccessValidation = null)
 		{
 			_propertyFunc = propertyFunc;
 			_propName = propName;
 			_typeValidator = typeValidator;
+			_onSuccessValidation = onSuccessValidation;
 		}
 
 		public void SetValidation(Action<IRuleBuilderOptions<T, T>> action)
@@ -36,7 +39,20 @@ namespace ExpressValidator
 			{
 				throw new InvalidOperationException();
 			}
-			return _typeValidator.ValidateEx(_propertyFunc(obj));
+			if (_onSuccessValidation != null)
+			{
+				var value = _propertyFunc(obj);
+				var res = _typeValidator.ValidateEx(value);
+				if (res.IsValid)
+				{
+					_onSuccessValidation(value);
+				}
+				return res;
+			}
+			else
+			{
+				return _typeValidator.ValidateEx(_propertyFunc(obj));
+			}
 		}
 
 		public bool IsAsync => _typeValidator.IsAsync == true;

@@ -68,7 +68,9 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		/// <returns></returns>
 		public static IServiceCollection AddExpressValidatorWithReload<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, ExpressValidatorOptions expressValidatorOptions, string configSectionPath) where TOptions : class
 		{
-			services.AddOptions<TOptions>().BindConfiguration(configSectionPath);
+			services.AddOptions<TOptions>(configSectionPath).BindConfiguration(configSectionPath);
+
+			services.AddOptions<SectionPathHolder<TOptions>>().Configure(opt => opt.SectionPath = configSectionPath);
 
 			ExpressValidatorWithReload<T, TOptions> func(IServiceProvider sp)
 			{

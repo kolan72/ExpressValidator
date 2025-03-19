@@ -58,5 +58,25 @@ namespace ExpressValidator.Tests
 
 			Assert.That(result.IsValid, Is.EqualTo(isValid));
 		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public async Task Should_BuildAndValidateAsync_With_TOptions_Param_Work(bool isValid)
+		{
+			var objWithTwoPublicPropsOptions = new ObjWithTwoPublicPropsOptions()
+			{
+				IGreaterThanValue = isValid ? -1 : 1,
+			};
+
+			var objToValidate = new ObjWithTwoPublicProps() { I = 0 };
+
+			var result = await new ExpressValidatorBuilder<ObjWithTwoPublicProps, ObjWithTwoPublicPropsOptions>()
+			   .AddProperty((o) => o.I)
+			   .WithAsyncValidation((to, opt) => opt.GreaterThan(to.IGreaterThanValue).MustAsync(async (_, __) => { await Task.Delay(1); return true; }))
+			   .BuildAndValidateAsync(objToValidate, objWithTwoPublicPropsOptions);
+
+			Assert.That(result.IsValid, Is.EqualTo(isValid));
+		}
 	}
 }

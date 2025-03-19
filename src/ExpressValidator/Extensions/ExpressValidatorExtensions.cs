@@ -44,5 +44,20 @@ namespace ExpressValidator.Extensions
 		{
 			return validatorBuilder.Build().ValidateAsync(obj, token);
 		}
+
+		/// <summary>
+		/// Builds an <see cref="IExpressValidatorBuilder{TObj, TOptions}"/> that uses <paramref name="options"/> to create a validator and perform asynchronous validation for the <paramref name="obj"/> object.
+		/// </summary>
+		/// <typeparam name="TObj">A type of object to validate.</typeparam>
+		/// <typeparam name="TOptions">A type of options to validate.</typeparam>
+		/// <param name="validatorBuilder"><see cref="IExpressValidatorBuilder{TObj, TOptions}"/></param>
+		/// <param name="obj">An object instance to validate.</param>
+		/// <param name="options">Options for builder</param>
+		/// <param name="token">A cancellation token to cancel validation.</param>
+		/// <returns>A task that wraps <see cref="ValidationResult"/>.</returns>
+		public static Task<ValidationResult> BuildAndValidateAsync<TObj, TOptions>(this IExpressValidatorBuilder<TObj, TOptions> validatorBuilder, TObj obj, TOptions options, CancellationToken token = default)
+		{
+			return validatorBuilder.Build(options).ValidateAsync(obj, token);
+		}
 	}
 }

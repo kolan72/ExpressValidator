@@ -23,6 +23,32 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		public async Task Should_AsyncInvoke_SuccessValidationHandler_When_IsValid()
+		{
+			int percentSum = 0;
+			var result = await new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum", (p) => percentSum = p)
+						   .WithValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return true; }).InclusiveBetween(0, 100))
+						   .Build()
+						   .ValidateAsync(new ObjWithTwoPublicProps() { PercentValue1 = 20, PercentValue2 = 80 });
+			Assert.That(percentSum, Is.EqualTo(100));
+			Assert.That(result.IsValid, Is.True);
+		}
+
+		[Test]
+		public async Task Should_Not_AsyncInvoke_SuccessValidationHandler_When_IsNotValid()
+		{
+			int percentSum = 0;
+			var result = await new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum", (p) => percentSum = p)
+						   .WithValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return true; }).InclusiveBetween(0, 100))
+						   .Build()
+						   .ValidateAsync(new ObjWithTwoPublicProps() { PercentValue1 = 20, PercentValue2 = 82 });
+			Assert.That(percentSum, Is.EqualTo(0));
+			Assert.That(result.IsValid, Is.False);
+		}
+
+		[Test]
 		public void Should_Validate_Throw_For_AsyncRule_ForField()
 		{
 			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()

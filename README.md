@@ -23,7 +23,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 For details, please check the [API documentation](https://www.tmfexplorer.com/ExpressValidator/api/ExpressValidator.html).
 
 
-## 🚀 Usage
+## 🚀 Quick Start
 
 ```csharp
 //Class we want to validate
@@ -62,6 +62,8 @@ if(!result.IsValid)
     //As usual with validation result...
 }
 ```
+
+## ⚙️ Modifying FluentValidation Validator Parameters Using Options
 
 To dynamically change the parameters of the `FluentValidation` validators:  
 

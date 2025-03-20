@@ -63,7 +63,7 @@ namespace ExpressValidator
 				token.ThrowIfCancellationRequested();
 
 				validator.ApplyOptions(_options);
-				var (IsValid, Failures) = await validator.ValidateAsync(obj, token).ConfigureAwait(false);
+				var (IsValid, Failures) = await validator.ValidateAsync(obj, token);
 				if (!IsValid)
 				{
 					currentFailures.AddRange(Failures);

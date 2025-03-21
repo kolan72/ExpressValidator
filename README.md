@@ -8,7 +8,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 
 
 
-## Key Features
+## ⚡ Key Features
 
 - Easy on-the-fly creation of object validator class called `ExpressValidator` by using `ExpressValidatorBuilder`.
 - Possibility to dynamically change the parameters of the `FluentValidation` validators (since _version_ 0.0.21).
@@ -18,12 +18,12 @@ ExpressValidator is a library that provides the ability to validate objects usin
 - Supports asynchronous validation.
 - Targets .NET Standard 2.0+
 
-## Documentation
+## 📜 Documentation
 
 For details, please check the [API documentation](https://www.tmfexplorer.com/ExpressValidator/api/ExpressValidator.html).
 
 
-## Usage
+## 🚀 Quick Start
 
 ```csharp
 //Class we want to validate
@@ -62,6 +62,8 @@ if(!result.IsValid)
     //As usual with validation result...
 }
 ```
+
+## ⚙️ Modifying FluentValidation Validator Parameters Using Options
 
 To dynamically change the parameters of the `FluentValidation` validators:  
 
@@ -124,7 +126,7 @@ if(!result2.IsValid)
 }
 ```
 
-## Drawbacks
+## ❌ Drawbacks
 
 - Non-canonical way of using of FluentValidation.
 - Behind the scenes, there is a subclass of `AbstractValidator` for each validated property, rather than one for the whole object.

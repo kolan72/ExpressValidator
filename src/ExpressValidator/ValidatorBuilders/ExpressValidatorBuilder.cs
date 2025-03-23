@@ -50,10 +50,11 @@ namespace ExpressValidator
 		/// <typeparam name="T">A type of value.</typeparam>
 		/// <param name="func">Func for object</param>
 		/// <param name="propName">A name of the property if the validation failed.</param>
+		/// <param name="onSuccessValidation">Func Result Validation Success Handler</param>
 		/// <returns></returns>
-		public IBuilderWithPropValidator<TObj, T> AddFunc<T>(Func<TObj, T> func, string propName)
+		public IBuilderWithPropValidator<TObj, T> AddFunc<T>(Func<TObj, T> func, string propName, Action<T> onSuccessValidation = null)
 		{
-			return new BuilderWithPropValidator<TObj, T>(this, func, propName);
+			return new BuilderWithPropValidator<TObj, T>(this, func, propName, onSuccessValidation);
 		}
 
 		/// <summary>

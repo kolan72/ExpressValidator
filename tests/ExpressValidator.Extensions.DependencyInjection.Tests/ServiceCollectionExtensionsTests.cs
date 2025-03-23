@@ -45,7 +45,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
                 .Build();
 
 			var services = new ServiceCollection();
-            services.AddSingleton<IConfiguration>(root);        
+            services.AddSingleton<IConfiguration>(root);
             //HACK
             services.Configure<ObjectToValidateOptions>((opt) => root.GetSection("ObjectToValidateOptions").Bind(opt));
 

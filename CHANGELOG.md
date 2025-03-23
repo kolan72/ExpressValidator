@@ -1,3 +1,12 @@
+## 0.5.0
+
+- Introduced the `IExpressValidatorBuilder<TObj, TOptions>.BuildAndValidate<TObj, TOptions>(TObj, TOptions)` extension method.
+- Introduced the `IExpressValidatorBuilder<TObj, TOptions>.BuildAndValidateAsync<TObj, TOptions>(TObj, TOptions, CancellationToken)` extension method.
+- Introduced an optional `Action<T>` parameter in `ExpressValidatorBuilder.AddFunc` for handling successful `Func` result validation.
+- Remove `ConfigureAwait(false)` in the loop where items are asynchronously added to `List<ValidationFailure>` as a precaution.
+- Add 'Modifying FluentValidation Validator Parameters Using Options' chapter in README.
+
+
 ## 0.2.0
 
 - Introduce `IExpressValidatorBuilder<TObj>.BuildAndValidate(TObj obj)` extension method.

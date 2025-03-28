@@ -1,3 +1,15 @@
+## 0.3.2
+
+- Update to ExpressValidator 0.2.0.
+- Update the 'Microsoft.Extensions...' NuGet package.
+- Update the 'Microsoft.Extensions...' and 'System...' NuGet packages in the 'ExpressValidator.Extensions.DependencyInjection.Tests' project.
+- Update 'ExpressValidator.Extensions.DependencyInjection.Tests' to NUnit 4.3.2.
+- Add a badge to the 'ExpressValidator.Extensions.DependencyInjection'.
+- Added logo.
+- Changed link to doc.
+- Emojis in README.
+
+
 ## 0.3.0
 
 - Add ability to dynamically update the validator parameters from options bound to the configuration section without restarting the application.

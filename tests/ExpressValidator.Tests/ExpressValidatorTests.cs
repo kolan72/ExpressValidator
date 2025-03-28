@@ -28,6 +28,32 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		public void Should_Invoke_SuccessValidationHandler_When_IsValid()
+		{
+			int percentSum = 0;
+			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum", (p)=> percentSum = p)
+						   .WithValidation(o => o.InclusiveBetween(0, 100))
+						   .Build()
+						   .Validate(new ObjWithTwoPublicProps() { PercentValue1 = 20, PercentValue2 = 80 });
+			Assert.That(percentSum, Is.EqualTo(100));
+			Assert.That(result.IsValid, Is.True);
+		}
+
+		[Test]
+		public void Should_Not_Invoke_SuccessValidationHandler_When_IsNotValid()
+		{
+			int percentSum = 0;
+			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum", (p) => percentSum = p)
+						   .WithValidation(o => o.InclusiveBetween(0, 100))
+						   .Build()
+						   .Validate(new ObjWithTwoPublicProps() { PercentValue1 = 20, PercentValue2 = 82 });
+			Assert.That(percentSum, Is.EqualTo(0));
+			Assert.That(result.IsValid, Is.False);
+		}
+
+		[Test]
 		public void Should_Work_When_IsValid_ForSubObjWithSimpleConditionForComplexProperty()
 		{
 			var result = new ExpressValidatorBuilder<SubObjWithComplexProperty>()

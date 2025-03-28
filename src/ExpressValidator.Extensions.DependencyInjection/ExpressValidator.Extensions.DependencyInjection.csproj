@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.3.0</Version>
+    <Version>0.3.2</Version>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Andrey Kolesnichenko</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -15,6 +15,7 @@
     <PackageTags>FluentValidation Validation DependencyInjection</PackageTags>
     <Description>The ExpressValidator.Extensions.DependencyInjection package extends ExpressValidator to provide integration with Microsoft Dependency Injection.</Description>
     <Copyright>Copyright 2024 Andrey Kolesnichenko</Copyright>
+    <AssemblyVersion>0.3.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

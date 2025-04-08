@@ -49,7 +49,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		}
 
 		///<inheritdoc cref = "AddExpressValidatorWithReload{T, TOptions}(IServiceCollection, Action{ExpressValidatorBuilder{T, TOptions}}, ExpressValidatorOptions, string)"/>
-		public static IServiceCollection AddExpressValidatorWithReload<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, string configSectionPath)
+		public static IServiceCollection AddExpressValidatorWithReload<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, string configSectionPath) where TOptions : class
 		{
 			return AddExpressValidatorWithReload(services, configure, new ExpressValidatorOptions() { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, configSectionPath);
 		}
@@ -66,8 +66,12 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		/// <param name="expressValidatorOptions"><see cref="ExpressValidatorOptions"/></param>
 		/// <param name="configSectionPath">Configuration section path to bind TOptions type.</param>
 		/// <returns></returns>
-		public static IServiceCollection AddExpressValidatorWithReload<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, ExpressValidatorOptions expressValidatorOptions, string configSectionPath)
+		public static IServiceCollection AddExpressValidatorWithReload<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, ExpressValidatorOptions expressValidatorOptions, string configSectionPath) where TOptions : class
 		{
+			services.AddOptions<TOptions>(configSectionPath).BindConfiguration(configSectionPath);
+
+			services.AddOptions<SectionPathHolder<TOptions>>().Configure(opt => opt.SectionPath = configSectionPath);
+
 			ExpressValidatorWithReload<T, TOptions> func(IServiceProvider sp)
 			{
 				var s = sp.GetRequiredService<IOptions<ExpressValidatorOptions>>();
@@ -78,8 +82,8 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			}
 			services.AddOptions<ExpressValidatorOptions>()
 					.Configure(options =>
-										options.OnFirstPropertyValidatorFailed = expressValidatorOptions.OnFirstPropertyValidatorFailed)
-					.BindConfiguration(configSectionPath);
+										options.OnFirstPropertyValidatorFailed = expressValidatorOptions.OnFirstPropertyValidatorFailed);
+
 			services.Add(new ServiceDescriptor(typeof(IExpressValidatorWithReload<T>), func, ServiceLifetime.Singleton));
 			services.AddSingleton<IOptionsMonitorContext<TOptions>, OptionsMonitorContext <TOptions>>();
 			return services;

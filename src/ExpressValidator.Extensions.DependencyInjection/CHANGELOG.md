@@ -1,3 +1,12 @@
+## 0.3.5
+
+- Reduced unnecessary updates to validator parameters by listening to `IOptionsMonitor.Change` with named validation options.
+- Update 'ExpressValidator.Extensions.DependencyInjection' to ExpressValidator 0.5.0.
+- Update Microsoft nuget packages.
+- Update README with a libraries/dependencies table.
+- Add a configuration section in 'ExpressValidator.Extensions.DependencyInjection.Sample' for testing purposes.
+
+
 ## 0.3.2
 
 - Update to ExpressValidator 0.2.0.

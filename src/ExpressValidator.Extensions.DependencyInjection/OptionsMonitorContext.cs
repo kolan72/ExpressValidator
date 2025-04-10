@@ -11,17 +11,24 @@ namespace ExpressValidator.Extensions.DependencyInjection
 
 		private readonly object _sync = new object();
 
-		public OptionsMonitorContext(IOptionsMonitor<TOptions> optionsMonitor)
+		private readonly string _sectionName;
+
+		public OptionsMonitorContext(IOptionsMonitor<TOptions> optionsMonitor, IOptions<SectionPathHolder<TOptions>> options)
 		{
 			_options = optionsMonitor.CurrentValue;
 			_lastUpdated = DateTimeOffset.UtcNow;
 
-			optionsMonitor.OnChange((newValue, _) =>
+			_sectionName = options.Value.SectionPath;
+
+			optionsMonitor.OnChange((newValue, section) =>
 			{
-				lock (_sync)
+				if(_sectionName == section)
 				{
-					_options = newValue;
-					_lastUpdated = DateTimeOffset.UtcNow;
+					lock (_sync)
+					{
+						_options = newValue;
+						_lastUpdated = DateTimeOffset.UtcNow;
+					}
 				}
 			});
 		}

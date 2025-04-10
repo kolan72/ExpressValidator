@@ -4,7 +4,10 @@ ExpressValidator is a library that provides the ability to validate objects usin
 
 ![ExpressValidator](ExpressValidator.png)
 
-[![nuget](https://img.shields.io/nuget/v/ExpressValidator?style=plastic)](https://www.nuget.org/packages/ExpressValidator/) [![nuget](https://img.shields.io/nuget/v/ExpressValidator.Extensions.DependencyInjection?style=plastic&labelColor=lightblue&color=blue)](https://www.nuget.org/packages/ExpressValidator.Extensions.DependencyInjection)    
+| Lib    | NuGet    | README | CHANGELOG |
+| --------| -------- | ------- |------- |
+| ExpressValidator | [![nuget](https://img.shields.io/nuget/v/ExpressValidator?style=plastic)](https://www.nuget.org/packages/ExpressValidator/)   |  [README](README.md)    |  [CHANGELOG](CHANGELOG.md)    |
+|ExpressValidator.Extensions.DependencyInjection |[![nuget](https://img.shields.io/nuget/v/ExpressValidator.Extensions.DependencyInjection?style=plastic&labelColor=lightblue&color=blue)](https://www.nuget.org/packages/ExpressValidator.Extensions.DependencyInjection) | [README](/src/ExpressValidator.Extensions.DependencyInjection/README.md)    | [CHANGELOG](/src/ExpressValidator.Extensions.DependencyInjection/CHANGELOG.md)    |    
 
 
 

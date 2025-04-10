@@ -9,7 +9,8 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
         [Test]
 		public void Should_OptionsMonitorContext_Be_Initialized_Correctly()
 		{
-            var context = new OptionsMonitorContext<ObjectToValidateOptions>(new TestOptionsMonitor(new ObjectToValidateOptions()));
+            var mockOptions = Options.Create(new SectionPathHolder<ObjectToValidateOptions>());
+            var context = new OptionsMonitorContext<ObjectToValidateOptions>(new TestOptionsMonitor(new ObjectToValidateOptions()), mockOptions);
             Assert.That(context.Options, Is.Not.Null);
             Assert.That(context.LastUpdated, Is.GreaterThan(DateTimeOffset.MinValue));
         }

@@ -28,9 +28,22 @@ namespace ExpressValidator
 			_typeValidator.SetValidation(action, _propName);
 		}
 
-		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync(TObj obj, CancellationToken token = default)
+		public async Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync(TObj obj, CancellationToken token = default)
 		{
-			return _typeValidator.ValidateExAsync(_propertyFunc(obj), token);
+			if (_onSuccessValidation != null)
+			{
+				var value = _propertyFunc(obj);
+				var res = await _typeValidator.ValidateExAsync(_propertyFunc(obj), token);
+				if (res.IsValid)
+				{
+					_onSuccessValidation(value);
+				}
+				return res;
+			}
+			else
+			{
+				return await _typeValidator.ValidateExAsync(_propertyFunc(obj), token);
+			}
 		}
 
 		public (bool IsValid, List<ValidationFailure> Failures) Validate(TObj obj)

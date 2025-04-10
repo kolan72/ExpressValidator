@@ -14,15 +14,18 @@ namespace ExpressValidator
 	/// <typeparam name="TOptions"></typeparam>
 	public class ExpressValidator<TObj, TOptions> : IExpressValidator<TObj>
 	{
-		private readonly TOptions _options;
 		private readonly IEnumerable<IObjectValidator<TObj, TOptions>> _validators;
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
 
 		internal ExpressValidator(TOptions options, IEnumerable<IObjectValidator<TObj, TOptions>> validators, OnFirstPropertyValidatorFailed validationMode)
 		{
-			_options = options;
 			_validators = validators;
 			_validationMode = validationMode;
+
+			foreach (var validator in _validators)
+			{
+				validator.ApplyOptions(options);
+			}
 		}
 
 		public ValidationResult Validate(TObj obj)
@@ -44,8 +47,6 @@ namespace ExpressValidator
 			foreach (var validator in _validators)
 			{
 				token.ThrowIfCancellationRequested();
-
-				validator.ApplyOptions(_options);
 				var (IsValid, Failures) = await validator.ValidateAsync(obj, token).ConfigureAwait(false);
 				if (!IsValid)
 				{
@@ -61,8 +62,6 @@ namespace ExpressValidator
 			foreach (var validator in _validators)
 			{
 				token.ThrowIfCancellationRequested();
-
-				validator.ApplyOptions(_options);
 				var (IsValid, Failures) = await validator.ValidateAsync(obj, token);
 				if (!IsValid)
 				{
@@ -76,7 +75,6 @@ namespace ExpressValidator
 		{
 			foreach (var validator in _validators)
 			{
-				validator.ApplyOptions(_options);
 				var (IsValid, Failures) = validator.Validate(obj);
 				if (!IsValid)
 				{
@@ -91,7 +89,6 @@ namespace ExpressValidator
 			var currentFailures = new List<ValidationFailure>();
 			foreach (var validator in _validators)
 			{
-				validator.ApplyOptions(_options);
 				var (IsValid, Failures) = validator.Validate(obj);
 				if (!IsValid)
 				{

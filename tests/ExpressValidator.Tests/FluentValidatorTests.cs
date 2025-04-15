@@ -40,5 +40,39 @@ namespace ExpressValidator.Tests
 			Assert.That(vr.IsValid, Is.False);
 			Assert.That(vr.Errors.Count, Is.EqualTo(3));
 		}
+
+		[Test]
+		public void Should_Apply_FluentValidator_To_Each_Item_In_Collection()
+		{
+			static string funcForName(Contact c) => c.Name;
+			const string propName = "Name";
+			var nameValidator = new TypeValidator<string>();
+			nameValidator.SetValidation((opt) => opt.Length(2), propName);
+
+			var propForName = new FluentPropertyValidator<Contact, string>(funcForName, propName, nameValidator);
+
+			static string funcForEmail(Contact c) => c.Email;
+			const string propEmail = "Email";
+			var emailValidator = new TypeValidator<string>();
+			emailValidator.SetValidation((opt) => opt.EmailAddress(), propEmail);
+
+			var propForEmail = new FluentPropertyValidator<Contact, string>(funcForEmail, propEmail, emailValidator);
+
+			var fv = new FluentValidator<Contact>(new List<AbstractValidator<Contact>>() { propForName, propForEmail });
+			Assert.That(fv.Count(), Is.EqualTo(2));
+
+			var result = new ExpressValidatorBuilder<SubObjWithComplexCollectionProperty>()
+					   .AddProperty(o => o.Contacts)
+					   .WithValidation(o => o.ForEach(o1 => o1.SetValidator(fv)))
+					   .Build()
+					   .Validate(new SubObjWithComplexCollectionProperty()
+					   {
+						   I = 1,
+						   S = "b",
+						   Contacts = new List<Contact>() { new Contact() { Name = "A", Email = "a"}, new Contact() { Name = "K", Email = "b"} }
+					   });
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(4));
+		}
 	}
 }

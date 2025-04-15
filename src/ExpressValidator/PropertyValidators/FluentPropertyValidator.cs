@@ -7,7 +7,7 @@ namespace ExpressValidator
     {
         public FluentPropertyValidator(Func<TObj, T> propertyFunc, string propName, TypeValidatorBase<T> typeValidator)
         {
-           RuleFor((obj) => propertyFunc(obj)).SetValidator(typeValidator).OverridePropertyName(propName);
+           RuleFor((obj) => propertyFunc(obj)).NotNull().SetValidator(typeValidator).OverridePropertyName(propName);
         }
     }
 }

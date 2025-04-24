@@ -10,6 +10,8 @@ namespace ExpressValidator
 	/// </summary>
 	public static class QuickValidator
 	{
+		private const string FALLBACK_PROP_NAME = "input value";
+
 		/// <summary>
 		///  Validates the given object instance using <paramref name="action"/>.
 		/// </summary>
@@ -28,6 +30,6 @@ namespace ExpressValidator
 					.BuildAndValidate(Unit.Default);
 		}
 
-		private static string GetPropName(string propName = null) => propName ?? "input value";
+		private static string GetPropName(string propName = null) => propName ?? FALLBACK_PROP_NAME;
 	}
 }

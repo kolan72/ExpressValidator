@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using NUnit.Framework;
+using System.Linq;
 
 namespace ExpressValidator.Tests
 {
@@ -14,6 +16,29 @@ namespace ExpressValidator.Tests
 												.GreaterThan(15));
 			Assert.That(result.IsValid, Is.False);
 			Assert.That(result.Errors.Count, Is.EqualTo(2));
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_FailValidation_WhenInputIsInvalid_HasCorrectPropertyName(bool withPropertyName)
+		{
+			const int valueToTest = 5;
+			ValidationResult result = null;
+			if (withPropertyName)
+			{
+				result = QuickValidator.Validate(valueToTest,
+									(opt) => opt.GreaterThan(10),
+									nameof(valueToTest));
+			}
+			else
+			{
+				result = QuickValidator.Validate(valueToTest,
+								(opt) => opt.GreaterThan(10));
+			}
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.FirstOrDefault()?.PropertyName, Is.EqualTo(withPropertyName ? nameof(valueToTest) : "input value"));
 		}
 
 		[Test]

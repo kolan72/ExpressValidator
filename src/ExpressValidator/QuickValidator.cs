@@ -10,7 +10,7 @@ namespace ExpressValidator
 	/// </summary>
 	public static class QuickValidator
 	{
-		private const string FALLBACK_PROP_NAME = "input value";
+		private const string FALLBACK_PROP_NAME = "input";
 
 		/// <summary>
 		///  Validates the given object instance using <paramref name="action"/>.

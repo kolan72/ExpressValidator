@@ -39,7 +39,7 @@ namespace ExpressValidator.Tests
 			}
 
 			Assert.That(result.IsValid, Is.False);
-			Assert.That(result.Errors[0].PropertyName, Is.EqualTo(withPropertyName ? nameof(valueToTest) : "input"));
+			Assert.That(result.Errors[0].PropertyName, Is.EqualTo(withPropertyName ? nameof(valueToTest) : "Input"));
 		}
 
 		[Test]
@@ -63,10 +63,10 @@ namespace ExpressValidator.Tests
 			}
 			Assert.That(result.IsValid, Is.False);
 			Assert.That(result.Errors[0].PropertyName, Is.EqualTo(withPropertyName ? nameof(objToQuick) + "." + nameof(objToQuick.I)
-																					: "input." + nameof(objToQuick.I)));
+																					: "Input." + nameof(objToQuick.I)));
 
 			Assert.That(result.Errors[1].PropertyName, Is.EqualTo(withPropertyName ? nameof(objToQuick) + "." + nameof(objToQuick.PercentValue1)
-																		: "input." + nameof(objToQuick.PercentValue1)));
+																		: "Input." + nameof(objToQuick.PercentValue1)));
 
 			static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetRule()
 			{

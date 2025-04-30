@@ -3,7 +3,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using System;
 
-namespace ExpressValidator
+namespace ExpressValidator.QuickValidation
 {
 	/// <summary>
 	/// Provides methods for quick validation.

@@ -1,8 +1,8 @@
-﻿using FluentValidation;
+﻿using ExpressValidator.QuickValidation;
+using FluentValidation;
 using FluentValidation.Results;
 using NUnit.Framework;
 using System;
-using System.Linq;
 
 namespace ExpressValidator.Tests
 {

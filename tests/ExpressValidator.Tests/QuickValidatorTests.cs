@@ -1,6 +1,5 @@
 ﻿using ExpressValidator.QuickValidation;
 using FluentValidation;
-using FluentValidation.Results;
 using NUnit.Framework;
 using System;
 
@@ -9,73 +8,76 @@ namespace ExpressValidator.Tests
 	internal class QuickValidatorTests
 	{
 		[Test]
-		public void Should_Fail_Validation_When_NotValid()
+		public void Should_Fail_WithExpectedPropertyName_When_ValidationFails_ForPrimitiveType_UsingOverload_WithPropertyName()
 		{
 			const int valueToTest = 5;
 			var result = QuickValidator.Validate(valueToTest,
 									(opt) => opt.GreaterThan(10)
-												.GreaterThan(15));
+												.GreaterThan(15),
+									nameof(valueToTest));
 			Assert.That(result.IsValid, Is.False);
 			Assert.That(result.Errors.Count, Is.EqualTo(2));
+			Assert.That(result.Errors[0].PropertyName, Is.EqualTo(nameof(valueToTest)));
 		}
 
 		[Test]
-		[TestCase(true)]
-		[TestCase(false)]
-		public void Should_FailValidation_WhenInputIsInvalid_HasCorrectPropertyName(bool withPropertyName)
+		[TestCase(PropertyNameMode.Default)]
+		[TestCase(PropertyNameMode.TypeName)]
+		public void Should_Fail_WithExpectedPropertyName_When_ValidationFails_ForPrimitiveType_UsingOverload_WithPropertyNameMode(PropertyNameMode mode)
 		{
 			const int valueToTest = 5;
-			ValidationResult result = null;
-			if (withPropertyName)
+			var result = QuickValidator.Validate(valueToTest,
+									(opt) => opt.GreaterThan(10)
+												.GreaterThan(15),
+									mode);
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+			if (mode == PropertyNameMode.Default)
 			{
-				result = QuickValidator.Validate(valueToTest,
-									(opt) => opt.GreaterThan(10),
-									nameof(valueToTest));
+				Assert.That(result.Errors[0].PropertyName, Is.EqualTo("Input"));
 			}
 			else
 			{
-				result = QuickValidator.Validate(valueToTest,
-								(opt) => opt.GreaterThan(10));
+				Assert.That(result.Errors[0].PropertyName, Is.EqualTo(typeof(int).Name));
 			}
-
-			Assert.That(result.IsValid, Is.False);
-			Assert.That(result.Errors[0].PropertyName, Is.EqualTo(withPropertyName ? nameof(valueToTest) : "Input"));
 		}
 
 		[Test]
-		[TestCase(true)]
-		[TestCase(false)]
-		public void Should_FailValidation_WhenNonPrimitiveInputIsInvalid_HasCorrectPropertyName(bool withPropertyName)
+		public void Should_Fail_WithExpectedPropertyName_When_ValidationFails_ForNonPrimitiveType_UsingOverload_WithPropertyName()
 		{
 			var objToQuick = new ObjWithTwoPublicProps() { I = -1, PercentValue1 = 101 };
 			var rule = GetRule();
-			ValidationResult result = null;
-			if (withPropertyName)
-			{
-				result = QuickValidator.Validate(objToQuick,
+
+			var result = QuickValidator.Validate(objToQuick,
 														rule,
 														nameof(objToQuick));
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+			Assert.That(result.Errors[0].PropertyName, Is.EqualTo(nameof(objToQuick)+"." + nameof(ObjWithTwoPublicProps.I)));
+		}
+
+		[Test]
+		[TestCase(PropertyNameMode.Default)]
+		[TestCase(PropertyNameMode.TypeName)]
+		public void Should_Fail_WithExpectedPropertyName_When_ValidationFails_ForNonPrimitiveType_UsingOverload_WithPropertyNameMode(PropertyNameMode mode)
+		{
+			var objToQuick = new ObjWithTwoPublicProps() { I = -1, PercentValue1 = 101 };
+			var rule = GetRule();
+
+			var result = QuickValidator.Validate(objToQuick,
+														rule,
+														mode);
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+			if (mode == PropertyNameMode.Default)
+			{
+				Assert.That(result.Errors[0].PropertyName, Is.EqualTo("Input." + nameof(ObjWithTwoPublicProps.I)));
 			}
 			else
 			{
-				result = QuickValidator.Validate(objToQuick,
-													rule);
-			}
-			Assert.That(result.IsValid, Is.False);
-			Assert.That(result.Errors[0].PropertyName, Is.EqualTo(withPropertyName ? nameof(objToQuick) + "." + nameof(objToQuick.I)
-																					: "Input." + nameof(objToQuick.I)));
-
-			Assert.That(result.Errors[1].PropertyName, Is.EqualTo(withPropertyName ? nameof(objToQuick) + "." + nameof(objToQuick.PercentValue1)
-																		: "Input." + nameof(objToQuick.PercentValue1)));
-
-			static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetRule()
-			{
-				return (opt) =>
-																			opt
-																			.ChildRules((v) => v.RuleFor(o => o.I)
-																				.GreaterThan(0))
-																			.ChildRules((v) => v.RuleFor(o => o.PercentValue1)
-																				.InclusiveBetween(0, 100));
+				Assert.That(result.Errors[0].PropertyName, Is.EqualTo(nameof(ObjWithTwoPublicProps) + "." + nameof(ObjWithTwoPublicProps.I)));
 			}
 		}
 
@@ -87,6 +89,16 @@ namespace ExpressValidator.Tests
 									(opt) => opt.GreaterThan(10)
 												.InclusiveBetween(15, 25));
 			Assert.That(result.IsValid, Is.True);
+		}
+
+		private static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetRule()
+		{
+			return (opt) =>
+							opt
+							.ChildRules((v) => v.RuleFor(o => o.I)
+								.GreaterThan(0))
+							.ChildRules((v) => v.RuleFor(o => o.PercentValue1)
+								.InclusiveBetween(0, 100));
 		}
 	}
 }

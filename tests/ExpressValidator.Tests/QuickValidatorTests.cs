@@ -23,6 +23,25 @@ namespace ExpressValidator.Tests
 		[Test]
 		[TestCase(PropertyNameMode.Default)]
 		[TestCase(PropertyNameMode.TypeName)]
+		public void Should_Fail_WithOverriddenPropertyName_When_ValidationFails_ForPrimitiveType_UsingOverload_WithPropertyNameMode(PropertyNameMode mode)
+		{
+			const int valueToTest = 5;
+			const string propName = "MyPropName";
+			var result = QuickValidator.Validate(valueToTest,
+									(opt) => opt
+												.OverridePropertyName(propName)
+												.GreaterThan(10)
+												.GreaterThan(15),
+									mode);
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+			Assert.That(result.Errors[0].PropertyName, Is.EqualTo(propName));
+			Assert.That(result.Errors[1].PropertyName, Is.EqualTo(propName));
+		}
+
+		[Test]
+		[TestCase(PropertyNameMode.Default)]
+		[TestCase(PropertyNameMode.TypeName)]
 		public void Should_Fail_WithExpectedPropertyName_When_ValidationFails_ForPrimitiveType_UsingOverload_WithPropertyNameMode(PropertyNameMode mode)
 		{
 			const int valueToTest = 5;

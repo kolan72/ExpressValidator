@@ -110,6 +110,30 @@ namespace ExpressValidator.Tests
 		[Test]
 		[TestCase(PropertyNameMode.Default)]
 		[TestCase(PropertyNameMode.TypeName)]
+		public void Should_Fail_WithOverriddenPropertyName_When_ValidationFails_ForNonPrimitiveType_UsingOverload_WithPropertyNameMode(PropertyNameMode mode)
+		{
+			var objToQuick = new ObjWithTwoPublicProps() { I = -1, PercentValue1 = 101 };
+			var rule = GetRuleWithOverriddenPropertyName();
+
+			var result = QuickValidator.Validate(objToQuick,
+														rule,
+														mode);
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+			if (mode == PropertyNameMode.Default)
+			{
+				Assert.That(result.Errors[0].PropertyName, Is.EqualTo("Input.MyPropNameI"));
+			}
+			else
+			{
+				Assert.That(result.Errors[0].PropertyName, Is.EqualTo(nameof(ObjWithTwoPublicProps) + ".MyPropNameI"));
+			}
+		}
+
+		[Test]
+		[TestCase(PropertyNameMode.Default)]
+		[TestCase(PropertyNameMode.TypeName)]
 		public void Should_Fail_WithExpectedPropertyName_When_ValidationFails_ForNonPrimitiveType_UsingOverload_WithPropertyNameMode(PropertyNameMode mode)
 		{
 			var objToQuick = new ObjWithTwoPublicProps() { I = -1, PercentValue1 = 101 };
@@ -130,6 +154,7 @@ namespace ExpressValidator.Tests
 				Assert.That(result.Errors[0].PropertyName, Is.EqualTo(nameof(ObjWithTwoPublicProps) + "." + nameof(ObjWithTwoPublicProps.I)));
 			}
 		}
+
 
 		[Test]
 		public void Should_Pass_Validation_When_Valid()

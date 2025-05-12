@@ -20,10 +20,11 @@ namespace ExpressValidator.QuickValidation
 		/// <param name="action">Action to add validators.</param>
 		/// <param name="propName">The name of the property if the validation fails.
 		/// If <see langword="null"/>, "Input" will be used.</param>
+		/// <param name="onSuccessValidation">Specifies a method to execute when validation succeeds.</param>
 		/// <returns></returns>
-		public static ValidationResult Validate<T>(T obj, Action<IRuleBuilderOptions<T, T>> action, string propName)
+		public static ValidationResult Validate<T>(T obj, Action<IRuleBuilderOptions<T, T>> action, string propName, Action<T> onSuccessValidation = null)
 		{
-			return ValidateInner<T>(obj, action, propName ?? FALLBACK_PROP_NAME);
+			return ValidateInner<T>(obj, action, propName ?? FALLBACK_PROP_NAME, onSuccessValidation);
 		}
 
 		/// <summary>
@@ -41,11 +42,12 @@ namespace ExpressValidator.QuickValidation
 			return ValidateInner<T>(obj, action, GetPropName<T>(mode));
 		}
 
-		private static ValidationResult ValidateInner<T>(T obj, Action<IRuleBuilderOptions<T, T>> action, string propName)
+		private static ValidationResult ValidateInner<T>(T obj, Action<IRuleBuilderOptions<T, T>> action, string propName, Action<T> onSuccessValidation = null)
 		{
 			var eb = new ExpressValidatorBuilder<Unit>();
 			return eb.AddFunc((_) => obj,
-								propName)
+								propName,
+								onSuccessValidation)
 					.WithValidation(action)
 					.BuildAndValidate(Unit.Default);
 		}

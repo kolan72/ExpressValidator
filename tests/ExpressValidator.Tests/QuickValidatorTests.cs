@@ -155,7 +155,6 @@ namespace ExpressValidator.Tests
 			}
 		}
 
-
 		[Test]
 		public void Should_Pass_Validation_When_Valid()
 		{
@@ -164,6 +163,38 @@ namespace ExpressValidator.Tests
 									(opt) => opt.GreaterThan(10)
 												.InclusiveBetween(15, 25));
 			Assert.That(result.IsValid, Is.True);
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_Call_OnSuccess_When_Validation_Succeeds(bool isValid)
+		{
+			int valueFromHandler = 0;
+			int valueToTest;
+			if (isValid)
+			{
+				valueToTest = 25;
+			}
+			else
+			{
+				valueToTest = 5;
+			}
+
+			var result = QuickValidator.Validate(valueToTest,
+									(opt) => opt.GreaterThan(10),
+									"vv",
+									(v) => valueFromHandler = v);
+			if (isValid)
+			{
+				Assert.That(result.IsValid, Is.True);
+				Assert.That(valueFromHandler, Is.EqualTo(25));
+			}
+			else
+			{
+				Assert.That(result.IsValid, Is.False);
+				Assert.That(valueFromHandler, Is.EqualTo(0));
+			}
 		}
 
 		private static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetRule()

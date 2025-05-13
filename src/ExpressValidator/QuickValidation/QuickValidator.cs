@@ -34,12 +34,12 @@ namespace ExpressValidator.QuickValidation
 		/// <param name="obj">The object to validate.</param>
 		/// <param name="action">Action to add validators.</param>
 		/// <param name="mode"><see cref="PropertyNameMode"/>.
-		/// If <see cref="PropertyNameMode.Default"/>, "Input" will be used.
-		/// </param>
+		/// If <see cref="PropertyNameMode.Default"/>, "Input" will be used.</param>
+		/// <param name="onSuccessValidation">Specifies a method to execute when validation succeeds.</param>
 		/// <returns></returns>
-		public static ValidationResult Validate<T>(T obj, Action<IRuleBuilderOptions<T, T>> action, PropertyNameMode mode = PropertyNameMode.Default)
+		public static ValidationResult Validate<T>(T obj, Action<IRuleBuilderOptions<T, T>> action, PropertyNameMode mode = PropertyNameMode.Default, Action<T> onSuccessValidation = null)
 		{
-			return ValidateInner<T>(obj, action, GetPropName<T>(mode));
+			return ValidateInner<T>(obj, action, GetPropName<T>(mode), onSuccessValidation);
 		}
 
 		private static ValidationResult ValidateInner<T>(T obj, Action<IRuleBuilderOptions<T, T>> action, string propName, Action<T> onSuccessValidation = null)

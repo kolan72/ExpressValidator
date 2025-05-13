@@ -197,6 +197,38 @@ namespace ExpressValidator.Tests
 			}
 		}
 
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_Call_OnSuccess_When_Validation_Succeeds_UsingOverload_WithPropertyNameMode(bool isValid)
+		{
+			int valueFromHandler = 0;
+			int valueToTest;
+			if (isValid)
+			{
+				valueToTest = 25;
+			}
+			else
+			{
+				valueToTest = 5;
+			}
+
+			var result = QuickValidator.Validate(valueToTest,
+									(opt) => opt.GreaterThan(10),
+									PropertyNameMode.TypeName,
+									(v) => valueFromHandler = v);
+			if (isValid)
+			{
+				Assert.That(result.IsValid, Is.True);
+				Assert.That(valueFromHandler, Is.EqualTo(25));
+			}
+			else
+			{
+				Assert.That(result.IsValid, Is.False);
+				Assert.That(valueFromHandler, Is.EqualTo(0));
+			}
+		}
+
 		private static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetRule()
 		{
 			return (opt) =>

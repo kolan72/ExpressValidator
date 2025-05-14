@@ -29,5 +29,35 @@ namespace ExpressValidator.Tests
 
 			Assert.That(fluentValidator.Validate(new Customer() { CustomerDiscount = 1 }).IsValid, Is.True);
 		}
+
+		[Test]
+		public async Task Should_Succeed_When_ValidatingAsync_WithValidInput()
+		{
+			static decimal funcForField(Customer c) => c.CustomerDiscount;
+			const string propName = "CustomerDiscount";
+			var validator = new TypeAsyncValidator<decimal>();
+			validator.SetValidation((opt) => opt.GreaterThan(-1)
+												.MustAsync(async (_, __) => { await Task.Delay(1); return true; }),
+												propName);
+
+			var fluentValidator = new FluentPropertyValidator<Customer, decimal>(funcForField, propName, validator);
+			Assert.That((await fluentValidator.ValidateAsync(new Customer())).IsValid, Is.True);
+		}
+
+		[Test]
+		public async Task Should_Fail_When_ValidatingAsync_WithInvalidInput()
+		{
+			static decimal funcForField(Customer c) => c.CustomerDiscount;
+			const string propName = "CustomerDiscount";
+			var validator = new TypeAsyncValidator<decimal>();
+			validator.SetValidation((opt) => opt.GreaterThan(0)
+												.MustAsync(async (_, __) => { await Task.Delay(1); return false; }),
+												propName);
+
+			var fluentValidator = new FluentPropertyValidator<Customer, decimal>(funcForField, propName, validator);
+			var result = await fluentValidator.ValidateAsync(new Customer());
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+		}
 	}
 }

@@ -85,8 +85,6 @@
     <Compile Include="ExpressValidatorWithOptionsTests.cs" />
     <Compile Include="ExpressValidatorWithOptionsTests.ForAsync.Tests.cs" />
     <Compile Include="QuickValidatorTests.cs" />
-    <Compile Include="FluentPropertyValidatorTests.cs" />
-    <Compile Include="FluentValidatorTests.cs" />
     <Compile Include="TypeAsyncValidatorTests.cs" />
     <Compile Include="TypeAsyncValidatorTests.ForNullOrEmptyValidator.cs" />
     <Compile Include="ExpressAsyncValidatorTests.cs" />

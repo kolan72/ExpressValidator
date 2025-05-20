@@ -50,6 +50,7 @@ if(!result.IsValid)
     //As usual with validation result...
 }
 ```
+## Modifying FluentValidation Validator Parameters Using Options
 
 To dynamically change the parameters of the `FluentValidation` validators:  
 

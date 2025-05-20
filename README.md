@@ -135,7 +135,7 @@ if(!result2.IsValid)
 For `ExpressValidatorBuilder` methods (`AddFunc`, `AddProperty`, and `AddField`), the overridden property name (set via  `FluentValidation`'s `OverridePropertyName` method in `With(Async)Validation`) takes precedence over the property name passed as a string or via `Expression` in  `AddFunc`/`AddProperty`/`AddField`.  
 For example, for the `ObjToValidate` object from the 'Quick Start' chapter, `result.Errors[0].PropertyName` will equal "percentSum" (the property name overridden in the validation rule):
 ```csharp
-// result0.Errors[0].PropertyName == "percentSum"
+// result.Errors[0].PropertyName == "percentSum"
 var result = new ExpressValidatorBuilder<ObjToValidate>()
 		.AddFunc(o => o.PercentValue1 + o.PercentValue2, "sum")
 		.WithValidation((o) => o.InclusiveBetween(0, 100)

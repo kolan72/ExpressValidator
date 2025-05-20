@@ -153,7 +153,7 @@ var value = 5;
 // result.Errors[0].PropertyName == "value"
 var result = QuickValidator.Validate(
 	value,
-	(opt) => opt.GreaterThan(10)
+	(opt) => opt.GreaterThan(10),
 	nameof(value));
 ```
 

@@ -18,6 +18,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 - Supports adding a property or field for validation.
 - Verifies that a property expression is a property and a field expression is a field, and throws `ArgumentException` if it is not.
 - Supports adding a `Func` that provides a value for validation.
+- Provides quick validation (refers to ease of use).
 - Supports asynchronous validation.
 - Targets .NET Standard 2.0+
 
@@ -141,6 +142,21 @@ var result = new ExpressValidatorBuilder<ObjToValidate>()
 			.OverridePropertyName("percentSum"))
 		.BuildAndValidate(new ObjToValidate() { PercentValue1 = 200});
 ```
+
+## ⏩ Quick Validation
+
+Quick validation is convenient for primitive types or types without properties/fields (here, 'quick' refers to usability, not performance). Simply call `QuickValidator.Validate` on the object with a preconfigured rule:
+
+```csharp
+var value = 5;
+// result.IsValid == false
+// result.Errors[0].PropertyName == "value"
+var result = QuickValidator.Validate(
+	value,
+	(opt) => opt.GreaterThan(10)
+	nameof(value));
+```
+
 
 ## ❌ Drawbacks
 

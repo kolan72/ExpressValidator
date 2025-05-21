@@ -11,6 +11,7 @@ namespace ExpressValidator
 	{
 		private readonly string _propName;
 		private readonly Func<TObj, T> _propertyFunc;
+		private TypeValidatorBase<T> _typeValidator;
 
 		private Action<TOptions, IRuleBuilderOptions<T, T>> _actionWithOptions;
 
@@ -30,9 +31,7 @@ namespace ExpressValidator
 
 		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync(TObj obj, CancellationToken token = default)
 		{
-			var typeValidator = new TypeAsyncValidator<T>();
-			typeValidator.SetValidation(_action, _propName);
-			return typeValidator.ValidateExAsync(_propertyFunc(obj), token);
+			return _typeValidator.ValidateExAsync(_propertyFunc(obj), token);
 		}
 
 		public (bool IsValid, List<ValidationFailure> Failures) Validate(TObj obj)
@@ -41,14 +40,26 @@ namespace ExpressValidator
 			{
 				throw new InvalidOperationException();
 			}
-			var typeValidator = new TypeValidator<T>();
-			typeValidator.SetValidation(_action, _propName);
-			return typeValidator.ValidateEx(_propertyFunc(obj));
+			return _typeValidator.ValidateEx(_propertyFunc(obj));
 		}
 
 		public void ApplyOptions(TOptions options)
 		{
 			_action =_actionWithOptions.Apply(options);
+			SetTypeValidator();
+		}
+
+		private void SetTypeValidator()
+		{
+			if (IsAsync)
+			{
+				_typeValidator = new TypeAsyncValidator<T>();
+			}
+			else
+			{
+				_typeValidator = new TypeValidator<T>();
+			}
+			_typeValidator.SetValidation(_action, _propName);
 		}
 
 		public bool IsAsync { get; }

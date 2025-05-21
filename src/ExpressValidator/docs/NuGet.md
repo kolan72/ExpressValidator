@@ -51,6 +51,7 @@ if(!result.IsValid)
     //As usual with validation result...
 }
 ```
+
 ## Modifying FluentValidation Validator Parameters Using Options
 
 To dynamically change the parameters of the `FluentValidation` validators:  
@@ -113,6 +114,7 @@ if(!result2.IsValid)
 ...
 }
 ```
+
 ## Quick Validation
 
 Quick validation is convenient for primitive types or types without properties/fields (here, 'quick' refers to usability, not performance). Simply call `QuickValidator.Validate` on the object with a preconfigured rule:
@@ -125,4 +127,20 @@ var result = QuickValidator.Validate(
 	value,
 	(opt) => opt.GreaterThan(10),
 	nameof(value));
+```
+
+For complex types, use FluentValidation's `ChildRules` method:
+
+```csharp
+var obj = new ObjToValidate() { I = -1, PercentValue1 = 101 };
+// result.IsValid == false
+// result.Errors.Count == 2
+// result.Errors[0].PropertyName == "obj.I"; result.Errors[1].PropertyName == "obj.PercentValue1"
+var result = QuickValidator.Validate(
+	obj,
+	(opt) =>
+		opt
+		.ChildRules((v) => v.RuleFor(o => o.I).GreaterThan(0))
+		.ChildRules((v) => v.RuleFor(o => o.PercentValue1).InclusiveBetween(0, 100)),
+	nameof(obj));
 ```

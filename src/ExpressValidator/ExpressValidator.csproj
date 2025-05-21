@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.5.0</Version>
+    <Version>0.9.0</Version>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Andrey Kolesnichenko</Authors>
     <Description>ExpressValidator is a library that provides the ability to validate objects using the FluentValidation library, but without object inheritance from `AbstractValidator`.</Description>
@@ -15,7 +15,7 @@
     <PackageIcon>ExpressValidator.png</PackageIcon>
     <PackageReadmeFile>NuGet.md</PackageReadmeFile>
     <PackageIconUrl />
-    <AssemblyVersion>0.5.0.0</AssemblyVersion>
+    <AssemblyVersion>0.9.0.0</AssemblyVersion>
     <FileVersion>0.0.0.0</FileVersion>
   </PropertyGroup>
 

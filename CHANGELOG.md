@@ -1,3 +1,14 @@
+## 0.9.0
+
+- Added quick validation support via `QuickValidator` and its `Validate<T>` overloads.
+- Improve performance by applying options in `ExpressValidator<TObj, TOptions>` during the `ExpressValidatorBuilder<TObj, TOptions>.Build` call instead of at validation time.
+- Introduce the `Unit` readonly struct.
+- Add 'Nuances Of Using The Library' README Chapter.
+- Add 'Nuances Of Using The Library' NuGet README Chapter.
+- Add 'Quick Validation' README Chapter.
+- Add 'Quick Validation' NuGet README Chapter.
+
+
 ## 0.5.0
 
 - Introduced the `IExpressValidatorBuilder<TObj, TOptions>.BuildAndValidate<TObj, TOptions>(TObj, TOptions)` extension method.

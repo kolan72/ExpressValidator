@@ -39,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExpressValidator, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ExpressValidator.0.5.0\lib\netstandard2.0\ExpressValidator.dll</HintPath>
+    </Reference>
     <Reference Include="FluentValidation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FluentValidation.11.11.0\lib\netstandard2.0\FluentValidation.dll</HintPath>
     </Reference>
@@ -146,10 +149,6 @@
     <ProjectReference Include="..\..\src\ExpressValidator.Extensions.DependencyInjection\ExpressValidator.Extensions.DependencyInjection.csproj">
       <Project>{a4ea326f-0946-4489-8064-1317b4d41eac}</Project>
       <Name>ExpressValidator.Extensions.DependencyInjection</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\ExpressValidator\ExpressValidator.csproj">
-      <Project>{144f9f5c-235f-4b57-8a03-e9d681feef89}</Project>
-      <Name>ExpressValidator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

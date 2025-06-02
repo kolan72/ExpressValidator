@@ -8,6 +8,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 - Supports adding a property or field for validation.
 - Verifies that a property expression is a property and a field expression is a field, and throws `ArgumentException` if it is not.
 - Supports adding a `Func` that provides a value for validation.
+- Provides quick validation (refers to ease of use).
 - Supports asynchronous validation.
 - Targets .NET Standard 2.0+
 
@@ -50,6 +51,8 @@ if(!result.IsValid)
     //As usual with validation result...
 }
 ```
+
+## Modifying FluentValidation Validator Parameters Using Options
 
 To dynamically change the parameters of the `FluentValidation` validators:  
 
@@ -110,4 +113,47 @@ if(!result2.IsValid)
 {
 ...
 }
+```
+
+## Quick Validation
+
+Quick validation is convenient for primitive types or types without properties/fields (here, 'quick' refers to usability, not performance). Simply call `QuickValidator.Validate` on the object with a preconfigured rule:
+
+```csharp
+var value = 5;
+// result.IsValid == false
+// result.Errors[0].PropertyName == "value"
+var result = QuickValidator.Validate(
+	value,
+	(opt) => opt.GreaterThan(10),
+	nameof(value));
+```
+
+For complex types, use FluentValidation's `ChildRules` method:
+
+```csharp
+var obj = new ObjToValidate() { I = -1, PercentValue1 = 101 };
+// result.IsValid == false
+// result.Errors.Count == 2
+// result.Errors[0].PropertyName == "obj.I"; result.Errors[1].PropertyName == "obj.PercentValue1"
+var result = QuickValidator.Validate(
+	obj,
+	(opt) =>
+		opt
+		.ChildRules((v) => v.RuleFor(o => o.I).GreaterThan(0))
+		.ChildRules((v) => v.RuleFor(o => o.PercentValue1).InclusiveBetween(0, 100)),
+	nameof(obj));
+```
+
+## Nuances Of Using The Library
+
+For `ExpressValidatorBuilder` methods (`AddFunc`, `AddProperty`, and `AddField`), the overridden property name (set via  `FluentValidation`'s `OverridePropertyName` method in `With(Async)Validation`) takes precedence over the property name passed as a string or via `Expression` in  `AddFunc`/`AddProperty`/`AddField`.  
+For example, for the `ObjToValidate` object from the 'Quick Start' chapter, `result.Errors[0].PropertyName` will equal "percentSum" (the property name overridden in the validation rule):
+```csharp
+// result.Errors[0].PropertyName == "percentSum"
+var result = new ExpressValidatorBuilder<ObjToValidate>()
+		.AddFunc(o => o.PercentValue1 + o.PercentValue2, "sum")
+		.WithValidation((o) => o.InclusiveBetween(0, 100)
+			.OverridePropertyName("percentSum"))
+		.BuildAndValidate(new ObjToValidate() { PercentValue1 = 200});
 ```

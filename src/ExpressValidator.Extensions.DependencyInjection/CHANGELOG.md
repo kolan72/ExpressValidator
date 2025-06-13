@@ -1,3 +1,11 @@
+## 0.3.7
+
+- Update ExpressValidator nuget package.
+- Split the DI extensions into a dedicated solution.
+- Update Microsoft nuget packages.
+- Update Microsoft NuGet packages for ExpressValidator.Extensions.DependencyInjection.Tests.
+
+
 ## 0.3.5
 
 - Reduced unnecessary updates to validator parameters by listening to `IOptionsMonitor.Change` with named validation options.

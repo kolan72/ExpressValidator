@@ -8,7 +8,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 - Supports adding a property or field for validation.
 - Verifies that a property expression is a property and a field expression is a field, and throws `ArgumentException` if it is not.
 - Supports adding a `Func` that provides a value for validation.
-- Provides quick validation (refers to ease of use).
+- Provides quick and easy validation using the `QuickValidator`.
 - Supports asynchronous validation.
 - Targets .NET Standard 2.0+
 
@@ -144,6 +144,7 @@ var result = QuickValidator.Validate(
 		.ChildRules((v) => v.RuleFor(o => o.PercentValue1).InclusiveBetween(0, 100)),
 	nameof(obj));
 ```
+The `QuickValidator` also provides a `ValidateAsync` method for asynchronous validation.
 
 ## Nuances Of Using The Library
 

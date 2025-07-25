@@ -45,6 +45,10 @@
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU1504</NoWarn>
+  </PropertyGroup>
+  
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
     <_Parameter1>ExpressValidator.Tests</_Parameter1>

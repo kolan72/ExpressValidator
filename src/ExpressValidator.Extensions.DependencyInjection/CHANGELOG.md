@@ -1,3 +1,10 @@
+## 0.3.9
+
+- Update ExpressValidator nuget package.
+- Update Microsoft nuget packages.
+- Update Microsoft NuGet packages for ExpressValidator.Extensions.DependencyInjection.Tests.
+
+
 ## 0.3.7
 
 - Update ExpressValidator nuget package.

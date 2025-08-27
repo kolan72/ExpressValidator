@@ -23,6 +23,16 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		public void Should_Using_WithValidation_With_AsyncRule_Throw_AsyncValidatorInvokedSynchronouslyException_When_Validate()
+		{
+			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddProperty(o => o.I)
+						   .WithValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return true; }))
+						   .Build();
+			Assert.Throws<AsyncValidatorInvokedSynchronouslyException>(() => builder.Validate(new ObjWithTwoPublicProps() { I = 1, S = "b" }));
+		}
+
+		[Test]
 		public async Task Should_AsyncInvoke_SuccessValidationHandler_When_IsValid()
 		{
 			int percentSum = 0;

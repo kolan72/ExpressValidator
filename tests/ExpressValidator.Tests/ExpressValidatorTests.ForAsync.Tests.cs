@@ -110,5 +110,26 @@ namespace ExpressValidator.Tests
 			Assert.That(result.IsValid, Is.False);
 			Assert.That(result.Errors.Count, Is.EqualTo(2));
 		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public async Task Should_ValidateAsync_When_Used_In_External_API(bool valid)
+		{
+			const int customerId = 1;
+			var apiClient = new SomeExternalWebApiClient(valid ? 2 : customerId);
+			var customer = new Customer() { CustomerId = customerId };
+
+			var result = await new ExpressValidatorBuilder<Customer>()
+						 .AddProperty(o => o.CustomerId)
+						 .WithAsyncValidation(o => o.MustAsync(async (id, cancellation) => 
+
+								!await apiClient.IdExistsAsync(id, cancellation)))
+
+						.Build() 
+						.ValidateAsync(customer);
+
+			Assert.That(result.IsValid, Is.EqualTo(valid));
+		}
 	}
 }

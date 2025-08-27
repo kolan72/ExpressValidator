@@ -1,5 +1,8 @@
 ﻿using FluentValidation;
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ExpressValidator.Tests
 {
@@ -69,4 +72,21 @@ namespace ExpressValidator.Tests
         public decimal CustomerDiscount { get; set; }
         public bool IsPreferredCustomer { get; set; }
     }
+
+    public class SomeExternalWebApiClient
+    {
+        private readonly int _existedId;
+
+		public SomeExternalWebApiClient(int existedId)
+        {
+            _existedId = existedId;
+		}
+
+        public async Task<bool> IdExistsAsync(int id, CancellationToken token)
+        {
+            await Task.Delay(TimeSpan.FromTicks(1), token);
+            return _existedId == id;
+        }
+
+	}
 }

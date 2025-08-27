@@ -85,5 +85,20 @@ namespace ExpressValidator.Tests
 
 			ClassicAssert.AreEqual(true, result.IsValid);
 		}
+
+		[Test]
+		public async Task Should_ValidateAsync_When_Using_Combined_Validation_Strategy()
+		{
+			var result = await new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+			   .AddProperty(o => o.I)
+			   .WithAsyncValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return false; }))
+			   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
+			   .WithValidation(o => o.InclusiveBetween(0, 100))
+			   .Build()
+			   .ValidateAsync(new ObjWithTwoPublicProps() { I = 1, PercentValue1 = 200 });
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+		}
 	}
 }

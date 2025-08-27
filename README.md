@@ -67,6 +67,28 @@ if(!result.IsValid)
 }
 ```
 
+## 💡 Asynchronous Validation
+
+If you want to add asynchronous FluentValidation rules such as `MustAsync` or `CustomAsync`, the recommended approach is to use the `WithAsyncValidation` method:
+```csharp
+//Checking if a user ID is already in use using an external web API:
+var result = await new ExpressValidatorBuilder<Customer>()
+			.AddProperty(o => o.CustomerId)
+			.WithAsyncValidation(o => o.MustAsync(async (id, cancellation) =>
+
+				!await apiClient.IdExistsAsync(id, cancellation)))
+
+			.Build()
+			.ValidateAsync(customer);
+```
+Once you've used this method at least once within the `ExpressValidatorBuilder`, you must call the `ValidateAsync` method on the resulting `ExpressValidator`.
+
+Calling `Validate` instead will result in an `InvalidOperationException`.
+
+Note: You can still use the `WithValidation` method for asynchronous rules, but in that case, ensure you call only `ValidateAsync`; otherwise, FluentValidation will throw an `AsyncValidatorInvokedSynchronouslyException`.
+
+As with FluentValidation itself, you can safely call `ValidateAsync` when both synchronous and asynchronous rules are present.
+
 ## ⚙️ Modifying FluentValidation Validator Parameters Using Options
 
 To dynamically change the parameters of the `FluentValidation` validators:  

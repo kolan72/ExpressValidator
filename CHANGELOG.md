@@ -1,3 +1,11 @@
+## 0.10.0
+
+- Introduced the `QuickValidator.ValidateAsync<T>(T, Action<IRuleBuilderOptions<T, T>>, string, Action<T>, CancellationToken)` extension method.
+- Introduced the `QuickValidator.ValidateAsync<T>(T, Action<IRuleBuilderOptions<T, T>>, PropertyNameMode, Action<T>, CancellationToken)` extension method.
+- Edit 'Quick Validation' README Chapter.
+- Edit 'Quick Validation' NuGet README Chapter.
+
+
 ## 0.9.0
 
 - Added quick validation support via `QuickValidator` and its `Validate<T>` overloads.

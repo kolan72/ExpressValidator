@@ -1,3 +1,15 @@
+## 0.12.0
+
+- Support .NET 8.0 and FluentValidation 12.0.0.
+- Fix `ExpressPropertyValidator<TObj, T>` to prevent calling `Func<TObj, T>` propertyFunc twice when a success handler is present.
+- Fix NU1504: Duplicate 'PackageReference' found
+- Update NUnit NuGet package to v4.4.0.
+- Add test for `ValidateAsync` with both `WithValidation` and `WithAsyncValidation` in `ExpressValidatorBuilder`.
+- Add test to ensure synchronous Validate throws `AsyncValidatorInvokedSynchronouslyException` if the builder has async rules.
+- Add a test for the `ValidateAsync` method with simulated external services.
+- Add 'Asynchronous Validation' README Chapter.
+
+
 ## 0.10.0
 
 - Introduced the `QuickValidator.ValidateAsync<T>(T, Action<IRuleBuilderOptions<T, T>>, string, Action<T>, CancellationToken)` extension method.

@@ -33,7 +33,7 @@ namespace ExpressValidator
 			if (_onSuccessValidation != null)
 			{
 				var value = _propertyFunc(obj);
-				var res = await _typeValidator.ValidateExAsync(_propertyFunc(obj), token);
+				var res = await _typeValidator.ValidateExAsync(value, token);
 				if (res.IsValid)
 				{
 					_onSuccessValidation(value);

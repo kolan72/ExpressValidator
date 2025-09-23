@@ -23,6 +23,16 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		public void Should_Using_WithValidation_With_AsyncRule_Throw_AsyncValidatorInvokedSynchronouslyException_When_Validate()
+		{
+			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddProperty(o => o.I)
+						   .WithValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return true; }))
+						   .Build();
+			Assert.Throws<AsyncValidatorInvokedSynchronouslyException>(() => builder.Validate(new ObjWithTwoPublicProps() { I = 1, S = "b" }));
+		}
+
+		[Test]
 		public async Task Should_AsyncInvoke_SuccessValidationHandler_When_IsValid()
 		{
 			int percentSum = 0;
@@ -84,6 +94,42 @@ namespace ExpressValidator.Tests
 			   .ValidateAsync(new ObjWithTwoPublicProps() { I = 1, _sField = "" });
 
 			ClassicAssert.AreEqual(true, result.IsValid);
+		}
+
+		[Test]
+		public async Task Should_ValidateAsync_When_Using_Combined_Validation_Strategy()
+		{
+			var result = await new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+			   .AddProperty(o => o.I)
+			   .WithAsyncValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return false; }))
+			   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
+			   .WithValidation(o => o.InclusiveBetween(0, 100))
+			   .Build()
+			   .ValidateAsync(new ObjWithTwoPublicProps() { I = 1, PercentValue1 = 200 });
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public async Task Should_ValidateAsync_When_Used_In_External_API(bool valid)
+		{
+			const int customerId = 1;
+			var apiClient = new SomeExternalWebApiClient(valid ? 2 : customerId);
+			var customer = new Customer() { CustomerId = customerId };
+
+			var result = await new ExpressValidatorBuilder<Customer>()
+						 .AddProperty(o => o.CustomerId)
+						 .WithAsyncValidation(o => o.MustAsync(async (id, cancellation) => 
+
+								!await apiClient.IdExistsAsync(id, cancellation)))
+
+						.Build() 
+						.ValidateAsync(customer);
+
+			Assert.That(result.IsValid, Is.EqualTo(valid));
 		}
 	}
 }

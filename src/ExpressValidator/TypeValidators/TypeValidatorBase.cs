@@ -11,7 +11,6 @@ namespace ExpressValidator
 	internal abstract class TypeValidatorBase<T> : AbstractValidator<T>
 	{
 		protected IRuleBuilderOptions<T, T> _ruleBuilderInitial;
-		private NotNullValidationMessageProvider<T> _nullMessageProvider;
 
 		private IValidationRule<T> _rule;
 		private string _propName;
@@ -38,7 +37,7 @@ namespace ExpressValidator
 		{
 			if (_shouldBeComparedToNull && EqualityComparer<T>.Default.Equals(context.InstanceToValidate, default))
 			{
-				result.Errors.Add(new ValidationFailure(_propName, _nullMessageProvider.GetMessage(context)));
+				result.Errors.Add(new ValidationFailure(_propName, NullFallbackMessageProvider.GetMessage(_propName, context)));
 				return false;
 			}
 			return true;
@@ -54,8 +53,6 @@ namespace ExpressValidator
 			{
 				_ruleBuilderInitial = _ruleBuilderInitial.OverridePropertyName(_propName);
 			}
-
-			_nullMessageProvider = new NotNullValidationMessageProvider<T>(_propName);
 
 			HasOnlyNullOrEmptyValidators = AllValidatorsAreNullOrEmpty();
 		}

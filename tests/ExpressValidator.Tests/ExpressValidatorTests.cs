@@ -64,8 +64,13 @@ namespace ExpressValidator.Tests
 						   .Build()
 						   .Validate(new ObjWithTwoPublicProps());
 
+			var em1 = NullFallbackMessageProvider.GetMessage("S", new ValidationContext<string>(null));
+			var em2 = NullFallbackMessageProvider.GetMessage("_sField", new ValidationContext<string>(null));
+
 			Assert.That(result.IsValid, Is.False);
 			Assert.That(result.Errors.Count, Is.EqualTo(2));
+			Assert.That(result.Errors[0].ErrorMessage, Is.EqualTo(em1));
+			Assert.That(result.Errors[1].ErrorMessage, Is.EqualTo(em2));
 		}
 
 		[Test]

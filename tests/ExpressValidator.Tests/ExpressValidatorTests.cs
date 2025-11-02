@@ -54,6 +54,21 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		public void Should_NotThrow_When_MembersAreNull()
+		{
+			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddProperty(o => o.S)
+						   .WithValidation(o => o.MaximumLength(1))
+						   .AddField(o => o._sField)
+						   .WithValidation(o => o.MinimumLength(1))
+						   .Build()
+						   .Validate(new ObjWithTwoPublicProps());
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+		}
+
+		[Test]
 		public void Should_Work_When_IsValid_ForSubObjWithSimpleConditionForComplexProperty()
 		{
 			var result = new ExpressValidatorBuilder<SubObjWithComplexProperty>()

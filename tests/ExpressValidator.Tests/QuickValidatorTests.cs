@@ -287,6 +287,65 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		public void Should_Fail_When_NonPrimitive_Value_Is_Null_With_NotNull_Rule()
+		{
+			var rule = GetRule();
+
+			var result = QuickValidator.Validate(null, rule);
+			Assert.That(result.IsValid, Is.False);
+		}
+
+		[Test]
+		public void Should_Fail_When_NonPrimitive_Value_Is_Null_With_Mixed_Rules()
+		{
+			var rule = GetMixedWithNullRules();
+
+			var result = QuickValidator.Validate(null, rule);
+			Assert.That(result.IsValid, Is.False);
+		}
+
+		[Test]
+		public void Should_Valid_When_NonPrimitive_Value_Is_Null_With_Null_Rules()
+		{
+			var rule = GetNullRules();
+
+			var result = QuickValidator.Validate(null, rule);
+			Assert.That(result.IsValid, Is.True);
+		}
+
+		[Test]
+		public void Should_Fail_When_Nullable_Struct_Is_Null_With_NotNull_Rule()
+		{
+			var result = QuickValidator.Validate<int?>(null,
+												(opt) => opt.GreaterThan(10)
+												.GreaterThan(15));
+			Assert.That(result.IsValid, Is.False);
+		}
+
+		[Test]
+		public void Should_Fail_When_Nullable_Struct_Is_Null_With_Mixed_Rule()
+		{
+			var result = QuickValidator.Validate<int?>(null,
+												(opt) => 
+												opt
+												.Null()
+												.GreaterThan(10)
+												.GreaterThan(15));
+			Assert.That(result.IsValid, Is.False);
+		}
+
+		[Test]
+		public void Should_Valid_When_Nullable_Struct_Is_Null_With_Null_Rules()
+		{
+			var result = QuickValidator.Validate<int?>(null,
+												(opt) =>
+												opt
+												.Null()
+												.Empty());
+			Assert.That(result.IsValid, Is.True);
+		}
+
+		[Test]
 		[TestCase(PropertyNameMode.Default)]
 		[TestCase(PropertyNameMode.TypeName)]
 		public async Task Should_Fail_WithExpectedPropertyName_When_AsyncValidationFails_ForNonPrimitiveType_UsingOverload_WithPropertyNameMode(PropertyNameMode mode)
@@ -466,6 +525,24 @@ namespace ExpressValidator.Tests
 								.GreaterThan(0))
 							.ChildRules((v) => v.RuleFor(o => o.PercentValue1)
 								.InclusiveBetween(0, 100));
+		}
+
+		private static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetMixedWithNullRules()
+		{
+			return (opt) =>
+							opt.Null()
+								.Empty()
+							.ChildRules((v) => v.RuleFor(o => o.I)
+								.GreaterThan(0))
+							.ChildRules((v) => v.RuleFor(o => o.PercentValue1)
+								.InclusiveBetween(0, 100)); 
+		}
+
+		private static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetNullRules()
+		{
+			return (opt) =>
+						opt.Null()
+							.Empty();
 		}
 
 		private static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetAsyncRule()

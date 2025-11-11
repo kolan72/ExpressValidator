@@ -6,6 +6,10 @@
 - Additionally, the `IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions>` interface can be configured and registered to update the validator parameters when the `ValidationParametersOptions` change.
 - Ability to dynamically update the validator parameters from options bound to the configuration section without restarting the application by configuring the `IExpressValidatorWithReload<ObjToValidate>` interface.
 
+## 📜 Documentation
+
+Explore the API documentation and in-depth details on [DeepWiki](https://deepwiki.com/kolan72/ExpressValidator/3-dependency-injection-extension).
+
 ## 🚀 Usage
 
 ```csharp

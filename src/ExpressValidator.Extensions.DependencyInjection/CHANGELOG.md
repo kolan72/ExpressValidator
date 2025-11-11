@@ -1,3 +1,12 @@
+## 0.3.12
+
+- Support .NET 8.0 and FluentValidation 12.0.0.
+- Update Microsoft nuget packages.
+- Update ExpressValidator NuGet package to v0.12.0.
+- Update NUnit NuGet package to v4.4.0.
+- Retarget ExpressValidator.Extensions.DependencyInjection.Sample to .NET 8.0.
+
+
 ## 0.3.9
 
 - Update ExpressValidator nuget package.

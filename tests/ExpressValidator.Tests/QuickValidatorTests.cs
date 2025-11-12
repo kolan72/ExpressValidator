@@ -326,7 +326,7 @@ namespace ExpressValidator.Tests
 		public void Should_Fail_When_Nullable_Struct_Is_Null_With_Mixed_Rule()
 		{
 			var result = QuickValidator.Validate<int?>(null,
-												(opt) => 
+												(opt) =>
 												opt
 												.Null()
 												.GreaterThan(10)
@@ -535,7 +535,7 @@ namespace ExpressValidator.Tests
 							.ChildRules((v) => v.RuleFor(o => o.I)
 								.GreaterThan(0))
 							.ChildRules((v) => v.RuleFor(o => o.PercentValue1)
-								.InclusiveBetween(0, 100)); 
+								.InclusiveBetween(0, 100));
 		}
 
 		private static Action<IRuleBuilderOptions<ObjWithTwoPublicProps, ObjWithTwoPublicProps>> GetNullRules()

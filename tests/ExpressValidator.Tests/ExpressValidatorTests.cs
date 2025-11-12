@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using ExpressValidator.Extensions;
+using FluentValidation;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using System;
@@ -368,6 +369,26 @@ namespace ExpressValidator.Tests
 			{
 				Assert.That(result.Errors.FirstOrDefault().ErrorMessage, Does.Contain("TestName"));
 			}
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_Validate_Primitive(bool valid)
+		{
+			int value;
+
+			if(valid)
+				value = 3;
+			else
+				value = 1;
+
+			var result = new ExpressValidatorBuilder<int>()
+							.AddFunc(i => i, "value")
+							.WithValidation(o => o.GreaterThan(2))
+							.BuildAndValidate(value);
+
+			Assert.That(result.IsValid, Is.EqualTo(valid));
 		}
 	}
 }

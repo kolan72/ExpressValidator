@@ -144,7 +144,8 @@ var result = QuickValidator.Validate(
 		.ChildRules((v) => v.RuleFor(o => o.PercentValue1).InclusiveBetween(0, 100)),
 	nameof(obj));
 ```
-The `QuickValidator` also provides a `ValidateAsync` method for asynchronous validation.
+The `QuickValidator` also provides a `ValidateAsync` method for asynchronous validation.  
+It is also tolerant of `null` values, i.e., it avoids exceptions when the input is null.
 
 ## Nuances Of Using The Library
 

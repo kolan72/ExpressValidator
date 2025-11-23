@@ -1,11 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
+using System.Reflection;
 
 namespace ExpressValidator.Extensions.DependencyInjection
 {
 	public static class ServiceCollectionExtensions
 	{
+		public static IServiceCollection AddExpressValidation(this IServiceCollection services, Assembly assemblyToScan, ServiceLifetime lifetime = ServiceLifetime.Transient)
+		{
+			assemblyToScan = assemblyToScan ?? Assembly.GetExecutingAssembly();
+			services.AddAllConfigurators(assemblyToScan, lifetime);
+			services.Add(new ServiceDescriptor(typeof(IExpressValidator<>), typeof(ProxyValidator<>), lifetime));
+			return services;
+		}
+
 		public static IServiceCollection AddExpressValidator<T>(this IServiceCollection services, Action<ExpressValidatorBuilder<T>> configure, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
 		{
 			return AddExpressValidator(services, configure, new ExpressValidatorOptions() { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, serviceLifetime);
@@ -86,6 +96,37 @@ namespace ExpressValidator.Extensions.DependencyInjection
 
 			services.Add(new ServiceDescriptor(typeof(IExpressValidatorWithReload<T>), func, ServiceLifetime.Singleton));
 			services.AddSingleton<IOptionsMonitorContext<TOptions>, OptionsMonitorContext <TOptions>>();
+			return services;
+		}
+
+		internal static IServiceCollection AddAllConfigurators(
+			this IServiceCollection services,
+			Assembly assemblyToScan,
+			ServiceLifetime lifetime = ServiceLifetime.Transient)
+		{
+			// 1. Define the open generic interface type to search for.
+			var openGenericInterface = typeof(IExpressConfigurator<>);
+
+			// 2. Scan the assembly for all types that are concrete classes and implement IExpressConfigurator.
+			var builderTypes = assemblyToScan.GetTypes()
+				.Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition)
+				.Select(t => new
+				{
+					ImplementationType = t,
+					InterfaceType = Array.Find(t.GetInterfaces(),
+											i => i.IsGenericType && i.GetGenericTypeDefinition() == openGenericInterface)
+				})
+				.Where(x => x.InterfaceType != null);
+
+			// 3. Register each implementation.
+			foreach (var builderRegistration in builderTypes)
+			{
+				var serviceType = builderRegistration.InterfaceType;
+				var implementationType = builderRegistration.ImplementationType;
+				var descriptor = new ServiceDescriptor(serviceType, implementationType, lifetime);
+				services.Add(descriptor);
+			}
+
 			return services;
 		}
 	}

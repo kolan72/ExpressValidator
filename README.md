@@ -18,13 +18,15 @@ ExpressValidator is a library that provides the ability to validate objects usin
 - Supports adding a property or field for validation.
 - Verifies that a property expression is a property and a field expression is a field, and throws `ArgumentException` if it is not.
 - Supports adding a `Func` that provides a value for validation.
-- Provides quick and easy validation using the `QuickValidator`.
+- Provides quick and easy validation using `QuickValidator`, with built-in tolerance for `null` values.
 - Supports asynchronous validation.
 - Targets .NET Standard 2.0+
 
 ## 📜 Documentation
 
-For details, please check the [API documentation](https://www.tmfexplorer.com/ExpressValidator/api/ExpressValidator.html).
+> See the [API documentation](https://www.tmfexplorer.com/ExpressValidator/api/ExpressValidator.html) for reference.
+>
+> Learn more on [DeepWiki](https://deepwiki.com/kolan72/ExpressValidator/2-core-library-%28expressvalidator%29).
 
 
 ## 🚀 Quick Start
@@ -181,7 +183,8 @@ var result = QuickValidator.Validate(
 		.ChildRules((v) => v.RuleFor(o => o.PercentValue1).InclusiveBetween(0, 100)),
 	nameof(obj));
 ```
-The `QuickValidator` also provides a `ValidateAsync` method for asynchronous validation.
+The `QuickValidator` also provides a `ValidateAsync` method for asynchronous validation.  
+It is also tolerant of `null` values, i.e., it avoids exceptions when the input is null.
 
 ## 🧩 Nuances Of Using The Library
 

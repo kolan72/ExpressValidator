@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using ExpressValidator.Extensions;
+using FluentValidation;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using System;
@@ -51,6 +52,26 @@ namespace ExpressValidator.Tests
 						   .Validate(new ObjWithTwoPublicProps() { PercentValue1 = 20, PercentValue2 = 82 });
 			Assert.That(percentSum, Is.EqualTo(0));
 			Assert.That(result.IsValid, Is.False);
+		}
+
+		[Test]
+		public void Should_NotThrow_When_MembersAreNull()
+		{
+			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps>()
+						   .AddProperty(o => o.S)
+						   .WithValidation(o => o.MaximumLength(1))
+						   .AddField(o => o._sField)
+						   .WithValidation(o => o.MinimumLength(1))
+						   .Build()
+						   .Validate(new ObjWithTwoPublicProps());
+
+			var em1 = NullFallbackMessageProvider.GetMessage("S", new ValidationContext<string>(null));
+			var em2 = NullFallbackMessageProvider.GetMessage("_sField", new ValidationContext<string>(null));
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(2));
+			Assert.That(result.Errors[0].ErrorMessage, Is.EqualTo(em1));
+			Assert.That(result.Errors[1].ErrorMessage, Is.EqualTo(em2));
 		}
 
 		[Test]
@@ -348,6 +369,26 @@ namespace ExpressValidator.Tests
 			{
 				Assert.That(result.Errors.FirstOrDefault().ErrorMessage, Does.Contain("TestName"));
 			}
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void Should_Validate_Primitive(bool valid)
+		{
+			int value;
+
+			if(valid)
+				value = 3;
+			else
+				value = 1;
+
+			var result = new ExpressValidatorBuilder<int>()
+							.AddFunc(i => i, "value")
+							.WithValidation(o => o.GreaterThan(2))
+							.BuildAndValidate(value);
+
+			Assert.That(result.IsValid, Is.EqualTo(valid));
 		}
 	}
 }

@@ -11,17 +11,11 @@ namespace ExpressValidator
 	internal abstract class TypeValidatorBase<T> : AbstractValidator<T>
 	{
 		protected IRuleBuilderOptions<T, T> _ruleBuilderInitial;
-		private NotNullValidationMessageProvider<T> _nullMessageProvider;
 
 		private IValidationRule<T> _rule;
 		private string _propName;
 
-		private readonly bool _shouldBeComparedToNull;
-
-		protected TypeValidatorBase()
-		{
-			_shouldBeComparedToNull = !typeof(T).IsValueType || (Nullable.GetUnderlyingType(typeof(T)) != null);
-		}
+		private static readonly bool _canBeNull = !typeof(T).IsValueType || (Nullable.GetUnderlyingType(typeof(T)) != null);
 
 		protected override void OnRuleAdded(IValidationRule<T> rule)
 		{
@@ -36,9 +30,9 @@ namespace ExpressValidator
 		/// <returns></returns>
 		protected override bool PreValidate(ValidationContext<T> context, ValidationResult result)
 		{
-			if (_shouldBeComparedToNull && EqualityComparer<T>.Default.Equals(context.InstanceToValidate, default))
+			if (IsValueNull(context.InstanceToValidate))
 			{
-				result.Errors.Add(new ValidationFailure(_propName, _nullMessageProvider.GetMessage(context)));
+				result.Errors.Add(new ValidationFailure(_propName, NullFallbackMessageProvider.GetMessage(_propName, context)));
 				return false;
 			}
 			return true;
@@ -55,9 +49,7 @@ namespace ExpressValidator
 				_ruleBuilderInitial = _ruleBuilderInitial.OverridePropertyName(_propName);
 			}
 
-			_nullMessageProvider = new NotNullValidationMessageProvider<T>(_propName);
-
-			HasOnlyNullOrEmptyValidators = AllValidatorsAreNullOrEmpty();
+			HasNonEmptyValidators = !AllValidatorsAreNullOrEmpty();
 		}
 
 		public async Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateExAsync(T value, CancellationToken token = default)
@@ -94,9 +86,14 @@ namespace ExpressValidator
 
 		internal abstract bool? IsAsync { get; }
 
-		protected bool ShouldValidate(T value) =>!_shouldBeComparedToNull || !EqualityComparer<T>.Default.Equals(value, default) || !HasOnlyNullOrEmptyValidators;
+		protected bool ShouldValidate(T value) => !IsValueNull(value) || HasNonEmptyValidators;
 
-		private bool HasOnlyNullOrEmptyValidators { get; set; }
+		private static bool IsValueNull(T value)
+		{
+			return _canBeNull && EqualityComparer<T>.Default.Equals(value, default);
+		}
+
+		private bool HasNonEmptyValidators { get; set; }
 
 		private bool AllValidatorsAreNullOrEmpty()
 		{

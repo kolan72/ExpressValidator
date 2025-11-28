@@ -221,6 +221,34 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		public void Should_Invoke_SuccessValidationHandler_When_IsValid()
+		{
+			int percentSum = 0;
+			var options = new ObjWithTwoPublicPropsOptions() { IGreaterThanValue = 0, IGreaterThanValue2 = 100 };
+			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps, ObjWithTwoPublicPropsOptions>()
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum", (p) => percentSum = p)
+						   .WithValidation((topt, o) => o.InclusiveBetween(topt.IGreaterThanValue, topt.IGreaterThanValue2))
+						   .Build(options)
+						   .Validate(new ObjWithTwoPublicProps() { PercentValue1 = 20, PercentValue2 = 80 });
+			Assert.That(percentSum, Is.EqualTo(100));
+			Assert.That(result.IsValid, Is.True);
+		}
+
+		[Test]
+		public void Should_Not_Invoke_SuccessValidationHandler_When_IsNotValid()
+		{
+			int percentSum = 0;
+			var options = new ObjWithTwoPublicPropsOptions() { IGreaterThanValue = 0, IGreaterThanValue2 = 100};
+			var result = new ExpressValidatorBuilder<ObjWithTwoPublicProps, ObjWithTwoPublicPropsOptions>()
+						   .AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum", (p) => percentSum = p)
+						   .WithValidation((topt, o) => o.InclusiveBetween(topt.IGreaterThanValue, topt.IGreaterThanValue2))
+						   .Build(options)
+						   .Validate(new ObjWithTwoPublicProps() { PercentValue1 = 21, PercentValue2 = 83 });
+			Assert.That(percentSum, Is.EqualTo(0));
+			Assert.That(result.IsValid, Is.False);
+		}
+
+		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void Should_Workaround_For_Condition_Using_Validating_Object_Work(bool isValid)

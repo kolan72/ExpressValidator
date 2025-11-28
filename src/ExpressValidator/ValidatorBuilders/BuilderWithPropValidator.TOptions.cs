@@ -12,25 +12,28 @@ namespace ExpressValidator
 		private readonly string _propName;
 		private readonly Func<TObj, T> _propertyFunc;
 
+		private readonly Action<T> _onSuccessValidation;
+
 		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj, TOptions> expressValidatorBuilder, MemberInfo memberInfo)
 										: this(expressValidatorBuilder, memberInfo.GetTypedValue<TObj, T>, memberInfo?.Name ?? string.Empty)
 		{ }
 
-		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj, TOptions> expressValidatorBuilder, Func<TObj, T> propertyFunc, string propName)
+		internal BuilderWithPropValidator(ExpressValidatorBuilder<TObj, TOptions> expressValidatorBuilder, Func<TObj, T> propertyFunc, string propName, Action<T> onSuccessValidation = null)
 		{
 			ExpressValidatorBuilder = expressValidatorBuilder;
 			_propertyFunc = propertyFunc;
 			_propName = propName;
+			_onSuccessValidation = onSuccessValidation;
 		}
 
 		public ExpressValidatorBuilder<TObj, TOptions> WithAsyncValidation(Action<TOptions, IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, TOptions, T>(_propertyFunc, _propName, true));
+			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, TOptions, T>(_propertyFunc, _propName, true, _onSuccessValidation));
 		}
 
 		public ExpressValidatorBuilder<TObj, TOptions> WithValidation(Action<TOptions, IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, TOptions, T>(_propertyFunc, _propName, false));
+			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, TOptions, T>(_propertyFunc, _propName, false, _onSuccessValidation));
 		}
 
 		private ExpressValidatorBuilder<TObj, TOptions> WithValidationByRules(Action<TOptions, IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<TObj, TOptions, T> expressPropertyValidator)

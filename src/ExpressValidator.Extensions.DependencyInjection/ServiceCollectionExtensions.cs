@@ -8,6 +8,18 @@ namespace ExpressValidator.Extensions.DependencyInjection
 {
 	public static class ServiceCollectionExtensions
 	{
+		/// <summary>
+		/// Registers all concrete, non-abstract, non-generic classes that inherit from <see cref="ExpressConfigurator{T}"/>
+		/// into the Microsoft Dependency Injection container.
+		/// <br/>
+		/// Behind the scenes, for every configurator type <c>ExpressConfigurator&lt;T&gt;</c> found, 
+		/// the DI container will also expose a proxy implementation of <see cref="IExpressValidator{T}"/>, 
+		/// enabling validation logic to be resolved transparently via the service provider.
+		/// </summary>
+		/// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
+		/// <param name="assemblyToScan">The assembly to scan for configurator types.</param>
+		/// <param name="lifetime">The service lifetime for the registered configurators. Defaults to <see cref="ServiceLifetime.Transient"/>.</param>
+		/// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
 		public static IServiceCollection AddExpressValidation(this IServiceCollection services, Assembly assemblyToScan, ServiceLifetime lifetime = ServiceLifetime.Transient)
 		{
 			assemblyToScan = assemblyToScan ?? Assembly.GetExecutingAssembly();

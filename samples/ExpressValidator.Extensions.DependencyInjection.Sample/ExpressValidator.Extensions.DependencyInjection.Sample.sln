@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressValidator.Extensions.DependencyInjection", "..\..\src\ExpressValidator.Extensions.DependencyInjection\ExpressValidator.Extensions.DependencyInjection.csproj", "{FF31B329-336C-47F0-BA60-55893A6FBCED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickStart", "QuickStart\QuickStart.csproj", "{6C698590-8D21-5D95-CEA6-33121ACA75F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickStart", "QuickStart\QuickStart.csproj", "{6C698590-8D21-5D95-CEA6-33121ACA75F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidatorBuilderWithOptions", "ValidatorBuilderWithOptions\ValidatorBuilderWithOptions.csproj", "{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{6C698590-8D21-5D95-CEA6-33121ACA75F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C698590-8D21-5D95-CEA6-33121ACA75F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C698590-8D21-5D95-CEA6-33121ACA75F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

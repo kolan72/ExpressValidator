@@ -3,6 +3,7 @@
     "QuickStart": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "guess",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -1,6 +1,6 @@
 ﻿namespace ExpressValidator.Extensions.DependencyInjection
 {
-	internal interface IExpressConfigurator<T>
+	internal interface IValidatorConfigurator<T>
 	{
 		IExpressValidator<T> Build();
 	}

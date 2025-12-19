@@ -14,7 +14,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		private readonly IExpressValidator<T> _innerValidator;
 		public ProxyValidator(IServiceProvider serviceProvider)
 		{
-			var innerConfigurator = serviceProvider.GetRequiredService<IExpressConfigurator<T>>();
+			var innerConfigurator = serviceProvider.GetRequiredService<IValidatorConfigurator<T>>();
 			_innerValidator = innerConfigurator.Build();
 		}
 

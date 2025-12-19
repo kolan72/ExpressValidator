@@ -81,7 +81,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 
 			var configuratorDescriptors = _services.Where(sd =>
 				sd.ServiceType.IsGenericType &&
-				sd.ServiceType.GetGenericTypeDefinition() == typeof(IExpressConfigurator<>));
+				sd.ServiceType.GetGenericTypeDefinition() == typeof(IValidatorConfigurator<>));
 
 			Assert.That(configuratorDescriptors, Is.Not.Empty);
 		}
@@ -95,7 +95,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 
 			var configuratorDescriptors = _services.Where(sd =>
 				sd.ServiceType.IsGenericType &&
-				sd.ServiceType.GetGenericTypeDefinition() == typeof(IExpressConfigurator<>));
+				sd.ServiceType.GetGenericTypeDefinition() == typeof(IValidatorConfigurator<>));
 
 			Assert.That(configuratorDescriptors.All(d => d.Lifetime == ServiceLifetime.Singleton), Is.True);
 		}
@@ -107,7 +107,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 
 			var hasConfigurators = _services.Any(sd =>
 				sd.ServiceType.IsGenericType &&
-				sd.ServiceType.GetGenericTypeDefinition() == typeof(IExpressConfigurator<>));
+				sd.ServiceType.GetGenericTypeDefinition() == typeof(IValidatorConfigurator<>));
 
 			var hasValidator = _services.Any(sd =>
 				sd.ServiceType.IsGenericType &&
@@ -146,7 +146,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 		public string Name { get; set; }
 	}
 
-	public class TestModelConfigurator : ExpressConfigurator<TestModel>
+	public class TestModelConfigurator : ValidatorConfigurator<TestModel>
 	{
 		public override void Configure(ExpressValidatorBuilder<TestModel> expressValidatorBuilder)
 		{

@@ -9,7 +9,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 	public static class ServiceCollectionExtensions
 	{
 		/// <summary>
-		/// Registers all concrete, non-abstract, non-generic classes that inherit from <see cref="ExpressConfigurator{T}"/>
+		/// Registers all concrete, non-abstract, non-generic classes that inherit from <see cref="ValidatorConfigurator{T}"/>
 		/// into the Microsoft Dependency Injection container.
 		/// <br/>
 		/// Behind the scenes, for every configurator type <c>ExpressConfigurator&lt;T&gt;</c> found, 
@@ -117,7 +117,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			ServiceLifetime lifetime = ServiceLifetime.Transient)
 		{
 			// 1. Define the open generic interface type to search for.
-			var openGenericInterface = typeof(IExpressConfigurator<>);
+			var openGenericInterface = typeof(IValidatorConfigurator<>);
 
 			// 2. Scan the assembly for all types that are concrete classes and implement IExpressConfigurator.
 			var builderTypes = assemblyToScan.GetTypes()

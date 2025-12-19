@@ -157,7 +157,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 			_services.AddExpressValidation(Assembly.GetExecutingAssembly());
 			_serviceProvider = _services.BuildServiceProvider();
 
-			var configurator = _serviceProvider.GetService<IExpressConfigurator<TestPersonModel>>();
+			var configurator = _serviceProvider.GetService<IValidatorConfigurator<TestPersonModel>>();
 
 			Assert.That(configurator, Is.Not.Null);
 			Assert.That(configurator, Is.InstanceOf<TestPersonModelConfigurator>());
@@ -284,7 +284,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 	}
 
 	// Test Configurators
-	public class TestPersonModelConfigurator : ExpressConfigurator<TestPersonModel>
+	public class TestPersonModelConfigurator : ValidatorConfigurator<TestPersonModel>
 	{
 		public override void Configure(ExpressValidatorBuilder<TestPersonModel> expressValidatorBuilder)
 		{
@@ -292,7 +292,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 		}
 	}
 
-	public class TestProductModelConfigurator : ExpressConfigurator<TestProductModel>
+	public class TestProductModelConfigurator : ValidatorConfigurator<TestProductModel>
 	{
 		public override void Configure(ExpressValidatorBuilder<TestProductModel> expressValidatorBuilder)
 		{
@@ -300,7 +300,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 		}
 	}
 
-	public class TestPersonWithOptionsModelConfigurator : ExpressConfigurator<TestPersonWithOptionsModel>
+	public class TestPersonWithOptionsModelConfigurator : ValidatorConfigurator<TestPersonWithOptionsModel>
 	{
 		public TestPersonWithOptionsModelConfigurator()
 			: base(new ExpressValidatorOptions

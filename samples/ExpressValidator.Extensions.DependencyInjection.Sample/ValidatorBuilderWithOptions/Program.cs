@@ -1,5 +1,7 @@
+using ExpressValidator;
 using ExpressValidator.Extensions.DependencyInjection;
 using FluentValidation;
+using System.Reflection;
 
 namespace ValidatorBuilderWithOptions
 {
@@ -8,6 +10,8 @@ namespace ValidatorBuilderWithOptions
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
+
+			builder.Services.AddExpressValidation(Assembly.GetExecutingAssembly());
 
 			builder.Services.AddExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions>(b =>
 								b.AddProperty(o => o.I)

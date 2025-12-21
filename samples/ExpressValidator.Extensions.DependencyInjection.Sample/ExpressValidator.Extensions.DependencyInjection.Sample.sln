@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickStart", "QuickStart\Qu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidatorBuilderWithOptions", "ValidatorBuilderWithOptions\ValidatorBuilderWithOptions.csproj", "{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfiguratorDemo", "ConfiguratorDemo\ConfiguratorDemo.csproj", "{B7782C5A-65E8-4FB9-B0CF-4BC0657CB294}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC01EFE1-3E2D-48C7-9A5B-0F14E892F0C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7782C5A-65E8-4FB9-B0CF-4BC0657CB294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7782C5A-65E8-4FB9-B0CF-4BC0657CB294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7782C5A-65E8-4FB9-B0CF-4BC0657CB294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7782C5A-65E8-4FB9-B0CF-4BC0657CB294}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

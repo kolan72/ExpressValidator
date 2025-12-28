@@ -1,6 +1,7 @@
 ﻿using ExpressValidator.Extensions.DependencyInjection;
 using ExpressValidator;
 using FluentValidation;
+using Shared;
 
 namespace ConfiguratorDemo
 {

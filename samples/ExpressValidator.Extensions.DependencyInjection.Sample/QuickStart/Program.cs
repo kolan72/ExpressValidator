@@ -1,6 +1,7 @@
 using ExpressValidator;
 using ExpressValidator.Extensions.DependencyInjection;
 using FluentValidation;
+using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -128,11 +129,6 @@ public class GuessTheNumberService : IGuessTheNumberService
 		}
 	}
 }
-
-	public class ObjToValidate
-	{
-		public int I { get; set; }
-	}
 
 public class ValidationParametersOptions
 {

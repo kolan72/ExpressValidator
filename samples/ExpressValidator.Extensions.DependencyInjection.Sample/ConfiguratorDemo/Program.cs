@@ -31,9 +31,4 @@ namespace ConfiguratorDemo
 			app.Run();
 		}
 	}
-
-	public class ObjToValidate
-	{
-		public int I { get; set; }
-	}
 }

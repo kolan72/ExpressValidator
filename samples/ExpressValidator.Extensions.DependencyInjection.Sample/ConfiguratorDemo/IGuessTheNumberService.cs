@@ -1,4 +1,5 @@
 ﻿using ExpressValidator;
+using Shared;
 
 namespace ConfiguratorDemo
 {

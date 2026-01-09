@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfiguratorDemo", "Configu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{773987E2-48B5-4E06-A211-568C85655B72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidatorWithReload", "ValidatorWithReload\ValidatorWithReload.csproj", "{2F1D27FB-7F89-4502-AEC9-50E1737769B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{773987E2-48B5-4E06-A211-568C85655B72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{773987E2-48B5-4E06-A211-568C85655B72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{773987E2-48B5-4E06-A211-568C85655B72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F1D27FB-7F89-4502-AEC9-50E1737769B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F1D27FB-7F89-4502-AEC9-50E1737769B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F1D27FB-7F89-4502-AEC9-50E1737769B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F1D27FB-7F89-4502-AEC9-50E1737769B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

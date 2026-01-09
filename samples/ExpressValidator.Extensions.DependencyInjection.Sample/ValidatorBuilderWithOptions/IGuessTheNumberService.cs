@@ -1,5 +1,6 @@
 ﻿using ExpressValidator;
 using Microsoft.Extensions.Options;
+using Shared;
 
 namespace ValidatorBuilderWithOptions
 {

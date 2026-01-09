@@ -1,0 +1,14 @@
+﻿{
+  "profiles": {
+    "ValidatorBuilderWithOptions": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "guesswithreload",
+      "applicationUrl": "http://localhost:5251",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

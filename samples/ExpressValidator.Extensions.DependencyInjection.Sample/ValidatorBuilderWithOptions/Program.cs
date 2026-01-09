@@ -1,6 +1,6 @@
-using ExpressValidator;
 using ExpressValidator.Extensions.DependencyInjection;
 using FluentValidation;
+using Shared;
 using System.Reflection;
 
 namespace ValidatorBuilderWithOptions
@@ -39,15 +39,5 @@ namespace ValidatorBuilderWithOptions
 
 			app.Run();
 		}
-	}
-
-	public class ValidationParametersOptions
-	{
-		public int IGreaterThanValue { get; set; }
-	}
-
-	public class ObjToValidate
-	{
-		public int I { get; set; }
 	}
 }

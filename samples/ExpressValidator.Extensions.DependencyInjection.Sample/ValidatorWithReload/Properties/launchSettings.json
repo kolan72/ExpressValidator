@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "ValidatorBuilderWithOptions": {
+    "ValidatorWithReload": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

@@ -18,13 +18,13 @@ namespace ValidatorBuilderWithOptions
 								.WithValidation((to, rbo) => rbo.GreaterThan(to.IGreaterThanValue)
 								.WithMessage($"Must be greater than {to.IGreaterThanValue}!")));
 
-			builder.Services.AddTransient<IGuessTheNumberService, GuessTheNumberService>();
+			builder.Services.AddTransient<IAdvancedNumberGuessingService, AdvancedNumberGuessingService>();
 
 			builder.Services.Configure<ValidationParametersOptions>(builder.Configuration.GetSection("ValidationParameters"));
 
 			var app = builder.Build();
 
-			app.MapGet("/complexguess", (IGuessTheNumberService service) =>
+			app.MapGet("/complexguess", (IAdvancedNumberGuessingService service) =>
 			{
 				var (Result, Message) = service.ComplexGuess();
 				if (!Result)

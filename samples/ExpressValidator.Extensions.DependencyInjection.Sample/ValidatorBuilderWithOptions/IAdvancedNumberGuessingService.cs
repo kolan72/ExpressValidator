@@ -4,12 +4,12 @@ using Shared;
 
 namespace ValidatorBuilderWithOptions
 {
-	public interface IGuessTheNumberService
+	public interface IAdvancedNumberGuessingService
 	{
 		(bool Result, string Message) ComplexGuess();
 	}
 
-	public class GuessTheNumberService : IGuessTheNumberService
+	public class AdvancedNumberGuessingService : IAdvancedNumberGuessingService
 	{
 		private readonly ValidationParametersOptions _validateOptions;
 		private readonly IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions> _expressValidatorBuilder;
@@ -17,7 +17,7 @@ namespace ValidatorBuilderWithOptions
 		private const string WIN_PHRASE = "The rules have changed in the middle of the game, but you still win!";
 		private const string LOSE_PHRASE = "Sorry, the rules changed in the middle of the game.";
 
-		public GuessTheNumberService(IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions> expressValidatorBuilder,
+		public AdvancedNumberGuessingService(IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions> expressValidatorBuilder,
 			IOptions<ValidationParametersOptions> validateOptions)
 		{
 			_validateOptions = validateOptions.Value;

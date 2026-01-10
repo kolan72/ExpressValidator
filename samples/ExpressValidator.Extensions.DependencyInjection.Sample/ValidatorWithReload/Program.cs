@@ -11,13 +11,13 @@ builder.Services.AddExpressValidatorWithReload<ObjToValidate, ValidationParamete
 								.WithMessage($"Must be greater than {to.IGreaterThanValue}!")),
 								"ValidationParameters");
 
-builder.Services.AddTransient<IGuessTheNumberService, GuessTheNumberService>();
+builder.Services.AddTransient<IReloadableNumberGuessingService, ReloadableNumberGuessingService>();
 
 builder.Services.Configure<ValidationParametersOptions>(builder.Configuration.GetSection("ValidationParameters"));
 
 var app = builder.Build();
 
-app.MapGet("/guesswithreload", (IGuessTheNumberService service) =>
+app.MapGet("/guesswithreload", (IReloadableNumberGuessingService service) =>
 {
 	var (Result, Message) = service.GuessWithReload();
 	if (!Result)
@@ -30,7 +30,7 @@ app.MapGet("/guesswithreload", (IGuessTheNumberService service) =>
 	}
 });
 
-app.MapGet("/guesswithreloadasync", async (IGuessTheNumberService service) =>
+app.MapGet("/guesswithreloadasync", async (IReloadableNumberGuessingService service) =>
 {
 	var (Result, Message) = await service.GuessWithReloadAsync();
 	if (!Result)

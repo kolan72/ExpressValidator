@@ -3,17 +3,17 @@ using Shared;
 
 namespace ValidatorWithReload
 {
-    public interface IGuessTheNumberService
+    public interface IReloadableNumberGuessingService
     {
 		(bool Result, string Message) GuessWithReload();
 		Task<(bool Result, string Message)> GuessWithReloadAsync();
 	}
 
-	public class GuessTheNumberService : IGuessTheNumberService
+	public class ReloadableNumberGuessingService : IReloadableNumberGuessingService
 	{
 		private readonly IExpressValidatorWithReload<ObjToValidate> _expressValidatorWithReload;
 
-		public GuessTheNumberService(IExpressValidatorWithReload<ObjToValidate> expressValidatorWithReload)
+		public ReloadableNumberGuessingService(IExpressValidatorWithReload<ObjToValidate> expressValidatorWithReload)
 		{
 			_expressValidatorWithReload = expressValidatorWithReload;
 		}

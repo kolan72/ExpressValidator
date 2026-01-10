@@ -1,6 +1,5 @@
 using ExpressValidator.Extensions.DependencyInjection;
 using FluentValidation;
-using QuickStart;
 using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +15,6 @@ var app = builder.Build();
 
 app.MapGet("/guess", (IGuessTheNumberService service) =>
 {
-	
 	var (Result, Message) = service.Guess();
 	if (!Result)
 	{

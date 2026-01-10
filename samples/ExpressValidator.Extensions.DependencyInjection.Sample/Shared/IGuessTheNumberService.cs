@@ -1,7 +1,7 @@
 ﻿using ExpressValidator;
-using Shared;
+using System;
 
-namespace ConfiguratorDemo
+namespace Shared
 {
 	public interface IGuessTheNumberService
 	{
@@ -11,6 +11,7 @@ namespace ConfiguratorDemo
 	public class GuessTheNumberService : IGuessTheNumberService
 	{
 		private readonly IExpressValidator<ObjToValidate> _expressValidator;
+
 		public GuessTheNumberService(IExpressValidator<ObjToValidate> expressValidator)
 		{
 			_expressValidator = expressValidator;
@@ -18,7 +19,7 @@ namespace ConfiguratorDemo
 
 		public (bool Result, string Message) Guess()
 		{
-			var i = Random.Shared.Next(1, 11);
+			var i = Randomizer.Next(1, 11);
 			var objToValidate = new ObjToValidate() { I = i };
 			var vr = _expressValidator.Validate(objToValidate);
 			if (vr.IsValid)

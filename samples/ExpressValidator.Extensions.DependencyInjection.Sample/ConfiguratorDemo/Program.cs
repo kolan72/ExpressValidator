@@ -1,4 +1,5 @@
 ﻿using ExpressValidator.Extensions.DependencyInjection;
+using Shared;
 using System.Reflection;
 
 namespace ConfiguratorDemo

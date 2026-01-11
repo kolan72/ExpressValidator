@@ -2,9 +2,10 @@
 
 ## Key Features
 
-- Configures and adds the `IExpressValidator<ObjToValidate>` interface in Microsoft's Dependency Injection (DI) container.
-- Additionally, the `IExpressValidatorBuilder<ObjToValidate, ValidationParametersOptions>` interface can be configured and registered to update the validator parameters when the `ValidationParametersOptions` change.
-- Ability to dynamically update the validator parameters from options bound to the configuration section without restarting the application by configuring the `IExpressValidatorWithReload<ObjToValidate>` interface.
+- **Automatic DI Registration**: Configures and registers `IExpressValidator<T>` with Microsoft's Dependency Injection container.
+- **Class-Based Configuration**: Define validation rules via dedicated configurator classes inheriting from `ValidatorConfigurator<T>`, providing an alternative to inline configuration.
+- **Dynamic Parameter Updates**: Registers `IExpressValidatorBuilder<T, TOptions>` to automatically update validation parameters when configuration options change.
+- **Automatic Reload Capability**: Automatically reload validation rules when configuration changes using `IExpressValidatorWithReload<T>`.
 
 ## Quick Start
 

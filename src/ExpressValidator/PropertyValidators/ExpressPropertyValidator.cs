@@ -20,6 +20,7 @@ namespace ExpressValidator
 			_propertyFunc = propertyFunc;
 			_propName = propName;
 			_typeValidator = typeValidator;
+			IsAsync = _typeValidator.IsAsync == true;
 			_onSuccessValidation = onSuccessValidation;
 		}
 
@@ -68,6 +69,6 @@ namespace ExpressValidator
 			}
 		}
 
-		public bool IsAsync => _typeValidator.IsAsync == true;
+		public bool IsAsync { get; }
 	}
 }

@@ -122,11 +122,11 @@ namespace ExpressValidator.Tests
 
 			var result = await new ExpressValidatorBuilder<Customer>()
 						 .AddProperty(o => o.CustomerId)
-						 .WithAsyncValidation(o => o.MustAsync(async (id, cancellation) => 
+						 .WithAsyncValidation(o => o.MustAsync(async (id, cancellation) =>
 
 								!await apiClient.IdExistsAsync(id, cancellation)))
 
-						.Build() 
+						.Build()
 						.ValidateAsync(customer);
 
 			Assert.That(result.IsValid, Is.EqualTo(valid));

@@ -19,6 +19,8 @@ namespace ExpressValidator
 
 		private readonly Action<T> _onSuccessValidation;
 
+		private PropertyValidationProcessor<TObj, T> _validationProcessor;
+
 		public ExpressPropertyValidator(Func<TObj, T> propertyFunc, string propName, bool isAsync, Action<T> onSuccessValidation = null)
 		{
 			_propertyFunc = propertyFunc;
@@ -32,44 +34,14 @@ namespace ExpressValidator
 			_actionWithOptions = action;
 		}
 
-		public async Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync(TObj obj, CancellationToken token = default)
+		public Task<(bool IsValid, List<ValidationFailure> Failures)> ValidateAsync(TObj obj, CancellationToken token = default)
 		{
-			if (_onSuccessValidation != null)
-			{
-				var value = _propertyFunc(obj);
-				var res = await _typeValidator.ValidateExAsync(value, token);
-				if (res.IsValid)
-				{
-					_onSuccessValidation(value);
-				}
-				return res;
-			}
-			else
-			{
-				return await _typeValidator.ValidateExAsync(_propertyFunc(obj), token);
-			}
+			return _validationProcessor.ValidateAsync(obj, token);
 		}
 
 		public (bool IsValid, List<ValidationFailure> Failures) Validate(TObj obj)
 		{
-			if (IsAsync)
-			{
-				throw new InvalidOperationException();
-			}
-			if (_onSuccessValidation != null)
-			{
-				var value = _propertyFunc(obj);
-				var res = _typeValidator.ValidateEx(value);
-				if (res.IsValid)
-				{
-					_onSuccessValidation(value);
-				}
-				return res;
-			}
-			else
-			{
-				return _typeValidator.ValidateEx(_propertyFunc(obj));
-			}
+			return _validationProcessor.Validate(obj);
 		}
 
 		public void ApplyOptions(TOptions options)
@@ -89,6 +61,7 @@ namespace ExpressValidator
 				_typeValidator = new TypeValidator<T>();
 			}
 			_typeValidator.SetValidation(_action, _propName);
+			_validationProcessor = new PropertyValidationProcessor<TObj, T>(_propertyFunc, _typeValidator, _onSuccessValidation);
 		}
 
 		public bool IsAsync { get; }

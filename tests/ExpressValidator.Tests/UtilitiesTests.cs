@@ -53,5 +53,39 @@ namespace ExpressValidator.Tests
 			_ = MemberInfoParser.TryParse<ObjWithTwoPublicProps, string>(s => s._sField, MemberTypes.Field, out MemberInfo memberInfoF);
 			Assert.That(memberInfoF.GetTypedValue<ObjWithTwoPublicProps, string>(objToTest), Is.EqualTo("TestField"));
 		}
+
+		[Test]
+		public void Should_ReturnFalse_ForNonNullableValueType_WhenCheckingIsValueNull()
+		{
+			Assert.That(TypeInfo<int>.IsValueNull(0), Is.False);
+		}
+
+		[Test]
+		public void Should_ReturnTrue_ForNullableValueType_WhenCheckingIsValueNull_AndValueIsNull()
+		{
+			int? value = null;
+			Assert.That(TypeInfo<int?>.IsValueNull(value), Is.True);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_ForNullableValueType_WhenCheckingIsValueNull_AndValueIsNotNull()
+		{
+			int? value = 5;
+			Assert.That(TypeInfo<int?>.IsValueNull(value), Is.False);
+		}
+
+		[Test]
+		public void Should_ReturnTrue_ForReferenceType_WhenCheckingIsValueNull_AndValueIsNull()
+		{
+			string value = null;
+			Assert.That(TypeInfo<string>.IsValueNull(value), Is.True);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_ForReferenceType_WhenCheckingIsValueNull_AndValueIsNotNull()
+		{
+			string value = "hello";
+			Assert.That(TypeInfo<string>.IsValueNull(value), Is.False);
+		}
 	}
 }

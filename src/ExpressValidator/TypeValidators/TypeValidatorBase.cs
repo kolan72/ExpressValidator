@@ -28,7 +28,7 @@ namespace ExpressValidator
 		/// <returns></returns>
 		protected override bool PreValidate(ValidationContext<T> context, ValidationResult result)
 		{
-			if (TypeInfo<T>.IsValueNull(context.InstanceToValidate))
+			if(TypeTraits<T>.CanBeNull && EqualityComparer<T>.Default.Equals(context.InstanceToValidate, default))
 			{
 				result.Errors.Add(new ValidationFailure(_propName, NullFallbackMessageProvider.GetMessage(_propName, context)));
 				return false;
@@ -84,7 +84,7 @@ namespace ExpressValidator
 
 		internal abstract bool? IsAsync { get; }
 
-		protected bool ShouldValidate(T value) => !TypeInfo<T>.IsValueNull(value) || HasNonEmptyValidators;
+		protected bool ShouldValidate(T value) => !(TypeTraits<T>.CanBeNull && EqualityComparer<T>.Default.Equals(value, default)) || HasNonEmptyValidators;
 
 		private bool HasNonEmptyValidators { get; set; }
 

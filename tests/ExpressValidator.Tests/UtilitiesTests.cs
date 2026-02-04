@@ -71,5 +71,39 @@ namespace ExpressValidator.Tests
 		{
 			Assert.That(TypeTraits<string>.CanBeNull, Is.True);
 		}
+
+		[Test]
+		public void Should_TypeHelper_ReturnFalse_ForNonNullableValueType_WhenCheckingIsValueNull()
+		{
+			Assert.That(TypeHelper<int>.IsNull(0), Is.False);
+		}
+
+		[Test]
+		public void Should_TypeHelper_ReturnTrue_ForNullableValueType_WhenCheckingIsValueNull_AndValueIsNull()
+		{
+			int? value = null;
+			Assert.That(TypeHelper<int?>.IsNull(value), Is.True);
+		}
+
+		[Test]
+		public void Should_TypeHelper_ReturnFalse_ForNullableValueType_WhenCheckingIsValueNull_AndValueIsNotNull()
+		{
+			int? value = 5;
+			Assert.That(TypeHelper<int?>.IsNull(value), Is.False);
+		}
+
+		[Test]
+		public void Should_TypeHelper_ReturnTrue_ForReferenceType_WhenCheckingIsValueNull_AndValueIsNull()
+		{
+			string value = null;
+			Assert.That(TypeHelper<string>.IsNull(value), Is.True);
+		}
+
+		[Test]
+		public void Should_TypeHelper_ReturnFalse_ForReferenceType_WhenCheckingIsValueNull_AndValueIsNotNull()
+		{
+			string value = "hello";
+			Assert.That(TypeHelper<string>.IsNull(value), Is.False);
+		}
 	}
 }

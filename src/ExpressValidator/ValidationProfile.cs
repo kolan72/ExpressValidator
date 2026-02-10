@@ -1,10 +1,10 @@
 ﻿namespace ExpressValidator
 {
-	public abstract class ValidatorProfile<T>
+	public abstract class ValidationProfile<T>
 	{
 		protected readonly ExpressValidatorBuilder<T> _validatorBuilder;
 
-		protected ValidatorProfile(OnFirstPropertyValidatorFailed onFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue)
+		protected ValidationProfile(OnFirstPropertyValidatorFailed onFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue)
 		{
 			_validatorBuilder = new ExpressValidatorBuilder<T>(onFirstPropertyValidatorFailed);
 		}

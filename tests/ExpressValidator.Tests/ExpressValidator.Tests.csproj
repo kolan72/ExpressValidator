@@ -94,7 +94,7 @@
     <Compile Include="ObjectsToTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UtilitiesTests.cs" />
-    <Compile Include="ValidatorProfileTests.cs" />
+    <Compile Include="ValidationProfileTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressValidatorTests.ForAsync.Tests.cs" />

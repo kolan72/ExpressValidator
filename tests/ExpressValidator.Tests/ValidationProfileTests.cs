@@ -3,7 +3,7 @@
 namespace ExpressValidator.Tests
 {
 	[TestFixture]
-	internal class ValidatorProfileTests
+	internal class ValidationProfileTests
 	{
 		[Test]
 		public void Should_AllowDerivedClassesToConfigureValidator_WhenCreatingValidator()
@@ -20,7 +20,7 @@ namespace ExpressValidator.Tests
 		}
 	}
 
-	internal class CustomValidatorProfile : ValidatorProfile<string>
+	internal class CustomValidatorProfile : ValidationProfile<string>
 	{
 		public bool CustomConfigurationWasApplied { get; private set; }
 

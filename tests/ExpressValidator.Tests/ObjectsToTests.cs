@@ -36,16 +36,30 @@ namespace ExpressValidator.Tests
         public int PercentSumMaxValue { get; set; }
     }
 
-    public class ContactValidator : AbstractValidator<Contact>
+    public class SimpleContactValidator : AbstractValidator<Contact>
     {
-        public ContactValidator()
+        public SimpleContactValidator()
         {
             RuleFor(x => x.Name).NotNull();
             RuleFor(x => x.Email).NotNull();
         }
     }
 
-    public class Contact
+	public class ContactValidator : AbstractValidator<Contact>
+	{
+		public ContactValidator()
+		{
+			RuleFor(x => x.Name)
+				.NotEmpty()
+				.MaximumLength(100);
+
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .EmailAddress();
+		}
+	}
+
+	public class Contact
     {
         public string Name { get; set; }
         public string Email { get; set; }
@@ -53,7 +67,27 @@ namespace ExpressValidator.Tests
         public string K { get; set; }
     }
 
-    internal class ObjWithNullable
+	public class ContactNullableStructValidator : AbstractValidator<ContactStruct?>
+	{
+		public ContactNullableStructValidator()
+		{
+			RuleFor(x => x.Value.Name)
+				.NotEmpty()
+				.MaximumLength(100);
+
+			RuleFor(x => x.Value.Email)
+				.NotEmpty()
+				.EmailAddress();
+		}
+	}
+
+	public struct ContactStruct
+	{
+		public string Name { get; set; }
+		public string Email { get; set; }
+	}
+
+	internal class ObjWithNullable
     {
         public string Value { get; set; } = "Test";
     }

@@ -23,6 +23,10 @@ namespace ExpressValidator
 
 		public ValidationResult Validate(TObj obj)
 		{
+			if (TypeHelper<TObj>.IsNull(obj))
+			{
+				return ValidationFallbackProvider.GetNullFailure<TObj>();
+			}
 			if (_validators.Any(v => v.IsAsync))
 			{
 				throw new InvalidOperationException($"Object validator has a property or field with asynchronous validation rules. Please use {nameof(ValidateAsync)} method.");

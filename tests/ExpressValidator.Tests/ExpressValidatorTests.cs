@@ -98,7 +98,7 @@ namespace ExpressValidator.Tests
 						   .AddProperty(o => o.S)
 						   .WithValidation(o => o.MaximumLength(1))
 						   .AddProperty(o => o.Contact)
-						   .WithValidation(o => o.SetValidator(new ContactValidator()))
+						   .WithValidation(o => o.SetValidator(new SimpleContactValidator()))
 						   .Build()
 						   .Validate(new SubObjWithComplexProperty() { I = 2, S = "b", Contact = new Contact()});
 			ClassicAssert.AreEqual(false, result.IsValid);
@@ -114,7 +114,7 @@ namespace ExpressValidator.Tests
 						   .AddProperty(o => o.S)
 						   .WithValidation(o => o.MaximumLength(1))
 						   .AddProperty(o => o.Contacts)
-						   .WithValidation(o => o.ForEach(o1 => o1.SetValidator(new ContactValidator())))
+						   .WithValidation(o => o.ForEach(o1 => o1.SetValidator(new SimpleContactValidator())))
 						   .Build()
 						   .Validate(new SubObjWithComplexCollectionProperty() { I = 1, S = "b"});
 			ClassicAssert.AreEqual(false, result.IsValid);
@@ -130,7 +130,7 @@ namespace ExpressValidator.Tests
 					   .AddProperty(o => o.S)
 					   .WithValidation(o => o.MaximumLength(1))
 					   .AddProperty(o => o.Contacts)
-					   .WithValidation(o => o.NotEmpty().ForEach(o1 => o1.SetValidator(new ContactValidator())))
+					   .WithValidation(o => o.NotEmpty().ForEach(o1 => o1.SetValidator(new SimpleContactValidator())))
 					   .Build()
 					   .Validate(new SubObjWithComplexCollectionProperty() { I = 1, S = "b",
 						   Contacts = new List<Contact>() { new Contact(), new Contact() } });
@@ -147,7 +147,7 @@ namespace ExpressValidator.Tests
 					   .AddProperty(o => o.S)
 					   .WithValidation(o => o.MaximumLength(1))
 					   .AddProperty(o => o.Contacts)
-					   .WithValidation(o => o.ForEach(o1 => o1.SetValidator(new ContactValidator())))
+					   .WithValidation(o => o.ForEach(o1 => o1.SetValidator(new SimpleContactValidator())))
 					   .Build()
 					   .Validate(new SubObjWithComplexCollectionProperty()
 					   {

@@ -36,6 +36,10 @@ namespace ExpressValidator
 
 		public Task<ValidationResult> ValidateAsync(TObj obj, CancellationToken token = default)
 		{
+			if (TypeHelper<TObj>.IsNull(obj))
+			{
+				return Task.FromResult(ValidationFallbackProvider.GetNullFailure<TObj>());
+			}
 			return _validationMode == OnFirstPropertyValidatorFailed.Break ? ValidateWithBreakAsync(obj, token) : ValidateWithContinueAsync(obj, token);
 		}
 

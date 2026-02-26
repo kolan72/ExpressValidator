@@ -1,20 +1,9 @@
 ﻿namespace ExpressValidator
 {
+#pragma warning disable S1694 // An abstract class should have both abstract and concrete methods
 	public abstract class ValidationProfile<T>
+#pragma warning restore S1694 // An abstract class should have both abstract and concrete methods
 	{
-		protected readonly ExpressValidatorBuilder<T> _validatorBuilder;
-
-		protected ValidationProfile(OnFirstPropertyValidatorFailed onFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue)
-		{
-			_validatorBuilder = new ExpressValidatorBuilder<T>(onFirstPropertyValidatorFailed);
-		}
-
-		public IExpressValidator<T> CreateValidator()
-		{
-			Configure(_validatorBuilder);
-			return _validatorBuilder.Build();
-		}
-
 		public abstract void Configure(ExpressValidatorBuilder<T> expressValidatorBuilder);
 	}
 }

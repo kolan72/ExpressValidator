@@ -93,5 +93,48 @@ namespace ExpressValidator.Tests
 				Assert.Throws<ArgumentNullException>(() => new ContactNullableStructValidator().Validate((ContactStruct?)null));
 			}
 		}
+
+		[Test]
+		public async Task Should_NotThrow_When_Class_To_Validate_Is_Null_And_WithAsyncValidation_Is_Used()
+		{
+			var validator = new ExpressValidatorBuilder<Contact>()
+							.AddProperty(o => o.Name)
+							.WithValidation(o => o.NotEmpty()
+											.MaximumLength(100))
+							.AddProperty(o => o.Email)
+							.WithValidation(o => o.NotEmpty()
+											.EmailAddress())
+							.AddProperty(o => o.K)
+							.WithAsyncValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return true; }))
+							.Build();
+
+			var result = await validator.ValidateAsync(null);
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(1));
+			Assert.That(result.Errors[0].ErrorMessage, Is.EqualTo(NullErrorMessageForClass));
+
+			Assert.ThrowsAsync<ArgumentNullException>(async () => await new ContactValidator().ValidateAsync((Contact)null));
+		}
+
+		[Test]
+		public async Task Should_NotThrow_When_Struct_To_Validate_Is_Null_And_WithAsyncValidation_Is_Used()
+		{
+			var validator = new ExpressValidatorBuilder<ContactStruct?>()
+						.AddProperty(o => o.Value.Email)
+						.WithValidation(o => o.NotEmpty()
+										.EmailAddress())
+						.AddProperty(o => o.Value.Name)
+							.WithAsyncValidation(o => o.MustAsync(async (_, __) => { await Task.Delay(1); return true; }))
+						.Build();
+
+			var result = await validator.ValidateAsync(null);
+
+			Assert.That(result.IsValid, Is.False);
+			Assert.That(result.Errors.Count, Is.EqualTo(1));
+			Assert.That(result.Errors[0].ErrorMessage, Is.EqualTo(NullErrorMessageForStruct));
+
+			Assert.ThrowsAsync<ArgumentNullException>(async () => await new ContactNullableStructValidator().ValidateAsync((ContactStruct?)null));
+		}
 	}
 }

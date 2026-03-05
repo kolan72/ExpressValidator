@@ -1,3 +1,17 @@
+## 0.12.2
+
+- Move the instance field `TypeValidatorBase._shouldBeComparedToNull` to a static readonly field (renamed to `_canBeNull`) to cache the reflection result per `TypeValidatorBase<T>` type and eliminate redundant per-instance evaluations.
+- Remove the eagerly allocated `NotNullValidationMessageProvider` during `ExpressValidatorBuilder` configuration, and instantiate `NotNullValidationMessageProvider<object, T>` only when the value is null. 
+Deprecate `NotNullValidationMessageProvider.GetMessage(ValidationContext<T>)`.
+- Update to FluentValidation 12.1.0.
+- Rename private `TypeValidatorBase.HasOnlyNullOrEmptyValidators` to `HasNonEmptyValidators` (inverting the boolean logic) and remove the negation of this property in the `ShouldValidate` method.
+- DRY refactor of null validation in `TypeValidatorBase<T>`.
+- Add tests for null-tolerance validation in `QuickValidator`.
+- Add test for validating a primitive type using `ExpressValidatorBuilder`.
+- Add a unit test that verifies `ExpressValidator` does not throw when members are null and no null-related validators are used.
+- Edit README.md and NuGet.md.
+
+
 ## 0.12.0
 
 - Support .NET 8.0 and FluentValidation 12.0.0.

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ExpressValidator.Extensions.DependencyInjection.Tests
 {
-	internal class ServiceCollectionExtensionsTests
+	internal partial class ServiceCollectionExtensionsTests
     {
         [Test]
         public void Should_AddExpressValidator_Register()

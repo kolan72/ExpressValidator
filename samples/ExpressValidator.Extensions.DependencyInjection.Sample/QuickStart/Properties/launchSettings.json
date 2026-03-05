@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "QuickStart": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "guess",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:56889;http://localhost:56890"
+    }
+  }
+}

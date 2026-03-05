@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressValidator.Tests", "t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "bench\Benchmark\Benchmark.csproj", "{163D81E7-128E-431F-B827-F2AA2BD1D077}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressValidator.Tests.Net8", "tests\ExpressValidator.Tests.Net8\ExpressValidator.Tests.Net8.csproj", "{C74789B4-A028-45FC-9771-F5848491AB89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{163D81E7-128E-431F-B827-F2AA2BD1D077}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{163D81E7-128E-431F-B827-F2AA2BD1D077}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{163D81E7-128E-431F-B827-F2AA2BD1D077}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C74789B4-A028-45FC-9771-F5848491AB89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C74789B4-A028-45FC-9771-F5848491AB89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C74789B4-A028-45FC-9771-F5848491AB89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C74789B4-A028-45FC-9771-F5848491AB89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

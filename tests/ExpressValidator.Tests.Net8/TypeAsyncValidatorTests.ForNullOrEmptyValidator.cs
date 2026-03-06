@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
-using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using System.Threading.Tasks;
 
 namespace ExpressValidator.Tests.Net8
 {
@@ -12,7 +10,7 @@ namespace ExpressValidator.Tests.Net8
 		[TestCase(false, null, true)]
 		[TestCase(true, "t", false)]
 		[TestCase(false, "t", false)]
-		public async Task Should_OnlyNullValidation_Be_Corect_ForNull_And_NotNull(bool single, string valueToTest, bool isValid)
+		public async Task Should_OnlyNullValidation_Be_Corect_ForNull_And_NotNull(bool single, string? valueToTest, bool isValid)
 		{
 			var validator = new TypeAsyncValidator<string>();
 			if (single)
@@ -46,7 +44,7 @@ namespace ExpressValidator.Tests.Net8
 		[TestCase(false, null, true)]
 		[TestCase(true, "t", false)]
 		[TestCase(false, "t", false)]
-		public async Task Should_OnlyEmptyValidation_Be_Corect_ForNull_And_NotNull(bool single, string valueToTest, bool isValid)
+		public async Task Should_OnlyEmptyValidation_Be_Corect_ForNull_And_NotNull(bool single, string? valueToTest, bool isValid)
 		{
 			var validator = new TypeAsyncValidator<string>();
 			if (single)
@@ -78,7 +76,7 @@ namespace ExpressValidator.Tests.Net8
 		[Test]
 		[TestCase(null, true)]
 		[TestCase("t", false)]
-		public async Task Should_NullAndEmptyValidation_Be_Corect_ForNull_And_NotNull(string valueToTest, bool isValid)
+		public async Task Should_NullAndEmptyValidation_Be_Corect_ForNull_And_NotNull(string? valueToTest, bool isValid)
 		{
 			var validator = new TypeAsyncValidator<string>();
 			validator.SetValidation(o => o.Empty().Null().Null().Empty(), "someprop");

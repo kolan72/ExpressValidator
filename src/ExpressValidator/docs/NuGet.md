@@ -8,8 +8,8 @@ ExpressValidator is a library that provides the ability to validate objects usin
 - Supports adding a property or field for validation.
 - Verifies that a property expression is a property and a field expression is a field, and throws `ArgumentException` if it is not.
 - Supports adding a `Func` that provides a value for validation.
-- Provides quick and easy validation using `QuickValidator`.
 - Built-in `null` tolerance - `null` root instances fail validation instead of throwing exceptions.
+- Quick and easy validation with `QuickValidator`, with robust support for `null` values.
 - Supports asynchronous validation.
 - Targets .NET Standard 2.0+
 

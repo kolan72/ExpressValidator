@@ -14,18 +14,19 @@ namespace ExpressValidator
 	/// <typeparam name="TOptions"></typeparam>
 	public class ExpressValidator<TObj, TOptions> : IExpressValidator<TObj>
 	{
-		private readonly IEnumerable<IObjectValidator<TObj, TOptions>> _validators;
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
+		private readonly IEnumerable<IObjectValidator<TObj>> _validators;
 
 		internal ExpressValidator(TOptions options, IEnumerable<IObjectValidator<TObj, TOptions>> validators, OnFirstPropertyValidatorFailed validationMode)
 		{
-			_validators = validators;
 			_validationMode = validationMode;
 
-			foreach (var validator in _validators)
+			foreach (var validator in validators)
 			{
 				validator.ApplyOptions(options);
 			}
+
+			_validators = validators;
 		}
 
 		public ValidationResult Validate(TObj obj)

@@ -62,7 +62,12 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IExpressValidator<TObj> Build(TOptions options)
 		{
-			return new ExpressValidator<TObj, TOptions>(options, _objectValidators, _validationMode);
+			foreach (var validator in _objectValidators)
+			{
+				validator.ApplyOptions(options);
+			}
+
+			return new ExpressValidator<TObj>(_objectValidators, _validationMode);
 		}
 
 		internal void AddValidator(IObjectValidator<TObj, TOptions> objectValidator)

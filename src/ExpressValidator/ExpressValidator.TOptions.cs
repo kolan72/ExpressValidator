@@ -12,6 +12,9 @@ namespace ExpressValidator
 	/// </summary>
 	/// <typeparam name="TObj"></typeparam>
 	/// <typeparam name="TOptions"></typeparam>
+#pragma warning disable S1133 // Deprecated code should be removed
+	[Obsolete("The ExpressValidator<TObj, TOptions> class is obsolete and will be removed in a future version.")]
+#pragma warning restore S1133 // Deprecated code should be removed
 	public class ExpressValidator<TObj, TOptions> : IExpressValidator<TObj>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;

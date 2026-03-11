@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace ExpressValidator.Tests
+namespace ExpressValidator.Tests.Net8
 {
 	internal partial class ExpressValidatorTests
 	{
@@ -65,8 +65,8 @@ namespace ExpressValidator.Tests
 						   .Build()
 						   .Validate(new ObjWithTwoPublicProps());
 
-			var em1 = NullFallbackMessageProvider.GetMessage("S", new ValidationContext<string>(null));
-			var em2 = NullFallbackMessageProvider.GetMessage("_sField", new ValidationContext<string>(null));
+			var em1 = NullFallbackMessageProvider.GetMessage("S", new ValidationContext<string>(null!));
+			var em2 = NullFallbackMessageProvider.GetMessage("_sField", new ValidationContext<string>(null!));
 
 			Assert.That(result.IsValid, Is.False);
 			Assert.That(result.Errors.Count, Is.EqualTo(2));
@@ -98,7 +98,7 @@ namespace ExpressValidator.Tests
 						   .AddProperty(o => o.S)
 						   .WithValidation(o => o.MaximumLength(1))
 						   .AddProperty(o => o.Contact)
-						   .WithValidation(o => o.SetValidator(new SimpleContactValidator()))
+						   .WithValidation(o => o.SetValidator(new SimpleContactValidator()!))
 						   .Build()
 						   .Validate(new SubObjWithComplexProperty() { I = 2, S = "b", Contact = new Contact()});
 			ClassicAssert.AreEqual(false, result.IsValid);
@@ -114,7 +114,7 @@ namespace ExpressValidator.Tests
 						   .AddProperty(o => o.S)
 						   .WithValidation(o => o.MaximumLength(1))
 						   .AddProperty(o => o.Contacts)
-						   .WithValidation(o => o.ForEach(o1 => o1.SetValidator(new SimpleContactValidator())))
+						   .WithValidation(o => o.ForEach(o1 => o1.SetValidator(new SimpleContactValidator()!)))
 						   .Build()
 						   .Validate(new SubObjWithComplexCollectionProperty() { I = 1, S = "b"});
 			ClassicAssert.AreEqual(false, result.IsValid);
@@ -133,7 +133,7 @@ namespace ExpressValidator.Tests
 					   .WithValidation(o => o.NotEmpty().ForEach(o1 => o1.SetValidator(new SimpleContactValidator())))
 					   .Build()
 					   .Validate(new SubObjWithComplexCollectionProperty() { I = 1, S = "b",
-						   Contacts = new List<Contact>() { new Contact(), new Contact() } });
+						   Contacts = [new Contact(), new Contact()] });
 			ClassicAssert.AreEqual(false, result.IsValid);
 			ClassicAssert.AreEqual(4, result.Errors.Count);
 		}
@@ -153,7 +153,7 @@ namespace ExpressValidator.Tests
 					   {
 						   I = 1,
 						   S = "b",
-						   Contacts = new List<Contact>() { new Contact(){ Email = "", Name = "" }, new Contact(){ Email = "", Name = "" }}
+						   Contacts = [new Contact() { Email = "", Name = "" }, new Contact() { Email = "", Name = "" }]
 					   });
 			ClassicAssert.AreEqual(true, result.IsValid);
 		}
@@ -190,7 +190,7 @@ namespace ExpressValidator.Tests
 		[TestCase(false)]
 		public void Should_Work_When_Nullable_And_Value_Prop_Values_Validated_WithNullValidator(bool propValueIsNull)
 		{
-			ObjWithTwoPublicProps objToTest = null;
+			ObjWithTwoPublicProps objToTest;
 
 			if (propValueIsNull)
 			{
@@ -282,7 +282,7 @@ namespace ExpressValidator.Tests
 		public void Should_Preserve_Property_Name(SetPropertyNameType setPropertyNameType, MemberTypes memberTypes)
 		{
 			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>();
-			IBuilderWithPropValidator<ObjWithTwoPublicProps, int> builderWithProperty = null;
+			IBuilderWithPropValidator<ObjWithTwoPublicProps, int> builderWithProperty;
 
 			if (memberTypes == MemberTypes.Property)
 			{
@@ -313,16 +313,16 @@ namespace ExpressValidator.Tests
 			{
 				case SetPropertyNameType.NotSetExplicitly:
 				case SetPropertyNameType.WithName:
-					Assert.That(result.Errors.FirstOrDefault().PropertyName, memberTypes == MemberTypes.Property ? Is.EqualTo("I") : Is.EqualTo("_iField"));
+					Assert.That(result.Errors.FirstOrDefault()?.PropertyName, memberTypes == MemberTypes.Property ? Is.EqualTo("I") : Is.EqualTo("_iField"));
 					break;
 				case SetPropertyNameType.Override:
-					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("TestPropName"));
+					Assert.That(result.Errors.FirstOrDefault()?.PropertyName, Is.EqualTo("TestPropName"));
 					break;
 			}
 
 			if (setPropertyNameType == SetPropertyNameType.WithName)
 			{
-				Assert.That(result.Errors.FirstOrDefault().ErrorMessage, Does.Contain("TestName"));
+				Assert.That(result.Errors.FirstOrDefault()?.ErrorMessage, Does.Contain("TestName"));
 			}
 		}
 
@@ -358,16 +358,16 @@ namespace ExpressValidator.Tests
 			{
 				case SetPropertyNameType.NotSetExplicitly:
 				case SetPropertyNameType.WithName:
-					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("percentSum"));
+					Assert.That(result.Errors.FirstOrDefault()?.PropertyName, Is.EqualTo("percentSum"));
 					break;
 				case SetPropertyNameType.Override:
-					Assert.That(result.Errors.FirstOrDefault().PropertyName, Is.EqualTo("TestPropName"));
+					Assert.That(result.Errors.FirstOrDefault()?.PropertyName, Is.EqualTo("TestPropName"));
 					break;
 			}
 
 			if (setPropertyNameType == SetPropertyNameType.WithName)
 			{
-				Assert.That(result.Errors.FirstOrDefault().ErrorMessage, Does.Contain("TestName"));
+				Assert.That(result.Errors.FirstOrDefault()?.ErrorMessage, Does.Contain("TestName"));
 			}
 		}
 

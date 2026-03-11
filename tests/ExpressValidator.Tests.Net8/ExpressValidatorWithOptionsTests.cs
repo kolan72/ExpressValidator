@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace ExpressValidator.Tests
+namespace ExpressValidator.Tests.Net8
 {
 	internal partial class ExpressValidatorWithOptonsTests
 	{

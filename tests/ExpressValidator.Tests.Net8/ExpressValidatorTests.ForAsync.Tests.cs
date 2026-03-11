@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExpressValidator.Tests
+namespace ExpressValidator.Tests.Net8
 {
     internal partial class ExpressValidatorTests
     {

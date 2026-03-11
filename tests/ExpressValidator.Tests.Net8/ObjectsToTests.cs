@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ExpressValidator.Tests
+namespace ExpressValidator.Tests.Net8
 {
 	public class SubObjWithComplexProperty : ObjWithTwoPublicProps
     {
-        public Contact Contact { get; set; }
+        public Contact? Contact { get; set; }
     }
 
     public class SubObjWithComplexCollectionProperty : ObjWithTwoPublicProps
     {
-        public IEnumerable<Contact> Contacts { get; set; }
+        public IEnumerable<Contact>? Contacts { get; set; }
     }
 
     public class ObjWithTwoPublicProps
     {
         public int I { get; set; }
-        public string S { get; set; }
-        public string _sField;
+        public string? S { get; set; }
+        public string? _sField;
         public int _iField;
         public int PercentValue1 { get; set; }
         public int PercentValue2 { get; set; }
@@ -61,21 +61,21 @@ namespace ExpressValidator.Tests
 
 	public class Contact
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
 
-        public string K { get; set; }
+        public string? K { get; set; }
     }
 
 	public class ContactNullableStructValidator : AbstractValidator<ContactStruct?>
 	{
 		public ContactNullableStructValidator()
 		{
-			RuleFor(x => x.Value.Name)
+			RuleFor(x => x!.Value.Name)
 				.NotEmpty()
 				.MaximumLength(100);
 
-			RuleFor(x => x.Value.Email)
+			RuleFor(x => x!.Value.Email)
 				.NotEmpty()
 				.EmailAddress();
 		}
@@ -102,7 +102,7 @@ namespace ExpressValidator.Tests
     public class Customer
     {
         public int CustomerId { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public decimal CustomerDiscount { get; set; }
         public bool IsPreferredCustomer { get; set; }
     }

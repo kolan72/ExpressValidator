@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ExpressValidator" Version="0.12.2" />
+    <PackageReference Include="ExpressValidator" Version="0.15.0" />
   </ItemGroup>
 
 </Project>

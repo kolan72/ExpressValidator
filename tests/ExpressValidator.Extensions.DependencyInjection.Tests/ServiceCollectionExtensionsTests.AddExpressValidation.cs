@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -122,7 +123,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 		{
 			var emptyAssembly = typeof(object).Assembly; // mscorlib has no configurators
 
-			Assert.DoesNotThrow(() => _services.AddExpressValidation(emptyAssembly));
+			Assert.DoesNotThrow((Action)(() => _services.AddExpressValidation(emptyAssembly)));
 		}
 
 		[Test]

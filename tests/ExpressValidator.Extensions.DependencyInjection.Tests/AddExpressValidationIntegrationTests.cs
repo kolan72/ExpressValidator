@@ -147,8 +147,8 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 			_services.AddExpressValidation(Assembly.GetExecutingAssembly());
 			_serviceProvider = _services.BuildServiceProvider();
 
-			Assert.Throws<InvalidOperationException>(() =>
-				_serviceProvider.GetRequiredService<IExpressValidator<NonExistentModel>>());
+			Assert.Throws<InvalidOperationException>((Action)(() =>
+				_serviceProvider.GetRequiredService<IExpressValidator<NonExistentModel>>()));
 		}
 
 		[Test]
@@ -241,7 +241,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 			}
 
 			// Validator should have been disposed with scope
-			Assert.DoesNotThrow(() => validator.Validate(new TestPersonModel()));
+			Assert.DoesNotThrow((Action)(() => validator.Validate(new TestPersonModel())));
 		}
 
 		[Test]

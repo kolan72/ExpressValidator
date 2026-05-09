@@ -3,6 +3,7 @@ using NUnit.Framework;
 using FluentValidation;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace ExpressValidator.Extensions.DependencyInjection.Tests
 {
@@ -19,6 +20,36 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 
             var service = serviceProvider.GetService<IExpressValidator<ObjectToValidate>>();
             Assert.That(service, Is.Not.Null);
+        }
+
+        [Test]
+        public void Should_AddExpressValidationFromAssemblyContaining_Register()
+        {
+            var result = _services.AddExpressValidationFromAssemblyContaining<TestModelConfigurator>();
+
+            Assert.That(result, Is.SameAs(_services));
+
+            var descriptor = _services.FirstOrDefault(sd =>
+                sd.ServiceType.IsGenericType &&
+                sd.ServiceType.GetGenericTypeDefinition() == typeof(IExpressValidator<>));
+
+            Assert.That(descriptor, Is.Not.Null);
+            Assert.That(descriptor.ImplementationType.GetGenericTypeDefinition(), Is.EqualTo(typeof(ProxyValidator<>)));
+        }
+
+        [Test]
+        public void Should_AddExpressValidationFromCurrentAssembly_Register()
+        {
+            var result = _services.AddExpressValidationFromCurrentAssembly();
+
+            Assert.That(result, Is.SameAs(_services));
+
+            var descriptor = _services.FirstOrDefault(sd =>
+                sd.ServiceType.IsGenericType &&
+                sd.ServiceType.GetGenericTypeDefinition() == typeof(IExpressValidator<>));
+
+            Assert.That(descriptor, Is.Not.Null);
+            Assert.That(descriptor.ImplementationType.GetGenericTypeDefinition(), Is.EqualTo(typeof(ProxyValidator<>)));
         }
 
         [Test]

@@ -1,6 +1,5 @@
 ﻿using ExpressValidator.Extensions.DependencyInjection;
 using Shared;
-using System.Reflection;
 
 namespace ConfiguratorDemo
 {
@@ -10,7 +9,7 @@ namespace ConfiguratorDemo
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			builder.Services.AddExpressValidation(Assembly.GetExecutingAssembly());
+			builder.Services.AddExpressValidationFromCurrentAssembly();
 
 			builder.Services.AddTransient<IGuessTheNumberService, GuessTheNumberService>();
 

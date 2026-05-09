@@ -1,3 +1,16 @@
+## 0.5.0
+
+- Add `IServiceCollection` extensions `AddExpressValidationFromAssemblyContaining<T>` and `AddExpressValidationFromCurrentAssembly`.
+- Change `ValidatorConfigurator<T>` to inherit from `ValidationProfile<T>`.
+- Update to ExpressValidator 0.15.0 and FluentValidation 12.1.1.
+- Update ExpressValidator package for ExpressValidator.Extensions.DependencyInjection.Tests.
+- Update ConfiguratorDemo sample to use `AddExpressValidationFromCurrentAssembly`.
+- Unify applicationUrl in launchSettings.json for all samples.
+- Update Shared.csproj to ExpressValidator 0.15.0.
+- Update NUnit NuGet package to v4.6.0.
+- Update Microsoft nuget packages.
+
+
 ## 0.4.0
 
 - Introduced class-based validation configuration with dedicated configurator classes inheriting from `ValidatorConfigurator<T>` and registered through `AddExpressValidation`.

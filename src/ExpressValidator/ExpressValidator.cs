@@ -27,11 +27,19 @@ namespace ExpressValidator
 			{
 				throw new InvalidOperationException($"Object validator has a property or field with asynchronous validation rules. Please use {nameof(ValidateAsync)} method.");
 			}
+			if (TypeHelper<TObj>.IsNull(obj))
+			{
+				return ValidationFallbackProvider.GetNullFailure<TObj>();
+			}
 			return _validationMode == OnFirstPropertyValidatorFailed.Break ? ValidateWithBreak(obj) : ValidateWithContinue(obj);
 		}
 
 		public Task<ValidationResult> ValidateAsync(TObj obj, CancellationToken token = default)
 		{
+			if (TypeHelper<TObj>.IsNull(obj))
+			{
+				return Task.FromResult(ValidationFallbackProvider.GetNullFailure<TObj>());
+			}
 			return _validationMode == OnFirstPropertyValidatorFailed.Break ? ValidateWithBreakAsync(obj, token) : ValidateWithContinueAsync(obj, token);
 		}
 

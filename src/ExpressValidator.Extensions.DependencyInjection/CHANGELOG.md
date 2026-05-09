@@ -1,3 +1,14 @@
+## 0.4.0
+
+- Introduced class-based validation configuration with dedicated configurator classes inheriting from `ValidatorConfigurator<T>` and registered through `AddExpressValidation`.
+- Update to ExpressValidator 0.12.2 and FluentValidation 12.1.0.
+- Update Microsoft nuget packages.
+- Edit NuGet README.
+- Edit README.md.
+- Add Shared.csproj to the ExpressValidator.Extensions.DependencyInjection.Sample.sln solution.
+- Split sample project into multiple projects illustrating README-described features.
+
+
 ## 0.3.12
 
 - Support .NET 8.0 and FluentValidation 12.0.0.

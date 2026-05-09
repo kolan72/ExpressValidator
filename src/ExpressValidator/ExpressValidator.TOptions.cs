@@ -12,20 +12,24 @@ namespace ExpressValidator
 	/// </summary>
 	/// <typeparam name="TObj"></typeparam>
 	/// <typeparam name="TOptions"></typeparam>
+#pragma warning disable S1133 // Deprecated code should be removed
+	[Obsolete("The ExpressValidator<TObj, TOptions> class is obsolete and will be removed in a future version.")]
+#pragma warning restore S1133 // Deprecated code should be removed
 	public class ExpressValidator<TObj, TOptions> : IExpressValidator<TObj>
 	{
-		private readonly IEnumerable<IObjectValidator<TObj, TOptions>> _validators;
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
+		private readonly IEnumerable<IObjectValidator<TObj>> _validators;
 
 		internal ExpressValidator(TOptions options, IEnumerable<IObjectValidator<TObj, TOptions>> validators, OnFirstPropertyValidatorFailed validationMode)
 		{
-			_validators = validators;
 			_validationMode = validationMode;
 
-			foreach (var validator in _validators)
+			foreach (var validator in validators)
 			{
 				validator.ApplyOptions(options);
 			}
+
+			_validators = validators;
 		}
 
 		public ValidationResult Validate(TObj obj)

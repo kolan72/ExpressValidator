@@ -32,5 +32,19 @@ namespace ExpressValidator
 			}
 			return memInfo;
 		}
+
+		/// <summary>
+		/// Parses a property or field from the expression.
+		/// Throws <see cref="ArgumentException"/> if the expression does not resolve to a property or field.
+		/// </summary>
+		public static MemberInfo ParseMember<T, TProperty>(Expression<Func<T, TProperty>> getExpression)
+		{
+			var member = (getExpression.Body as MemberExpression)?.Member;
+			if (member is null || (member.MemberType != MemberTypes.Property && member.MemberType != MemberTypes.Field))
+			{
+				throw new ArgumentException("Expression must refer to a property or field.");
+			}
+			return member;
+		}
 	}
 }

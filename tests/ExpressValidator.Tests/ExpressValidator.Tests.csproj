@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressAsyncValidatorWithOptionsTests.cs" />
+    <Compile Include="ExpressValidatorBuilderAddMemberTests.cs" />
     <Compile Include="ExpressValidatorExtensionsTests.cs" />
     <Compile Include="ExpressValidatorNullObjectTests.cs" />
     <Compile Include="ExpressValidatorWithOptionsTests.cs" />

@@ -44,6 +44,21 @@ namespace ExpressValidator
 		}
 
 		/// <summary>
+		/// Adds a property or field to validate.
+		/// Use this when the member kind (property vs field) is not known at the call site,
+		/// or to simplify call sites that previously had to choose between <see cref="AddProperty{T}"/> and <see cref="AddField{T}"/>.
+		/// Throws <see cref="ArgumentException"/> if the expression does not resolve to a property or field.
+		/// </summary>
+		/// <typeparam name="T">A type of <typeparamref name="TObj"/> object property or field.</typeparam>
+		/// <param name="func">An expression to get the property or field.</param>
+		/// <returns></returns>
+		public IBuilderWithPropValidator<TObj, TOptions, T> AddMember<T>(Expression<Func<TObj, T>> func)
+		{
+			var memInfo = MemberInfoParser.ParseMember(func);
+			return new BuilderWithPropValidator<TObj, TOptions, T>(this, memInfo);
+		}
+
+		/// <summary>
 		/// Add Func for object to get value to validate.
 		/// </summary>
 		/// <typeparam name="T">A type of value.</typeparam>

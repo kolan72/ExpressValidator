@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurablePropertyValidatorBuilderTests.cs" />
     <Compile Include="ExpressAsyncValidatorWithOptionsTests.cs" />
     <Compile Include="ExpressValidatorBuilderAddMemberTests.cs" />
     <Compile Include="ExpressValidatorExtensionsTests.cs" />

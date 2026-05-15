@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -22,9 +23,12 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		/// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
 		public static IServiceCollection AddExpressValidation(this IServiceCollection services, Assembly assemblyToScan, ServiceLifetime lifetime = ServiceLifetime.Transient)
 		{
-			assemblyToScan = assemblyToScan ?? Assembly.GetExecutingAssembly();
+			if (services == null)
+				throw new ArgumentNullException(nameof(services));
+
+			assemblyToScan = assemblyToScan ?? Assembly.GetCallingAssembly();
 			services.AddAllConfigurators(assemblyToScan, lifetime);
-			services.Add(new ServiceDescriptor(typeof(IExpressValidator<>), typeof(ProxyValidator<>), lifetime));
+			services.TryAdd(new ServiceDescriptor(typeof(IExpressValidator<>), typeof(ProxyValidator<>), lifetime));
 			return services;
 		}
 
@@ -38,6 +42,9 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		/// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
 		public static IServiceCollection AddExpressValidationFromAssemblyContaining<T>(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Transient)
 		{
+			if (services == null)
+				throw new ArgumentNullException(nameof(services));
+
 			return services.AddExpressValidation(typeof(T).Assembly, lifetime);
 		}
 
@@ -50,55 +57,76 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		/// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
 		public static IServiceCollection AddExpressValidationFromCurrentAssembly(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Transient)
 		{
+			if (services == null)
+				throw new ArgumentNullException(nameof(services));
+
 			return services.AddExpressValidation(Assembly.GetCallingAssembly(), lifetime);
 		}
 
 		public static IServiceCollection AddExpressValidator<T>(this IServiceCollection services, Action<ExpressValidatorBuilder<T>> configure, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
 		{
-			return AddExpressValidator(services, configure, new ExpressValidatorOptions() { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, serviceLifetime);
+			return AddExpressValidator(
+				services, 
+				configure, 
+				new ExpressValidatorOptions { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, 
+				serviceLifetime);
 		}
 
 		public static IServiceCollection AddExpressValidator<T>(this IServiceCollection services, Action<ExpressValidatorBuilder<T>> configure, ExpressValidatorOptions expressValidatorOptions, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
 		{
-			IExpressValidator<T> func(IServiceProvider sp)
-			{
-				var s = sp.GetRequiredService<IOptions<ExpressValidatorOptions>>();
-				var eb = new ExpressValidatorBuilder<T>(s.Value.OnFirstPropertyValidatorFailed);
-				configure(eb);
-				return eb.Build();
-			}
-			services.AddOptions<ExpressValidatorOptions>()
-					.Configure(options =>
-										options.OnFirstPropertyValidatorFailed = expressValidatorOptions.OnFirstPropertyValidatorFailed);
-			services.Add(new ServiceDescriptor(typeof(IExpressValidator<T>), func, serviceLifetime));
+			if (services == null)
+				throw new ArgumentNullException(nameof(services));
+			if (configure == null)
+				throw new ArgumentNullException(nameof(configure));
+			if (expressValidatorOptions == null)
+				throw new ArgumentNullException(nameof(expressValidatorOptions));
+
+			ConfigureExpressValidatorOptions(services, expressValidatorOptions);
+
+			services.Add(new ServiceDescriptor(
+				typeof(IExpressValidator<T>), 
+				sp => CreateExpressValidator(sp, configure), 
+				serviceLifetime));
+
 			return services;
 		}
 
 		public static IServiceCollection AddExpressValidatorBuilder<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
 		{
-			return AddExpressValidatorBuilder(services, configure, new ExpressValidatorOptions() { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, serviceLifetime);
+			return AddExpressValidatorBuilder(
+				services, 
+				configure, 
+				new ExpressValidatorOptions { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, 
+				serviceLifetime);
 		}
 
 		public static IServiceCollection AddExpressValidatorBuilder<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, ExpressValidatorOptions expressValidatorOptions, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)
 		{
-			ExpressValidatorBuilder<T, TOptions> func(IServiceProvider sp)
-			{
-				var s = sp.GetRequiredService<IOptions<ExpressValidatorOptions>>();
-				var eb = new ExpressValidatorBuilder<T, TOptions>(s.Value.OnFirstPropertyValidatorFailed);
-				configure(eb);
-				return eb;
-			}
-			services.AddOptions<ExpressValidatorOptions>()
-					.Configure(options =>
-										options.OnFirstPropertyValidatorFailed = expressValidatorOptions.OnFirstPropertyValidatorFailed);
-			services.Add(new ServiceDescriptor(typeof(IExpressValidatorBuilder<T, TOptions>), func, serviceLifetime));
+			if (services == null)
+				throw new ArgumentNullException(nameof(services));
+			if (configure == null)
+				throw new ArgumentNullException(nameof(configure));
+			if (expressValidatorOptions == null)
+				throw new ArgumentNullException(nameof(expressValidatorOptions));
+
+			ConfigureExpressValidatorOptions(services, expressValidatorOptions);
+
+			services.Add(new ServiceDescriptor(
+				typeof(IExpressValidatorBuilder<T, TOptions>), 
+				sp => CreateExpressValidatorBuilder(sp, configure), 
+				serviceLifetime));
+
 			return services;
 		}
 
 		///<inheritdoc cref = "AddExpressValidatorWithReload{T, TOptions}(IServiceCollection, Action{ExpressValidatorBuilder{T, TOptions}}, ExpressValidatorOptions, string)"/>
 		public static IServiceCollection AddExpressValidatorWithReload<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, string configSectionPath) where TOptions : class
 		{
-			return AddExpressValidatorWithReload(services, configure, new ExpressValidatorOptions() { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, configSectionPath);
+			return AddExpressValidatorWithReload(
+				services, 
+				configure, 
+				new ExpressValidatorOptions { OnFirstPropertyValidatorFailed = OnFirstPropertyValidatorFailed.Continue }, 
+				configSectionPath);
 		}
 
 		/// <summary>
@@ -112,28 +140,71 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		/// <param name="configure">Action to configure <see cref="ExpressValidatorBuilder{T, TOptions}"/>.</param>
 		/// <param name="expressValidatorOptions"><see cref="ExpressValidatorOptions"/></param>
 		/// <param name="configSectionPath">Configuration section path to bind TOptions type.</param>
-		/// <returns></returns>
+		/// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
 		public static IServiceCollection AddExpressValidatorWithReload<T, TOptions>(this IServiceCollection services, Action<ExpressValidatorBuilder<T, TOptions>> configure, ExpressValidatorOptions expressValidatorOptions, string configSectionPath) where TOptions : class
 		{
-			services.AddOptions<TOptions>(configSectionPath).BindConfiguration(configSectionPath);
+			if (services == null)
+				throw new ArgumentNullException(nameof(services));
+			if (configure == null)
+				throw new ArgumentNullException(nameof(configure));
+			if (expressValidatorOptions == null)
+				throw new ArgumentNullException(nameof(expressValidatorOptions));
+			if (string.IsNullOrWhiteSpace(configSectionPath))
+				throw new ArgumentException("Configuration section path cannot be null or whitespace.", nameof(configSectionPath));
 
-			services.AddOptions<SectionPathHolder<TOptions>>().Configure(opt => opt.SectionPath = configSectionPath);
+			services.AddOptions<TOptions>()
+				.BindConfiguration(configSectionPath);
 
-			ExpressValidatorWithReload<T, TOptions> func(IServiceProvider sp)
+			services.AddOptions<SectionPathHolder<TOptions>>()
+				.Configure(opt => opt.SectionPath = configSectionPath);
+
+			ConfigureExpressValidatorOptions(services, expressValidatorOptions);
+
+			services.TryAddSingleton<IOptionsMonitorContext<TOptions>, OptionsMonitorContext<TOptions>>();
+
+			services.AddSingleton<IExpressValidatorWithReload<T>>(sp =>
 			{
-				var s = sp.GetRequiredService<IOptions<ExpressValidatorOptions>>();
-				var eb = new ExpressValidatorBuilder<T, TOptions>(s.Value.OnFirstPropertyValidatorFailed);
-				configure(eb);
-				var ctx = sp.GetRequiredService<IOptionsMonitorContext<TOptions>>();
-				return new ExpressValidatorWithReload<T, TOptions>(eb, ctx);
-			}
-			services.AddOptions<ExpressValidatorOptions>()
-					.Configure(options =>
-										options.OnFirstPropertyValidatorFailed = expressValidatorOptions.OnFirstPropertyValidatorFailed);
+				var options = sp.GetRequiredService<IOptions<ExpressValidatorOptions>>();
+				var builder = new ExpressValidatorBuilder<T, TOptions>(options.Value.OnFirstPropertyValidatorFailed);
+				configure(builder);
 
-			services.Add(new ServiceDescriptor(typeof(IExpressValidatorWithReload<T>), func, ServiceLifetime.Singleton));
-			services.AddSingleton<IOptionsMonitorContext<TOptions>, OptionsMonitorContext <TOptions>>();
+				var context = sp.GetRequiredService<IOptionsMonitorContext<TOptions>>();
+				return new ExpressValidatorWithReload<T, TOptions>(builder, context);
+			});
+
 			return services;
+		}
+
+		// Extracted helper to eliminate repeated options configuration
+		private static void ConfigureExpressValidatorOptions(
+			IServiceCollection services, 
+			ExpressValidatorOptions expressValidatorOptions)
+		{
+			services.AddOptions<ExpressValidatorOptions>()
+				.Configure(options => 
+					options.OnFirstPropertyValidatorFailed = expressValidatorOptions.OnFirstPropertyValidatorFailed);
+		}
+
+		// Extracted factory method for ExpressValidator creation
+		private static IExpressValidator<T> CreateExpressValidator<T>(
+			IServiceProvider sp, 
+			Action<ExpressValidatorBuilder<T>> configure)
+		{
+			var options = sp.GetRequiredService<IOptions<ExpressValidatorOptions>>();
+			var builder = new ExpressValidatorBuilder<T>(options.Value.OnFirstPropertyValidatorFailed);
+			configure(builder);
+			return builder.Build();
+		}
+
+		// Extracted factory method for ExpressValidatorBuilder creation
+		private static ExpressValidatorBuilder<T, TOptions> CreateExpressValidatorBuilder<T, TOptions>(
+			IServiceProvider sp, 
+			Action<ExpressValidatorBuilder<T, TOptions>> configure)
+		{
+			var options = sp.GetRequiredService<IOptions<ExpressValidatorOptions>>();
+			var builder = new ExpressValidatorBuilder<T, TOptions>(options.Value.OnFirstPropertyValidatorFailed);
+			configure(builder);
+			return builder;
 		}
 
 		internal static IServiceCollection AddAllConfigurators(
@@ -141,27 +212,24 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			Assembly assemblyToScan,
 			ServiceLifetime lifetime = ServiceLifetime.Transient)
 		{
-			// 1. Define the open generic interface type to search for.
 			var openGenericInterface = typeof(IValidatorConfigurator<>);
 
-			// 2. Scan the assembly for all types that are concrete classes and implement IExpressConfigurator.
-			var builderTypes = assemblyToScan.GetTypes()
+			var configuratorTypes = assemblyToScan.GetTypes()
 				.Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition)
 				.Select(t => new
 				{
 					ImplementationType = t,
-					InterfaceType = Array.Find(t.GetInterfaces(),
-											i => i.IsGenericType && i.GetGenericTypeDefinition() == openGenericInterface)
+					InterfaceType = t.GetInterfaces()
+						.FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == openGenericInterface)
 				})
 				.Where(x => x.InterfaceType != null);
 
-			// 3. Register each implementation.
-			foreach (var builderRegistration in builderTypes)
+			foreach (var registration in configuratorTypes)
 			{
-				var serviceType = builderRegistration.InterfaceType;
-				var implementationType = builderRegistration.ImplementationType;
-				var descriptor = new ServiceDescriptor(serviceType, implementationType, lifetime);
-				services.Add(descriptor);
+				services.Add(new ServiceDescriptor(
+					registration.InterfaceType, 
+					registration.ImplementationType, 
+					lifetime));
 			}
 
 			return services;

@@ -137,7 +137,7 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 				sd.ServiceType.GetGenericTypeDefinition() == typeof(IExpressValidator<>) &&
 				sd.ImplementationType?.GetGenericTypeDefinition() == typeof(ProxyValidator<>));
 
-			Assert.That(validatorDescriptors.Count(), Is.EqualTo(2)); // Each call adds one
+			Assert.That(validatorDescriptors.Count(), Is.EqualTo(1)); // Each call adds one
 		}
 	}
 

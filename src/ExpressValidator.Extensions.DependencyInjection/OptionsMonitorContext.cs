@@ -1,58 +1,76 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
+using System.Threading;
 
 namespace ExpressValidator.Extensions.DependencyInjection
 {
-	internal class OptionsMonitorContext<TOptions> : IOptionsMonitorContext<TOptions>
+	internal sealed class OptionsMonitorContext<TOptions> : IOptionsMonitorContext<TOptions>, IDisposable
 	{
-		private TOptions _options;
+		// Immutable snapshot for lock-free reads
+		private sealed class OptionsSnapshot
+		{
+			public OptionsSnapshot(TOptions options, DateTimeOffset lastUpdated)
+			{
+				Options = options;
+				LastUpdated = lastUpdated;
+			}
 
-		private DateTimeOffset _lastUpdated;
+			public TOptions Options { get; }
+			public DateTimeOffset LastUpdated { get; }
+		}
 
-		private readonly object _sync = new object();
-
+		private OptionsSnapshot _currentSnapshot;
+		private readonly IDisposable _changeToken;
 		private readonly string _sectionName;
 
 		public OptionsMonitorContext(IOptionsMonitor<TOptions> optionsMonitor, IOptions<SectionPathHolder<TOptions>> options)
 		{
-			_options = optionsMonitor.CurrentValue;
-			_lastUpdated = DateTimeOffset.UtcNow;
+			if (optionsMonitor == null)
+				throw new ArgumentNullException(nameof(optionsMonitor));
+			if (options?.Value == null)
+				throw new ArgumentNullException(nameof(options));
 
 			_sectionName = options.Value.SectionPath;
 
-			optionsMonitor.OnChange((newValue, section) =>
-			{
-				if(_sectionName == section)
-				{
-					lock (_sync)
-					{
-						_options = newValue;
-						_lastUpdated = DateTimeOffset.UtcNow;
-					}
-				}
-			});
+			_currentSnapshot = new OptionsSnapshot(optionsMonitor.CurrentValue, DateTimeOffset.UtcNow);
+
+			// Store change token for proper disposal
+			_changeToken = optionsMonitor.OnChange(OnOptionsChanged);
 		}
 
+		// Lock-free property access using Interlocked (hot path optimization)
 		public TOptions Options
 		{
 			get
 			{
-				lock (_sync)
-				{
-					return _options;
-				}
+				var snapshot = Interlocked.CompareExchange(ref _currentSnapshot, null, null);
+				return snapshot.Options;
 			}
 		}
 
+		// Lock-free property access using Interlocked (hot path optimization)
 		public DateTimeOffset LastUpdated
 		{
 			get
 			{
-				lock (_sync)
-				{
-					return _lastUpdated;
-				}
+				var snapshot = Interlocked.CompareExchange(ref _currentSnapshot, null, null);
+				return snapshot.LastUpdated;
 			}
+		}
+
+		private void OnOptionsChanged(TOptions newValue, string section)
+		{
+			// Only update if section matches - use Interlocked for atomic writes
+			if (string.Equals(_sectionName, section, StringComparison.Ordinal))
+			{
+				var newSnapshot = new OptionsSnapshot(newValue, DateTimeOffset.UtcNow);
+				Interlocked.Exchange(ref _currentSnapshot, newSnapshot);
+			}
+		}
+
+		public void Dispose()
+		{
+			_changeToken?.Dispose();
 		}
 	}
 }

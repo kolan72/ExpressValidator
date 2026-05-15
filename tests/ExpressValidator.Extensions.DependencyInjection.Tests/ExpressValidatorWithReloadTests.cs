@@ -37,6 +37,8 @@ namespace ExpressValidator.Extensions.DependencyInjection.Tests
 		{
 			public DateTimeOffset LastUpdated { get; set; }
 			public ObjectToValidateOptions Options { get; set; }
+
+			public void Dispose() => throw new NotImplementedException();
 		}
 	}
 }

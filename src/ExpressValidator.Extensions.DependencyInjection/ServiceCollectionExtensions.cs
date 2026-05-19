@@ -152,7 +152,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			if (string.IsNullOrWhiteSpace(configSectionPath))
 				throw new ArgumentException("Configuration section path cannot be null or whitespace.", nameof(configSectionPath));
 
-			services.AddOptions<TOptions>()
+			services.AddOptions<TOptions>(configSectionPath)
 				.BindConfiguration(configSectionPath);
 
 			services.AddOptions<SectionPathHolder<TOptions>>()

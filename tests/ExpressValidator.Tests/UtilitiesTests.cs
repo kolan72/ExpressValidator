@@ -1,10 +1,115 @@
 ﻿using NUnit.Framework;
+using System;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExpressValidator.Tests
 {
 	internal class UtilitiesTests
 	{
+		private class TestClass
+		{
+#pragma warning disable S3459 // Unassigned members should be removed
+#pragma warning disable S1144 // Unused private types or members should be removed
+
+			public string Name { get; set; }
+
+			public string this[int index] => $"Value at {index}";
+
+			public string this[string key, int index] => $"Value at {key}, {index}";
+#pragma warning restore S3459 // Unassigned members should be removed
+#pragma warning restore S1144 // Unused private types or members should be removed
+
+			public string Method() => "Method Result";
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionIsNull()
+		{
+			Expression<Func<TestClass, string>> expression = null;
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.False);
+			Assert.That(parameters, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionIsPropertyAccess()
+		{
+			Expression<Func<TestClass, string>> expression = x => x.Name;
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.False);
+			Assert.That(parameters, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionIsMethodCall()
+		{
+			Expression<Func<TestClass, string>> expression = x => x.Method();
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.False);
+			Assert.That(parameters, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnTrueAndCorrectParameters_WhenExpressionIsSingleParameterIndexer()
+		{
+			Expression<Func<TestClass, string>> expression = x => x[0];
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.True);
+			Assert.That(parameters, Is.Not.Null);
+			Assert.That(parameters.Length, Is.EqualTo(1));
+			Assert.That(parameters[0].ParameterType, Is.EqualTo(typeof(int)));
+			Assert.That(parameters[0].Name, Is.EqualTo("index"));
+		}
+
+		[Test]
+		public void Should_ReturnTrueAndCorrectParameters_WhenExpressionIsMultiParameterIndexer()
+		{
+			Expression<Func<TestClass, string>> expression = x => x["key", 1];
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.True);
+			Assert.That(parameters, Is.Not.Null);
+			Assert.That(parameters.Length, Is.EqualTo(2));
+			Assert.That(parameters[0].ParameterType, Is.EqualTo(typeof(string)));
+			Assert.That(parameters[0].Name, Is.EqualTo("key"));
+			Assert.That(parameters[1].ParameterType, Is.EqualTo(typeof(int)));
+			Assert.That(parameters[1].Name, Is.EqualTo("index"));
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionBodyIsNotMethodCall()
+		{
+			Expression<Func<TestClass, int>> expression = _ => 5; // Constant expression
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.False);
+			Assert.That(parameters, Is.Null);
+		}
+
+		[Test]
+		public void Should_HandleStringIndexer()
+		{
+			Expression<Func<string, char>> expression = s => s[0]; // String indexer access
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.True);
+			Assert.That(parameters, Is.Not.Null);
+			Assert.That(parameters.Length, Is.EqualTo(1));
+			Assert.That(parameters[0].ParameterType, Is.EqualTo(typeof(int)));
+		}
+
 		[Test]
 		public void Should_PropertyInfoParser_TryParse_Work_Correctly()
 		{

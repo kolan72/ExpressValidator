@@ -15,6 +15,50 @@ namespace ExpressValidator
 			return result.MemberType == memberTypes;
 		}
 
+		internal static bool TryParseMethodCallExpression<T, TProperty>(Expression<Func<T, TProperty>> expression, out ParameterInfo[] parameters)
+		{
+			parameters = null;
+			if (expression == null) return false;
+
+			// 1. Unwrap any implicit casts (e.g., ExpressionType.Convert)
+			Expression body = expression.Body;
+			while (body is UnaryExpression unary)
+			{
+				body = unary.Operand;
+			}
+
+			PropertyInfo propertyInfo = null;
+
+			if (body is MethodCallExpression methodCallExpr)
+			{
+				var method = methodCallExpr.Method;
+
+				// Indexers are compiled as special "get_" methods
+				if (method.IsSpecialName && method.Name.StartsWith("get_"))
+				{
+					propertyInfo = Array
+#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
+						.Find(method.DeclaringType
+#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
+						.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static), p => p.GetGetMethod(true) == method);
+				}
+			}
+
+			// 4. Check if we found a property and if it actually has index parameters
+			if (propertyInfo != null)
+			{
+				var indexParams = propertyInfo.GetIndexParameters();
+
+				// If Length > 0, it is genuinely an indexer property
+				if (indexParams.Length > 0)
+				{
+					parameters = indexParams;
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public static MemberInfo ParseProperty<T, TProperty>(Expression<Func<T, TProperty>> getExpression)
 		{
 			if (!TryParse(getExpression, MemberTypes.Property, out MemberInfo memInfo))

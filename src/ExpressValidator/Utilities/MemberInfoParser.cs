@@ -15,6 +15,15 @@ namespace ExpressValidator
 			return result.MemberType == memberTypes;
 		}
 
+		public static bool TryParse<T, TProperty>(Expression<Func<T, TProperty>> getExpression, out MemberInfo result)
+		{
+			result = (getExpression.Body as MemberExpression)?.Member;
+			if (result is null)
+				return false;
+
+			return result.MemberType == MemberTypes.Property || result.MemberType == MemberTypes.Field;
+		}
+
 		internal static bool TryParseMethodCallExpression<T, TProperty>(Expression<Func<T, TProperty>> expression, out ParameterInfo[] parameters)
 		{
 			parameters = null;

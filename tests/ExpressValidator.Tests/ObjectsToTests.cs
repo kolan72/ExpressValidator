@@ -140,6 +140,51 @@ namespace ExpressValidator.Tests
 	public class Cat { }
 #pragma warning restore S2094 // Classes should not be empty
 
+	public class ObjWithSingleIndexer
+	{
+		private readonly string[] _items;
+
+		public ObjWithSingleIndexer(params string[] items)
+		{
+			_items = items;
+		}
+
+		public int Length => _items.Length;
+
+		public string this[int index] => _items[index];
+	}
+
+	public class ObjWithMultiParameterIndexer
+	{
+		private readonly Dictionary<string, int> _data = new();
+
+		public void Set(string key, int value)
+		{
+			_data[key] = value;
+		}
+
+		public bool ContainsKey(string key) => _data.ContainsKey(key);
+
+		public int this[string key] => _data[key];
+	}
+
+	public class ObjWithStringIndexer
+	{
+		private readonly Dictionary<string, double> _data = new();
+
+		public void Set(string key, double value)
+		{
+			_data[key] = value;
+		}
+
+		public bool TryGetValue(string key, out double value)
+		{
+			return _data.TryGetValue(key, out value);
+		}
+
+		public double this[string key] => _data[key];
+	}
+
 	public class PersonValidator : AbstractValidator<Person>
 	{
 		public PersonValidator()

@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="ConfigurablePropertyValidatorBuilderTests.cs" />
     <Compile Include="ExpressAsyncValidatorWithOptionsTests.cs" />
+    <Compile Include="ExpressValidatorBuilderAddIndexedPropertyTests.cs" />
     <Compile Include="ExpressValidatorBuilderAddMemberTests.cs" />
     <Compile Include="ExpressValidatorExtensionsTests.cs" />
     <Compile Include="ExpressValidatorNullObjectTests.cs" />

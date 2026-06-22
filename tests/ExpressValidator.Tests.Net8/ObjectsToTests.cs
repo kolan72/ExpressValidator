@@ -140,6 +140,41 @@ namespace ExpressValidator.Tests.Net8
 	public class Cat { }
 #pragma warning restore S2094 // Classes should not be empty
 
+	public class ObjWithSingleIndexer
+	{
+		private readonly string[] _items;
+
+		public ObjWithSingleIndexer(params string[] items)
+		{
+			_items = items;
+		}
+
+		public int Length => _items.Length;
+
+#pragma warning disable CS8603 // Possible null reference return
+		public string this[int index] => _items[index];
+#pragma warning restore CS8603 // Possible null reference return
+	}
+
+	public class ObjWithStringIndexer
+	{
+		private readonly Dictionary<string, double> _data = new();
+
+		public void Set(string key, double value)
+		{
+			_data[key] = value;
+		}
+
+		public bool TryGetValue(string key, out double value)
+		{
+			return _data.TryGetValue(key, out value);
+		}
+
+#pragma warning disable CS8603 // Possible null reference return
+		public double this[string key] => _data[key];
+#pragma warning restore CS8603 // Possible null reference return
+	}
+
 	public class PersonValidator : AbstractValidator<Person>
 	{
 		public PersonValidator()

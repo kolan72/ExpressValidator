@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace ExpressValidator
 {
@@ -28,8 +30,18 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, T> AddProperty<T>(Expression<Func<TObj, T>> func)
 		{
-			var memInfo = MemberInfoParser.ParseProperty(func);
-			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
+			if (MemberInfoParser.TryParse(func, MemberTypes.Property, out var prop))
+			{
+				return new BuilderWithPropValidator<TObj, T>(this, prop);
+			}
+			else if (MemberInfoParser.TryParseMethodCallExpression(func, out ParameterInfo[] parameters))
+			{
+				return new BuilderWithPropValidator<TObj, T>(this, func.Compile(), "this[" + (parameters.FirstOrDefault()?.Name ?? "index") + "]");
+			}
+			else
+			{
+				throw new ArgumentException("Can not get property from expression.");
+			}
 		}
 
 		/// <summary>

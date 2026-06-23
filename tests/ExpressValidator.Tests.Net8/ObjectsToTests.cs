@@ -204,4 +204,28 @@ namespace ExpressValidator.Tests.Net8
 							, 1);
 		}
 	}
+
+    public class ObjWithIntIndexer
+    {
+        private readonly string[] _items;
+
+        public ObjWithIntIndexer(params string[] items)
+        {
+            _items = items;
+        }
+
+        public int Count => _items.Length;
+
+#pragma warning disable CS8603 // Possible null reference return
+        public string this[int index] => _items[index];
+#pragma warning restore CS8603 // Possible null reference return
+    }
+
+    public class ObjWithIntIndexerOptions
+    {
+        public int MinLength { get; set; }
+        public int MaxLength { get; set; }
+        public string ExpectedValue { get; set; } = string.Empty;
+        public int MaxItemCount { get; set; }
+    }
 }

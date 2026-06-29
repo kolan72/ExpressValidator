@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -36,7 +35,7 @@ namespace ExpressValidator
 			}
 			else if (MemberInfoParser.TryParseMethodCallExpression(func, out ParameterInfo[] parameters))
 			{
-				return new BuilderWithPropValidator<TObj, T>(this, func.Compile(), "this[" + (parameters.FirstOrDefault()?.Name ?? "index") + "]");
+				return new BuilderWithPropValidator<TObj, T>(this, func.Compile(), ValidatorBuilderHelpers.GetIndexerPropName(parameters));
 			}
 			else
 			{

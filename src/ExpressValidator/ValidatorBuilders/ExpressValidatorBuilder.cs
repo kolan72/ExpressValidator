@@ -66,8 +66,18 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, T> AddMember<T>(Expression<Func<TObj, T>> func)
 		{
-			var memInfo = MemberInfoParser.ParseMember(func);
-			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
+			if (MemberInfoParser.TryParse(func, out MemberInfo memInfo))
+			{
+				return new BuilderWithPropValidator<TObj, T>(this, memInfo);
+			}
+			else if (MemberInfoParser.TryParseMethodCallExpression(func, out ParameterInfo[] parameters))
+			{
+				return new BuilderWithPropValidator<TObj, T>(this, func.Compile(), ValidatorBuilderHelpers.GetIndexerPropName(parameters));
+			}
+			else
+			{
+				throw new ArgumentException("Expression must refer to a property or field.");
+			}
 		}
 
 		/// <summary>

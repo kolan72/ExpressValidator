@@ -78,9 +78,12 @@ namespace ExpressValidator.Tests.Net8
                 .WithValidation(r => r.NotEmpty())
                 .Build();
 
-            Assert.That(validator.Validate(passing).IsValid, Is.True);
-            Assert.That(validator.Validate(failing).IsValid, Is.False);
-        }
+			using (Assert.EnterMultipleScope())
+			{
+				Assert.That(validator.Validate(passing).IsValid, Is.True);
+				Assert.That(validator.Validate(failing).IsValid, Is.False);
+			}
+		}
 
         [Test]
         public void Should_ValidateCorrectIndexElement_ByArrayAccess()
@@ -105,10 +108,13 @@ namespace ExpressValidator.Tests.Net8
                 .Build()
                 .Validate(obj);
 
-            Assert.That(result1.IsValid, Is.True);
-            Assert.That(result2.IsValid, Is.True);
-            Assert.That(result3.IsValid, Is.False);
-        }
+			using (Assert.EnterMultipleScope())
+			{
+				Assert.That(result1.IsValid, Is.True);
+				Assert.That(result2.IsValid, Is.True);
+				Assert.That(result3.IsValid, Is.False);
+			}
+		}
 
         [Test]
         public void Should_ReturnValidResult_When_StringIndexerValuePassesValidation()
@@ -193,8 +199,11 @@ namespace ExpressValidator.Tests.Net8
                 .WithValidation(r => r.Equal("pass"))
                 .Build();
 
-            Assert.That(validator1.Validate(obj).IsValid, Is.True);
-            Assert.That(validator2.Validate(obj).IsValid, Is.False);
-        }
+			using (Assert.EnterMultipleScope())
+			{
+				Assert.That(validator1.Validate(obj).IsValid, Is.True);
+				Assert.That(validator2.Validate(obj).IsValid, Is.False);
+			}
+		}
     }
 }

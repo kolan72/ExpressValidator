@@ -187,6 +187,146 @@ var result = QuickValidator.Validate(
 The `QuickValidator` also provides a `ValidateAsync` method for asynchronous validation.  
 It is also tolerant of `null` values, i.e., it avoids exceptions when the input is null.
 
+## Composition-Based Property Validation with SetExpressValidator
+
+**New Feature:** ExpressValidator now provides the `SetExpressValidator` extension method for `IRuleBuilder<T, TProperty>`, enabling composition-based property validation **without inheriting from `PropertyValidator`**.
+
+### Why Use SetExpressValidator?
+
+In FluentValidation, creating custom property validators requires inheriting from `PropertyValidator<T, TProperty>` and implementing validation logic in a separate class. With `SetExpressValidator`, you can define complex property validation rules inline using the familiar `ExpressValidatorBuilder` API, avoiding the need for inheritance.
+
+### Key Benefits
+
+- **No inheritance required** - Define validators inline without creating separate `PropertyValidator` classes
+- **Composition over inheritance** - Build complex validators by composing existing rules
+- **Configurable validation** - Use options to parameterize validation rules
+- **Custom error messages** - Define message templates with dynamic arguments
+- **Seamless integration** - Works naturally with FluentValidation's `RuleFor` syntax
+
+### Example: Validating Complex Properties
+
+```csharp
+public class CatPerson
+{
+    public IList<Cat> Cats { get; set; } = new List<Cat>();
+    public int Id { get; set; } = 20;
+}
+
+public class Cat {...}
+
+public class CatsOptions
+{
+    public int CatsCount { get; set; }
+    public int MinimumCats { get; set; }
+}
+
+public class CatPersonValidator : AbstractValidator<CatPerson>
+{
+    public CatPersonValidator()
+    {
+        // Validate the Cats collection's Count property using SetExpressValidator
+        RuleFor(person => person.Cats)
+            .SetExpressValidator(
+                builder => builder
+                    .Configure(b =>
+                        b.AddProperty(p => p.Count)
+                            .WithValidation((options, prop) =>
+                                prop.LessThan(options.CatsCount)
+                                    .GreaterThanOrEqualTo(options.MinimumCats)))
+                    .WithMessageTemplate((ctx, value, result) =>
+                        "{PropertyName} must contain fewer than {MaxElements} items " +
+                        "and greater than or equal {MinElements} items.")
+                    .WithTemplateArgument("MaxElements", o => o.CatsCount)
+                    .WithTemplateArgument("MinElements", o => o.MinimumCats),
+                new CatsOptions { CatsCount = 14, MinimumCats = 1 });
+
+        // Validate Id using a simple inline validator
+        RuleFor(person => person.Id)
+            .SetExpressValidator(
+                config => config.Configure(b =>
+                    b.AddFunc(id => id, "Id")
+                        .WithValidation((maxValue, prop) =>
+                            prop.LessThan(maxValue))),
+                1);
+    }
+}
+
+// Usage
+var validator = new CatPersonValidator();
+var person = new CatPerson 
+{ 
+    Cats = new List<Cat> { new Cat(), new Cat() }, 
+    Id = 0 
+};
+
+var result = validator.Validate(person);
+// result.IsValid == true
+```
+
+### Comparison with FluentValidation's Approach
+
+**Traditional FluentValidation (requires inheritance):**
+```csharp
+// Separate class required
+public class CatsCountValidator : PropertyValidator<CatPerson, IList<Cat>>
+{
+    private readonly CatsOptions _options;
+    
+    public CatsCountValidator(CatsOptions options)
+    {
+        _options = options;
+    }
+    
+    public override bool IsValid(ValidationContext<CatPerson> context, IList<Cat> value)
+    {
+        // Manual validation logic
+        return value.Count < _options.CatsCount && 
+               value.Count >= _options.MinimumCats;
+    }
+    
+    // Manual error message handling
+}
+
+// Usage in validator
+RuleFor(p => p.Cats).SetValidator(new CatsCountValidator(options));
+```
+
+**ExpressValidator's SetExpressValidator (no inheritance):**
+```csharp
+// Inline definition - no separate class needed
+RuleFor(person => person.Cats)
+    .SetExpressValidator(
+        builder => builder.Configure(b =>
+            b.AddProperty(p => p.Count)
+                .WithValidation((o, p) => 
+                    p.LessThan(o.CatsCount)
+                     .GreaterThanOrEqualTo(o.MinimumCats))),
+        new CatsOptions { CatsCount = 14, MinimumCats = 1 });
+```
+
+### Advanced Features
+
+**Custom Message Templates:**
+```csharp
+.WithMessageTemplate((context, value, validationResult) =>
+    $"Custom error for {context.DisplayName}: {validationResult.Errors.Count} errors")
+```
+
+**Template Arguments:**
+```csharp
+.WithTemplateArgument("MaxValue", options => options.MaxValue)
+.WithTemplateArgument("MinValue", options => options.MinValue)
+```
+
+**Multiple Property Validation:**
+```csharp
+builder.Configure(b => b
+    .AddProperty(obj => obj.Property1)
+        .WithValidation((opts, prop) => prop.NotEmpty())
+    .AddProperty(obj => obj.Property2)
+        .WithValidation((opts, prop) => prop.MaximumLength(opts.MaxLength)))
+```
+
 ## 🧩 Nuances Of Using The Library
 
 For `ExpressValidatorBuilder` methods (`AddFunc`, `AddProperty`, and `AddField`), the overridden property name (set via  `FluentValidation`'s `OverridePropertyName` method in `With(Async)Validation`) takes precedence over the property name passed as a string or via `Expression` in  `AddFunc`/`AddProperty`/`AddField`.  

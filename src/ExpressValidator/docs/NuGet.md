@@ -188,7 +188,7 @@ In FluentValidation, creating custom property validators requires inheriting fro
 ### Example: Validating Complex Properties
 
 ```csharp
-public class Person
+public class CatPerson
 {
     public IList<Cat> Cats { get; set; } = new List<Cat>();
     public int Id { get; set; } = 20;
@@ -199,12 +199,12 @@ public class Cat {...}
 public class CatsOptions
 {
     public int CatsCount { get; set; }
-    public int CatsMinimum { get; set; }
+    public int MinimumCats { get; set; }
 }
 
-public class PersonValidator : AbstractValidator<Person>
+public class CatPersonValidator : AbstractValidator<CatPerson>
 {
-    public PersonValidator()
+    public CatPersonValidator()
     {
         // Validate the Cats collection's Count property using SetExpressValidator
         RuleFor(person => person.Cats)
@@ -214,13 +214,13 @@ public class PersonValidator : AbstractValidator<Person>
                         b.AddProperty(p => p.Count)
                             .WithValidation((options, prop) =>
                                 prop.LessThan(options.CatsCount)
-                                    .GreaterThanOrEqualTo(options.CatsMinimum)))
+                                    .GreaterThanOrEqualTo(options.MinimumCats)))
                     .WithMessageTemplate((ctx, value, result) =>
                         "{PropertyName} must contain fewer than {MaxElements} items " +
                         "and greater than or equal {MinElements} items.")
                     .WithTemplateArgument("MaxElements", o => o.CatsCount)
-                    .WithTemplateArgument("MinElements", o => o.CatsMinimum),
-                new CatsOptions { CatsCount = 14, CatsMinimum = 1 });
+                    .WithTemplateArgument("MinElements", o => o.MinimumCats),
+                new CatsOptions { CatsCount = 14, MinimumCats = 1 });
 
         // Validate Id using a simple inline validator
         RuleFor(person => person.Id)
@@ -234,8 +234,8 @@ public class PersonValidator : AbstractValidator<Person>
 }
 
 // Usage
-var validator = new PersonValidator();
-var person = new Person 
+var validator = new CatPersonValidator();
+var person = new CatPerson 
 { 
     Cats = new List<Cat> { new Cat(), new Cat() }, 
     Id = 0 
@@ -250,7 +250,7 @@ var result = validator.Validate(person);
 **Traditional FluentValidation (requires inheritance):**
 ```csharp
 // Separate class required
-public class CatsCountValidator : PropertyValidator<Person, IList<Cat>>
+public class CatsCountValidator : PropertyValidator<CatPerson, IList<Cat>>
 {
     private readonly CatsOptions _options;
     
@@ -259,11 +259,11 @@ public class CatsCountValidator : PropertyValidator<Person, IList<Cat>>
         _options = options;
     }
     
-    public override bool IsValid(ValidationContext<Person> context, IList<Cat> value)
+    public override bool IsValid(ValidationContext<CatPerson> context, IList<Cat> value)
     {
         // Manual validation logic
         return value.Count < _options.CatsCount && 
-               value.Count >= _options.CatsMinimum;
+               value.Count >= _options.MinimumCats;
     }
     
     // Manual error message handling
@@ -282,8 +282,8 @@ RuleFor(person => person.Cats)
             b.AddProperty(p => p.Count)
                 .WithValidation((o, p) => 
                     p.LessThan(o.CatsCount)
-                     .GreaterThanOrEqualTo(o.CatsMinimum))),
-        new CatsOptions { CatsCount = 14, CatsMinimum = 1 });
+                     .GreaterThanOrEqualTo(o.MinimumCats))),
+        new CatsOptions { CatsCount = 14, MinimumCats = 1 });
 ```
 
 ### Advanced Features

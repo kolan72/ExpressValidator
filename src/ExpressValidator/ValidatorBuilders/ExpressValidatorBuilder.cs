@@ -99,6 +99,10 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IExpressValidator<TObj> Build()
 		{
+			foreach (var validator in _objectValidators)
+			{
+				validator.Initialize();
+			}
 			return new ExpressValidator<TObj>(_objectValidators, _validationMode);
 		}
 

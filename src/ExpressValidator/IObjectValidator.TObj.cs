@@ -1,4 +1,7 @@
 ﻿namespace ExpressValidator
 {
-	internal interface IObjectValidator<in TObj> : IObjectValidatorBase<TObj>{}
+	internal interface IObjectValidator<in TObj> : IObjectValidatorBase<TObj>
+	{
+		void Initialize();
+	}
 }

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace ExpressValidator
 {
@@ -12,7 +11,6 @@ namespace ExpressValidator
 	{
 		private readonly string _propName;
 		private Action<IRuleBuilderOptions<T, T>> _action;
-		private TypeValidatorBase<T> _typeValidator;
 		private readonly Func<TObj, T> _propertyFunc;
 		private readonly Action<T> _onSuccessValidation;
 		private PropertyValidationProcessor<TObj, T> _validationProcessor;
@@ -42,16 +40,18 @@ namespace ExpressValidator
 
 		public void Initialize()
 		{
+			TypeValidatorBase<T> typeValidator;
+
 			if (IsAsync)
 			{
-				_typeValidator = new TypeAsyncValidator<T>();
+				typeValidator = new TypeAsyncValidator<T>();
 			}
 			else
 			{
-				_typeValidator = new TypeValidator<T>();
+				typeValidator = new TypeValidator<T>();
 			}
-			_typeValidator.SetValidation(_action, _propName);
-			_validationProcessor = new PropertyValidationProcessor<TObj, T>(_propertyFunc, _typeValidator, _onSuccessValidation);
+			typeValidator.SetValidation(_action, _propName);
+			_validationProcessor = new PropertyValidationProcessor<TObj, T>(_propertyFunc, typeValidator, _onSuccessValidation);
 		}
 
 		public bool IsAsync { get; }

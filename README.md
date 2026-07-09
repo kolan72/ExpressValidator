@@ -15,8 +15,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 
 - Easy on-the-fly creation of object validator class called `ExpressValidator` by using `ExpressValidatorBuilder`.
 - Possibility to dynamically change the parameters of the `FluentValidation` validators (since _version_ 0.0.21).
-- Supports adding a property or field for validation.
-- Verifies that a property expression is a property and a field expression is a field, and throws `ArgumentException` if it is not.
+- Supports adding a property or field for validation via `AddProperty`, `AddField`, or the unified `AddMember` method.
 - Supports adding a `Func` that provides a value for validation.
 - Built-in `null` tolerance - `null` root instances fail validation instead of throwing exceptions.
 - Quick and easy validation with `QuickValidator`, with robust support for `null` values.
@@ -69,6 +68,27 @@ if(!result.IsValid)
     //As usual with validation result...
 }
 ```
+
+### Using `AddMember`
+
+`AddMember` accepts either a property or a field expression, so you don't need to choose between `AddProperty` and `AddField` at the call site:
+
+```csharp
+// Works for both properties and fields interchangeably.
+var result = new ExpressValidatorBuilder<ObjToValidate>()
+				.AddMember(o => o.I)
+				.WithValidation(rbo => rbo.GreaterThan(0))
+				.AddMember(o => o._sField)
+				.WithValidation(rbo => rbo.MinimumLength(1))
+				.Build()
+				.Validate(new ObjToValidate() { I = i, _sField = sf });
+if(!result.IsValid)
+{
+    //As usual with validation result...
+}
+```
+
+Passing an expression that is not a property or field access (e.g. a method call) throws `ArgumentException`.
 
 ## 💡 Asynchronous Validation
 
@@ -189,7 +209,7 @@ It is also tolerant of `null` values, i.e., it avoids exceptions when the input 
 
 ## Composition-Based Property Validation with SetExpressValidator
 
-**New Feature:** ExpressValidator now provides the `SetExpressValidator` extension method for `IRuleBuilder<T, TProperty>`, enabling composition-based property validation **without inheriting from `PropertyValidator`**.
+ExpressValidator provides the `SetExpressValidator` extension method for `IRuleBuilder<T, TProperty>`, enabling composition-based property validation **instead of requiring inheritance from `PropertyValidator`**.
 
 ### Why Use SetExpressValidator?
 
@@ -329,7 +349,7 @@ builder.Configure(b => b
 
 ## 🧩 Nuances Of Using The Library
 
-For `ExpressValidatorBuilder` methods (`AddFunc`, `AddProperty`, and `AddField`), the overridden property name (set via  `FluentValidation`'s `OverridePropertyName` method in `With(Async)Validation`) takes precedence over the property name passed as a string or via `Expression` in  `AddFunc`/`AddProperty`/`AddField`.  
+For `ExpressValidatorBuilder` methods (`AddFunc`, `AddProperty`, `AddField`, and `AddMember`), the overridden property name (set via `FluentValidation`'s `OverridePropertyName` method in `With(Async)Validation`) takes precedence over the property name passed as a string or via `Expression` in `AddFunc`/`AddProperty`/`AddField`/`AddMember`.  
 For example, for the `ObjToValidate` object from the 'Quick Start' chapter, `result.Errors[0].PropertyName` will equal "percentSum" (the property name overridden in the validation rule):
 ```csharp
 // result.Errors[0].PropertyName == "percentSum"

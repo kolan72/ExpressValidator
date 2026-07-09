@@ -6,7 +6,9 @@ ExpressValidator is a library that provides the ability to validate objects usin
 - Easy on-the-fly creation of object validator class called `ExpressValidator` by using `ExpressValidatorBuilder`.
 - Possibility to dynamically change the parameters of the `FluentValidation` validators.
 - Supports adding a property or field for validation via `AddProperty`, `AddField`, or the unified `AddMember` method.
-- Supports adding a `Func` that provides a value for validation.
+- Supports validation of values supplied by `Func` delegates via the `AddFunc` method.
+- Supports validation of indexed properties.
+- Composition-based property validation with `SetExpressValidator` — define complex property validators inline without inheriting from `PropertyValidator`.
 - Built-in `null` tolerance - `null` root instances fail validation instead of throwing exceptions.
 - Quick and easy validation with `QuickValidator`, with robust support for `null` values.
 - Supports asynchronous validation.

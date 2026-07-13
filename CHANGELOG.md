@@ -1,3 +1,14 @@
+## 0.20.0
+
+- **New Feature:** ExpressValidator now provides the `SetExpressValidator` extension method for `IRuleBuilder<T, TProperty>`, enabling composition-based property validation **without inheriting from `PropertyValidator`**.
+- Add support for indexed property validation.
+- Refactor object validator interfaces by extracting internal `IObjectValidatorBase<TObj>`.
+- Add `Initialize()` to `IObjectValidator<TObj>` and refactor `ExpressValidatorBuilder<TObj>.Build`.
+- Target net9.0 in ExpressValidator.Tests.Net8 and update NUnit packages.
+- Update coverlet.collector package for ExpressValidator.Tests.Net8.
+- Edit README.md and NuGet.md.
+
+
 ## 0.15.0
 
 - Introduced validation failure for `null` root instances instead of throwing FluentValidation exceptions.  

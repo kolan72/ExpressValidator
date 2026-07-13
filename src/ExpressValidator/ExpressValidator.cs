@@ -12,18 +12,21 @@ namespace ExpressValidator
 	/// </summary>
 	public class ExpressValidator<TObj> : IExpressValidator<TObj>
 	{
-		private readonly IEnumerable<IObjectValidator<TObj>> _validators;
+		private readonly IReadOnlyList<IObjectValidatorBase<TObj>> _validators;
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
+		// Computed once at construction; the validator list is immutable after Build().
+		private readonly bool _hasAsyncValidators;
 
-		internal ExpressValidator(IEnumerable<IObjectValidator<TObj>> validators, OnFirstPropertyValidatorFailed validationMode)
+		internal ExpressValidator(IEnumerable<IObjectValidatorBase<TObj>> validators, OnFirstPropertyValidatorFailed validationMode)
 		{
-			_validators = validators;
+			_validators = validators as IReadOnlyList<IObjectValidatorBase<TObj>> ?? validators.ToList();
 			_validationMode = validationMode;
+			_hasAsyncValidators = _validators.Any(v => v.IsAsync);
 		}
 
 		public ValidationResult Validate(TObj obj)
 		{
-			if (_validators.Any(v => v.IsAsync))
+			if (_hasAsyncValidators)
 			{
 				throw new InvalidOperationException($"Object validator has a property or field with asynchronous validation rules. Please use {nameof(ValidateAsync)} method.");
 			}

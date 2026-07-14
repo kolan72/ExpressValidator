@@ -1,6 +1,7 @@
 ## 0.20.0
 
 - **New Feature:** ExpressValidator now provides the `SetExpressValidator` extension method for `IRuleBuilder<T, TProperty>`, enabling composition-based property validation **without inheriting from `PropertyValidator`**.
+- Introduce `AddMember` method for unified property and field validation.
 - Add support for indexed property validation.
 - Refactor object validator interfaces by extracting internal `IObjectValidatorBase<TObj>`.
 - Add `Initialize()` to `IObjectValidator<TObj>` and refactor `ExpressValidatorBuilder<TObj>.Build`.

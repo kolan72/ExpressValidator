@@ -309,12 +309,12 @@ namespace ExpressValidator.Extensions.DependencyInjection
 								var bindConfigurationMethod = typeof(OptionsBuilderConfigurationExtensions)
 									.GetMethods()
 									.FirstOrDefault(m => m.Name == "BindConfiguration" && 
-										m.GetParameters().Length == 2);
+										m.GetParameters().Length == 3);
 
 								if (bindConfigurationMethod != null)
 								{
 									var genericBindConfiguration = bindConfigurationMethod.MakeGenericMethod(tOptionsType);
-									genericBindConfiguration.Invoke(null, new object[] { optionsBuilder, configSectionPath });
+									genericBindConfiguration.Invoke(null, new object[] { optionsBuilder, configSectionPath, null });
 								}
 							}
 						}

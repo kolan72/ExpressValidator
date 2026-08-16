@@ -141,6 +141,7 @@
     <Compile Include="ServiceCollectionExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidatorConfiguratorTwoTypeParamsTests.cs" />
+    <Compile Include="ValidatorConfiguratorTTOptionsDiRegistrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

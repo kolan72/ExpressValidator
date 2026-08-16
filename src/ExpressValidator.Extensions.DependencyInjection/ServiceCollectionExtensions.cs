@@ -213,6 +213,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			ServiceLifetime lifetime = ServiceLifetime.Transient)
 		{
 			var openGenericInterface = typeof(IValidatorConfigurator<>);
+			var openGenericInterfaceWithOptions = typeof(IValidatorConfigurator<,>);
 
 			var configuratorTypes = assemblyToScan.GetTypes()
 				.Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition)
@@ -220,16 +221,88 @@ namespace ExpressValidator.Extensions.DependencyInjection
 				{
 					ImplementationType = t,
 					InterfaceType = t.GetInterfaces()
-						.FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == openGenericInterface)
+						.FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == openGenericInterface),
+					InterfaceTypeWithOptions = t.GetInterfaces()
+						.FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == openGenericInterfaceWithOptions)
 				})
-				.Where(x => x.InterfaceType != null);
+				.Where(x => x.InterfaceType != null || x.InterfaceTypeWithOptions != null);
 
 			foreach (var registration in configuratorTypes)
 			{
-				services.Add(new ServiceDescriptor(
-					registration.InterfaceType, 
-					registration.ImplementationType, 
-					lifetime));
+				// Register IValidatorConfigurator<T>
+				if (registration.InterfaceType != null)
+				{
+					services.Add(new ServiceDescriptor(
+						registration.InterfaceType, 
+						registration.ImplementationType, 
+						lifetime));
+				}
+
+				// Register IValidatorConfigurator<T, TOptions> and related services
+				if (registration.InterfaceTypeWithOptions != null)
+				{
+					services.Add(new ServiceDescriptor(
+						registration.InterfaceTypeWithOptions, 
+						registration.ImplementationType, 
+						lifetime));
+
+					// Get T and TOptions types from IValidatorConfigurator<T, TOptions>
+					var genericArgs = registration.InterfaceTypeWithOptions.GetGenericArguments();
+					if (genericArgs.Length == 2)
+					{
+						var tType = genericArgs[0];
+						var tOptionsType = genericArgs[1];
+
+						// Create a temporary instance to get ConfigSectionPath
+						try
+						{
+							var tempInstance = Activator.CreateInstance(registration.ImplementationType);
+							var configSectionPathProperty = registration.InterfaceTypeWithOptions.GetProperty("ConfigSectionPath");
+							var configSectionPath = configSectionPathProperty?.GetValue(tempInstance) as string;
+
+							if (!string.IsNullOrWhiteSpace(configSectionPath))
+							{
+								// Bind configuration section to TOptions
+								var addOptionsMethod = typeof(OptionsServiceCollectionExtensions)
+									.GetMethods()
+									.FirstOrDefault(m => m.Name == "AddOptions" && 
+										m.IsGenericMethodDefinition && 
+										m.GetParameters().Length == 1);
+
+								if (addOptionsMethod != null)
+								{
+									var genericAddOptions = addOptionsMethod.MakeGenericMethod(tOptionsType);
+									var optionsBuilder = genericAddOptions.Invoke(null, new object[] { services });
+
+									if (optionsBuilder != null)
+									{
+										var bindConfigurationMethod = typeof(OptionsBuilderConfigurationExtensions)
+											.GetMethods()
+											.FirstOrDefault(m => m.Name == "BindConfiguration" && 
+												m.GetParameters().Length == 2);
+
+										if (bindConfigurationMethod != null)
+										{
+											var genericBindConfiguration = bindConfigurationMethod.MakeGenericMethod(tOptionsType);
+											genericBindConfiguration.Invoke(null, new object[] { optionsBuilder, configSectionPath });
+										}
+									}
+								}
+
+								// Register ProxyValidator<T, TOptions> as IExpressValidatorWithReload<T>
+								var proxyValidatorType = typeof(ProxyValidator<,>).MakeGenericType(tType, tOptionsType);
+								var expressValidatorWithReloadType = typeof(IExpressValidatorWithReload<>).MakeGenericType(tType);
+
+								services.TryAddSingleton(expressValidatorWithReloadType, proxyValidatorType);
+							}
+						}
+						catch
+						{
+							// If we can't create instance or get config path, skip registration
+							// The user will need to manually register using AddExpressValidatorWithReload
+						}
+					}
+				}
 			}
 
 			return services;

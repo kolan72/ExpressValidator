@@ -253,54 +253,77 @@ namespace ExpressValidator.Extensions.DependencyInjection
 						var tType = genericArgs[0];
 						var tOptionsType = genericArgs[1];
 
+						// Check if the configurator has a public parameterless constructor
+						var parameterlessConstructor = registration.ImplementationType.GetConstructor(
+							BindingFlags.Public | BindingFlags.Instance, 
+							null, 
+							Type.EmptyTypes, 
+							null);
+
+						if (parameterlessConstructor == null)
+						{
+							throw new InvalidOperationException(
+								$"The type '{registration.ImplementationType.FullName}' implements IValidatorConfigurator<{tType.Name}, {tOptionsType.Name}> " +
+								$"but does not have a public parameterless constructor. " +
+								$"Validators with options must have a public parameterless constructor to support automatic registration and configuration binding.");
+						}
+
 						// Create a temporary instance to get ConfigSectionPath
+						object tempInstance;
 						try
 						{
-							var tempInstance = Activator.CreateInstance(registration.ImplementationType);
-							var configSectionPathProperty = registration.InterfaceTypeWithOptions.GetProperty("ConfigSectionPath");
-							var configSectionPath = configSectionPathProperty?.GetValue(tempInstance) as string;
+							tempInstance = Activator.CreateInstance(registration.ImplementationType);
+						}
+						catch (Exception ex)
+						{
+							throw new InvalidOperationException(
+								$"Failed to create an instance of '{registration.ImplementationType.FullName}' to read ConfigSectionPath. " +
+								$"Ensure the type has a public parameterless constructor that does not throw exceptions.", ex);
+						}
+						
+						var configSectionPathProperty = registration.InterfaceTypeWithOptions.GetProperty("ConfigSectionPath");
+						var configSectionPath = configSectionPathProperty?.GetValue(tempInstance) as string;
 
-							if (!string.IsNullOrWhiteSpace(configSectionPath))
+						if (string.IsNullOrWhiteSpace(configSectionPath))
+						{
+							throw new InvalidOperationException(
+								$"The type '{registration.ImplementationType.FullName}' implements IValidatorConfigurator<{tType.Name}, {tOptionsType.Name}> " +
+								$"but its ConfigSectionPath property returns null or whitespace. " +
+								$"ConfigSectionPath must return a valid configuration section path for automatic configuration binding.");
+						}
+
+						// Bind configuration section to TOptions
+						var addOptionsMethod = typeof(OptionsServiceCollectionExtensions)
+							.GetMethods()
+							.FirstOrDefault(m => m.Name == "AddOptions" && 
+								m.IsGenericMethodDefinition && 
+								m.GetParameters().Length == 1);
+
+						if (addOptionsMethod != null)
+						{
+							var genericAddOptions = addOptionsMethod.MakeGenericMethod(tOptionsType);
+							var optionsBuilder = genericAddOptions.Invoke(null, new object[] { services });
+
+							if (optionsBuilder != null)
 							{
-								// Bind configuration section to TOptions
-								var addOptionsMethod = typeof(OptionsServiceCollectionExtensions)
+								var bindConfigurationMethod = typeof(OptionsBuilderConfigurationExtensions)
 									.GetMethods()
-									.FirstOrDefault(m => m.Name == "AddOptions" && 
-										m.IsGenericMethodDefinition && 
-										m.GetParameters().Length == 1);
+									.FirstOrDefault(m => m.Name == "BindConfiguration" && 
+										m.GetParameters().Length == 2);
 
-								if (addOptionsMethod != null)
+								if (bindConfigurationMethod != null)
 								{
-									var genericAddOptions = addOptionsMethod.MakeGenericMethod(tOptionsType);
-									var optionsBuilder = genericAddOptions.Invoke(null, new object[] { services });
-
-									if (optionsBuilder != null)
-									{
-										var bindConfigurationMethod = typeof(OptionsBuilderConfigurationExtensions)
-											.GetMethods()
-											.FirstOrDefault(m => m.Name == "BindConfiguration" && 
-												m.GetParameters().Length == 2);
-
-										if (bindConfigurationMethod != null)
-										{
-											var genericBindConfiguration = bindConfigurationMethod.MakeGenericMethod(tOptionsType);
-											genericBindConfiguration.Invoke(null, new object[] { optionsBuilder, configSectionPath });
-										}
-									}
+									var genericBindConfiguration = bindConfigurationMethod.MakeGenericMethod(tOptionsType);
+									genericBindConfiguration.Invoke(null, new object[] { optionsBuilder, configSectionPath });
 								}
-
-								// Register ProxyValidator<T, TOptions> as IExpressValidatorWithReload<T>
-								var proxyValidatorType = typeof(ProxyValidator<,>).MakeGenericType(tType, tOptionsType);
-								var expressValidatorWithReloadType = typeof(IExpressValidatorWithReload<>).MakeGenericType(tType);
-
-								services.TryAddSingleton(expressValidatorWithReloadType, proxyValidatorType);
 							}
 						}
-						catch
-						{
-							// If we can't create instance or get config path, skip registration
-							// The user will need to manually register using AddExpressValidatorWithReload
-						}
+
+						// Register ProxyValidator<T, TOptions> as IExpressValidatorWithReload<T>
+						var proxyValidatorType = typeof(ProxyValidator<,>).MakeGenericType(tType, tOptionsType);
+						var expressValidatorWithReloadType = typeof(IExpressValidatorWithReload<>).MakeGenericType(tType);
+
+						services.TryAddSingleton(expressValidatorWithReloadType, proxyValidatorType);
 					}
 				}
 			}

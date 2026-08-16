@@ -140,6 +140,7 @@
     <Compile Include="ServiceCollectionExtensionsTests.AddExpressValidation.cs" />
     <Compile Include="ServiceCollectionExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValidatorConfiguratorTwoTypeParamsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

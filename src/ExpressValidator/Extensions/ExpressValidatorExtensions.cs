@@ -59,5 +59,63 @@ namespace ExpressValidator.Extensions
 		{
 			return validatorBuilder.Build(options).ValidateAsync(obj, token);
 		}
+
+		/// <summary>
+		/// Builds an <see cref="IExpressValidatorBuilder{TObj}"/> and validates an <paramref name="obj"/> object.
+		/// Alias for <see cref="BuildAndValidate{TObj}"/> with a shorter name.
+		/// </summary>
+		/// <typeparam name="TObj">A type of object to validate.</typeparam>
+		/// <param name="validatorBuilder"><see cref="IExpressValidatorBuilder{TObj}"/></param>
+		/// <param name="obj">An object instance to validate.</param>
+		/// <returns><see cref="ValidationResult"/></returns>
+		public static ValidationResult Validate<TObj>(this IExpressValidatorBuilder<TObj> validatorBuilder, TObj obj)
+		{
+			return validatorBuilder.BuildAndValidate(obj);
+		}
+
+		/// <summary>
+		/// Builds an <see cref="IExpressValidatorBuilder{TObj, TOptions}"/> and validates an <paramref name="obj"/> object using <paramref name="options"/>.
+		/// Alias for <see cref="BuildAndValidate{TObj, TOptions}"/> with a shorter name.
+		/// </summary>
+		/// <typeparam name="TObj">A type of object to validate.</typeparam>
+		/// <typeparam name="TOptions">A type of options to validate.</typeparam>
+		/// <param name="validatorBuilder"><see cref="IExpressValidatorBuilder{TObj, TOptions}"/></param>
+		/// <param name="obj">An object instance to validate.</param>
+		/// <param name="options">Options for builder</param>
+		/// <returns><see cref="ValidationResult"/></returns>
+		public static ValidationResult Validate<TObj, TOptions>(this IExpressValidatorBuilder<TObj, TOptions> validatorBuilder, TObj obj, TOptions options)
+		{
+			return validatorBuilder.BuildAndValidate(obj, options);
+		}
+
+		/// <summary>
+		/// Builds an <see cref="IExpressValidatorBuilder{TObj}"/> and asynchronously validates an <paramref name="obj"/> object.
+		/// Alias for <see cref="BuildAndValidateAsync{TObj}"/> with a shorter name.
+		/// </summary>
+		/// <typeparam name="TObj">A type of object to validate.</typeparam>
+		/// <param name="validatorBuilder"><see cref="IExpressValidatorBuilder{TObj}"/></param>
+		/// <param name="obj">An object instance to validate.</param>
+		/// <param name="token">A cancellation token to cancel validation.</param>
+		/// <returns>A task that wraps <see cref="ValidationResult"/>.</returns>
+		public static Task<ValidationResult> ValidateAsync<TObj>(this IExpressValidatorBuilder<TObj> validatorBuilder, TObj obj, CancellationToken token = default)
+		{
+			return validatorBuilder.BuildAndValidateAsync(obj, token);
+		}
+
+		/// <summary>
+		/// Builds an <see cref="IExpressValidatorBuilder{TObj, TOptions}"/> and asynchronously validates an <paramref name="obj"/> object using <paramref name="options"/>.
+		/// Alias for <see cref="BuildAndValidateAsync{TObj, TOptions}"/> with a shorter name.
+		/// </summary>
+		/// <typeparam name="TObj">A type of object to validate.</typeparam>
+		/// <typeparam name="TOptions">A type of options to validate.</typeparam>
+		/// <param name="validatorBuilder"><see cref="IExpressValidatorBuilder{TObj, TOptions}"/></param>
+		/// <param name="obj">An object instance to validate.</param>
+		/// <param name="options">Options for builder</param>
+		/// <param name="token">A cancellation token to cancel validation.</param>
+		/// <returns>A task that wraps <see cref="ValidationResult"/>.</returns>
+		public static Task<ValidationResult> ValidateAsync<TObj, TOptions>(this IExpressValidatorBuilder<TObj, TOptions> validatorBuilder, TObj obj, TOptions options, CancellationToken token = default)
+		{
+			return validatorBuilder.BuildAndValidateAsync(obj, options, token);
+		}
 	}
 }

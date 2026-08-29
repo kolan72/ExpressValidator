@@ -28,12 +28,12 @@ namespace ExpressValidator
 
 		public ExpressValidatorBuilder<TObj> WithValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, T>(_propertyFunc, _propName, new TypeValidator<T>(), _onSuccessValidation));
+			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, T>(_propertyFunc, _propName, false, _onSuccessValidation));
 		}
 
 		public ExpressValidatorBuilder<TObj> WithAsyncValidation(Action<IRuleBuilderOptions<T, T>> action)
 		{
-			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, T>(_propertyFunc, _propName, new TypeAsyncValidator<T>(), _onSuccessValidation));
+			return WithValidationByRules(action, new ExpressPropertyValidator<TObj, T>(_propertyFunc, _propName, true, _onSuccessValidation));
 		}
 
 		private ExpressValidatorBuilder<TObj> WithValidationByRules(Action<IRuleBuilderOptions<T, T>> action, IExpressPropertyValidator<TObj, T> expressPropertyValidator)

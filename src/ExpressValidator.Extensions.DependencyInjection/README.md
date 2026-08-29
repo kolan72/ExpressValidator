@@ -114,6 +114,11 @@ builder.Services.AddTransient<IGuessTheNumberService, GuessTheNumberService>();
 // ... (Other code omitted for brevity)
 ```
 
+If you prefer not to pass an explicit `Assembly`, two convenience helpers are also available:
+
+- `AddExpressValidationFromAssemblyContaining<T>()` - scans the assembly that contains `T`
+- `AddExpressValidationFromCurrentAssembly()` - scans the calling assembly
+
 ## ⚙️ Validation with Options
 
 In this approach, register an `IExpressValidatorBuilder<T, TOptions>` implementation (instead of `IExpressValidator<T>`) in the DI container by calling the `AddExpressValidatorBuilder` method.

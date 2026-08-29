@@ -1,10 +1,115 @@
-﻿using NUnit.Framework;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExpressValidator.Tests.Net8
 {
 	internal class UtilitiesTests
 	{
+		private class TestClass
+		{
+#pragma warning disable S3459 // Unassigned members should be removed
+#pragma warning disable S1144 // Unused private types or members should be removed
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+			public string Name { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
+			public string this[int index] => $"Value at {index}";
+
+			public string this[string key, int index] => $"Value at {key}, {index}";
+#pragma warning restore S3459 // Unassigned members should be removed
+#pragma warning restore S1144 // Unused private types or members should be removed
+
+			public string Method() => "Method Result";
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionIsNull()
+		{
+			Expression<Func<TestClass, string>> expression = null!;
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.False);
+			Assert.That(parameters, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionIsPropertyAccess()
+		{
+			Expression<Func<TestClass, string>> expression = x => x.Name;
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.False);
+			Assert.That(parameters, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionIsMethodCall()
+		{
+			Expression<Func<TestClass, string>> expression = x => x.Method();
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.False);
+			Assert.That(parameters, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnTrueAndCorrectParameters_WhenExpressionIsSingleParameterIndexer()
+		{
+			Expression<Func<TestClass, string>> expression = x => x[0];
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.True);
+			Assert.That(parameters, Is.Not.Null);
+			Assert.That(parameters.Length, Is.EqualTo(1));
+			Assert.That(parameters[0].ParameterType, Is.EqualTo(typeof(int)));
+			Assert.That(parameters[0].Name, Is.EqualTo("index"));
+		}
+
+		[Test]
+		public void Should_ReturnTrueAndCorrectParameters_WhenExpressionIsMultiParameterIndexer()
+		{
+			Expression<Func<TestClass, string>> expression = x => x["key", 1];
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.True);
+			Assert.That(parameters, Is.Not.Null);
+			Assert.That(parameters.Length, Is.EqualTo(2));
+			Assert.That(parameters[0].ParameterType, Is.EqualTo(typeof(string)));
+			Assert.That(parameters[0].Name, Is.EqualTo("key"));
+			Assert.That(parameters[1].ParameterType, Is.EqualTo(typeof(int)));
+			Assert.That(parameters[1].Name, Is.EqualTo("index"));
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionBodyIsNotMethodCall()
+		{
+			Expression<Func<TestClass, int>> expression = _ => 5; // Constant expression
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.False);
+			Assert.That(parameters, Is.Null);
+		}
+
+		[Test]
+		public void Should_HandleStringIndexer()
+		{
+			Expression<Func<string, char>> expression = s => s[0]; // String indexer access
+
+			var result = MemberInfoParser.TryParseMethodCallExpression(expression, out ParameterInfo[] parameters);
+
+			Assert.That(result, Is.True);
+			Assert.That(parameters, Is.Not.Null);
+			Assert.That(parameters.Length, Is.EqualTo(1));
+			Assert.That(parameters[0].ParameterType, Is.EqualTo(typeof(int)));
+		}
+
 		[Test]
 		public void Should_PropertyInfoParser_TryParse_Work_Correctly()
 		{
@@ -104,6 +209,168 @@ namespace ExpressValidator.Tests.Net8
 		{
 			string value = "hello";
 			Assert.That(TypeHelper<string>.IsNull(value), Is.False);
+		}
+
+		[Test]
+		public void Should_ReturnTrue_WhenExpressionIsPublicField()
+		{
+			Expression<Func<ClassWithField, string>> getExpression = x => x.PublicField;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.True);
+			Assert.That(memberInfo, Is.Not.Null);
+			Assert.That(memberInfo.Name, Is.EqualTo("PublicField"));
+		}
+
+		[Test]
+		public void Should_ReturnTrue_WhenExpressionIsAutoImplementedProperty()
+		{
+			Expression<Func<ClassWithField, int?>> getExpression = x => x.NullableProperty;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.True);
+			Assert.That(memberInfo.Name, Is.EqualTo("NullableProperty"));
+		}
+
+		[Test]
+		public void Should_ReturnTrue_WhenExpressionIsGetOnlyProperty()
+		{
+			Expression<Func<ClassWithField, string>> getExpression = x => x.GetOnlyProperty;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.True);
+			Assert.That(memberInfo.Name, Is.EqualTo("GetOnlyProperty"));
+		}
+
+		[Test]
+		public void Should_ReturnTrue_WhenPropertyHasPrivateSetter()
+		{
+			Expression<Func<ClassWithField, int>> getExpression = x => x.PropertyWithPrivateSetter;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.True);
+			Assert.That(memberInfo.Name, Is.EqualTo("PropertyWithPrivateSetter"));
+		}
+
+		[Test]
+		public void Should_HandleNestedMemberAccessInPropertyExpression()
+		{
+			Expression<Func<ClassWithField, int>> getExpression = static x => (x.NullableProperty ?? (int?)0).Value;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			// NullableProperty.Length accesses Nullable<int>.Length property which is a MethodInfo bound as MemberExpression
+			Assert.That(result, Is.True);
+			Assert.That(memberInfo.Name, Is.EqualTo("Value"));
+		}
+
+		[Test]
+		public void Should_ReturnTrue_WhenPropertyIsFromOuterTestClass()
+		{
+			Expression<Func<TestClass, string>> getExpression = x => x.Name;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.True);
+			Assert.That(memberInfo.Name, Is.EqualTo("Name"));
+		}
+
+		[Test]
+		public void Should_ExtractCorrectDeclaringType_ForMemberAccess()
+		{
+			Expression<Func<ClassWithField, string>> getExpression = x => x.PublicField;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.True);
+			Assert.That(memberInfo.DeclaringType, Is.EqualTo(typeof(ClassWithField)));
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionBodyIsConstant()
+		{
+			Expression<Func<ClassWithField, int>> getExpression = _ => 42;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.False);
+			Assert.That(memberInfo, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionBodyIsMethodCall()
+		{
+			Expression<Func<ClassWithField, string>> getExpression = _ => typeof(int).ToString();
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.False);
+			Assert.That(memberInfo, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionBodyIsUnaryConversionOfConstant()
+		{
+			Expression<Func<ClassWithField, int?>> getExpression = _ => 42;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.False);
+			Assert.That(memberInfo, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionBodyIsArithmeticBinary()
+		{
+			Expression<Func<ClassWithField, int>> getExpression = _ => 1 + 2;
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.False);
+			Assert.That(memberInfo, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionBodyIsConditional()
+		{
+			Expression<Func<ClassWithField, object>> getExpression = _ => true ? "yes" : "no";
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.False);
+			Assert.That(memberInfo, Is.Null);
+		}
+
+		[Test]
+		public void Should_ReturnFalse_WhenExpressionBodyIsNewObjectInstance()
+		{
+			Expression<Func<ClassWithField, DateTime>> getExpression = _ => new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Local);
+
+			var result = MemberInfoParser.TryParse(getExpression, out MemberInfo memberInfo);
+
+			Assert.That(result, Is.False);
+			Assert.That(memberInfo, Is.Null);
+		}
+
+		private class ClassWithField
+		{
+#pragma warning disable S3459 // Unassigned members should be removed
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+#pragma warning disable CS0649 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+			public string PublicField;
+#pragma warning restore CS0649 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
+			public int PropertyWithPrivateSetter { get; }
+
+			public string GetOnlyProperty => "generated";
+
+			public int? NullableProperty { get; }
+#pragma warning restore S3459 // Unassigned members should be removed
 		}
 	}
 }

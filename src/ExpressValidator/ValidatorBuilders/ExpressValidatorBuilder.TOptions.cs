@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace ExpressValidator
 {
@@ -27,8 +28,18 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, TOptions, T> AddProperty<T>(Expression<Func<TObj, T>> func)
 		{
-			var memInfo = MemberInfoParser.ParseProperty(func);
-			return new BuilderWithPropValidator<TObj, TOptions, T>(this, memInfo);
+			if (MemberInfoParser.TryParse(func, MemberTypes.Property, out var prop))
+			{
+				return new BuilderWithPropValidator<TObj, TOptions, T>(this, prop);
+			}
+			else if (MemberInfoParser.TryParseMethodCallExpression(func, out ParameterInfo[] parameters))
+			{
+				return new BuilderWithPropValidator<TObj, TOptions, T>(this, func.Compile(), ValidatorBuilderHelpers.GetIndexerPropName(parameters));
+			}
+			else
+			{
+				throw new ArgumentException("Can not get property from expression.");
+			}
 		}
 
 		// <summary>
@@ -54,8 +65,18 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, TOptions, T> AddMember<T>(Expression<Func<TObj, T>> func)
 		{
-			var memInfo = MemberInfoParser.ParseMember(func);
-			return new BuilderWithPropValidator<TObj, TOptions, T>(this, memInfo);
+			if (MemberInfoParser.TryParse(func, out MemberInfo memInfo))
+			{
+				return new BuilderWithPropValidator<TObj, TOptions, T>(this, memInfo);
+			}
+			else if (MemberInfoParser.TryParseMethodCallExpression(func, out ParameterInfo[] parameters))
+			{
+				return new BuilderWithPropValidator<TObj, TOptions, T>(this, func.Compile(), ValidatorBuilderHelpers.GetIndexerPropName(parameters));
+			}
+			else
+			{
+				throw new ArgumentException("Expression must refer to a property or field.");
+			}
 		}
 
 		/// <summary>

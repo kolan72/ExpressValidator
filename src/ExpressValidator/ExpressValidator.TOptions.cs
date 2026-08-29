@@ -18,7 +18,7 @@ namespace ExpressValidator
 	public class ExpressValidator<TObj, TOptions> : IExpressValidator<TObj>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
-		private readonly IEnumerable<IObjectValidator<TObj>> _validators;
+		private readonly IEnumerable<IObjectValidatorBase<TObj>> _validators;
 
 		internal ExpressValidator(TOptions options, IEnumerable<IObjectValidator<TObj, TOptions>> validators, OnFirstPropertyValidatorFailed validationMode)
 		{

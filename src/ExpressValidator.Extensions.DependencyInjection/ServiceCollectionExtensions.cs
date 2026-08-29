@@ -12,8 +12,8 @@ namespace ExpressValidator.Extensions.DependencyInjection
 		/// Registers all concrete, non-abstract, non-generic classes that inherit from <see cref="ValidatorConfigurator{T}"/>
 		/// into the Microsoft Dependency Injection container.
 		/// <br/>
-		/// Behind the scenes, for every configurator type <c>ExpressConfigurator&lt;T&gt;</c> found, 
-		/// the DI container will also expose a proxy implementation of <see cref="IExpressValidator{T}"/>, 
+		/// Behind the scenes, for every configurator type <c>ExpressConfigurator&lt;T&gt;</c> found,
+		/// the DI container will also expose a proxy implementation of <see cref="IExpressValidator{T}"/>,
 		/// enabling validation logic to be resolved transparently via the service provider.
 		/// </summary>
 		/// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
@@ -26,6 +26,31 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			services.AddAllConfigurators(assemblyToScan, lifetime);
 			services.Add(new ServiceDescriptor(typeof(IExpressValidator<>), typeof(ProxyValidator<>), lifetime));
 			return services;
+		}
+
+		/// <summary>
+		/// Registers all concrete, non-abstract, non-generic classes that inherit from <see cref="ValidatorConfigurator{T}"/>
+		/// from the assembly that contains <typeparamref name="T"/> into the Microsoft Dependency Injection container.
+		/// </summary>
+		/// <typeparam name="T">A type located in the assembly to scan.</typeparam>
+		/// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
+		/// <param name="lifetime">The service lifetime for the registered configurators. Defaults to <see cref="ServiceLifetime.Transient"/>.</param>
+		/// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
+		public static IServiceCollection AddExpressValidationFromAssemblyContaining<T>(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Transient)
+		{
+			return services.AddExpressValidation(typeof(T).Assembly, lifetime);
+		}
+
+		/// <summary>
+		/// Registers all concrete, non-abstract, non-generic classes that inherit from <see cref="ValidatorConfigurator{T}"/>
+		/// from the assembly that called this method into the Microsoft Dependency Injection container.
+		/// </summary>
+		/// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
+		/// <param name="lifetime">The service lifetime for the registered configurators. Defaults to <see cref="ServiceLifetime.Transient"/>.</param>
+		/// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
+		public static IServiceCollection AddExpressValidationFromCurrentAssembly(this IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Transient)
+		{
+			return services.AddExpressValidation(Assembly.GetCallingAssembly(), lifetime);
 		}
 
 		public static IServiceCollection AddExpressValidator<T>(this IServiceCollection services, Action<ExpressValidatorBuilder<T>> configure, ServiceLifetime serviceLifetime = ServiceLifetime.Transient)

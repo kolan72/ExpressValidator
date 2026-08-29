@@ -1,3 +1,23 @@
+## 0.15.0
+
+- Introduced validation failure for `null` root instances instead of throwing FluentValidation exceptions.  
+- Introduce abstract `ValidationProfile<T>` class.
+- Added an optional `Action<T>` `onSuccessValidation` parameter to `ExpressValidatorBuilder<TObj, TOptions>.AddFunc` for handling successful validation of `Func` result.
+- Refactor `ExpressValidatorBuilder<TObj, TOptions>.Build` to remove dependency on `ExpressValidator<TObj, TOptions>`.
+- Deprecate the `ExpressValidator<TObj, TOptions>` class.
+- Add internal `PropertyValidationProcessor<TObj, T>` class.
+- Switch to using `PropertyValidationProcessor<TObj, T>` in `ExpressPropertyValidator<TObj, T>` and `ExpressPropertyValidator<TObj, TOptions, T>`.
+- Refactor `ExpressPropertyValidator<TObj, T>` to set `IsAsync` in the constructor.
+- Add internal utility `TypeHelper<T>` class with `IsNull` method and use it in `TypeValidatorBase<T>`.
+- Introduce internal utility `TypeTraits<T>` class.
+- Update to FluentValidation 12.1.1.
+- Add internal static `ValidationFallbackProvider` class representing validation failure for a `null` instance.
+- Add ExpressValidator.Tests.Net8.csproj for testing ExpressValidator when TargetFramework is net8.0.
+- Update tests to System.ValueTuple 4.6.2.
+- Improve test coverage for null handling.
+- Update NuGet.md and README.md.
+
+
 ## 0.12.2
 
 - Move the instance field `TypeValidatorBase._shouldBeComparedToNull` to a static readonly field (renamed to `_canBeNull`) to cache the reflection result per `TypeValidatorBase<T>` type and eliminate redundant per-instance evaluations.

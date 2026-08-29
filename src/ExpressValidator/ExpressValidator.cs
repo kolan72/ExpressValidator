@@ -12,14 +12,14 @@ namespace ExpressValidator
 	/// </summary>
 	public class ExpressValidator<TObj> : IExpressValidator<TObj>
 	{
-		private readonly IReadOnlyList<IObjectValidator<TObj>> _validators;
+		private readonly IReadOnlyList<IObjectValidatorBase<TObj>> _validators;
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
 		// Computed once at construction; the validator list is immutable after Build().
 		private readonly bool _hasAsyncValidators;
 
-		internal ExpressValidator(IEnumerable<IObjectValidator<TObj>> validators, OnFirstPropertyValidatorFailed validationMode)
+		internal ExpressValidator(IEnumerable<IObjectValidatorBase<TObj>> validators, OnFirstPropertyValidatorFailed validationMode)
 		{
-			_validators = validators as IReadOnlyList<IObjectValidator<TObj>> ?? validators.ToList();
+			_validators = validators as IReadOnlyList<IObjectValidatorBase<TObj>> ?? validators.ToList();
 			_validationMode = validationMode;
 			_hasAsyncValidators = _validators.Any(v => v.IsAsync);
 		}

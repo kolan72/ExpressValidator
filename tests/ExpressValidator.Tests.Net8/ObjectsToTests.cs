@@ -123,4 +123,109 @@ namespace ExpressValidator.Tests.Net8
         }
 
 	}
+
+	public sealed class CatsOptions
+	{
+		public int CatsCount { get; set; }
+		public int CatsMinimum { get; set; }
+	}
+
+	public class Person
+	{
+		public IList<Cat> Cats { get; set; } = new List<Cat>();
+		public int Id { get; set; } = 20;
+	}
+
+#pragma warning disable S2094 // Classes should not be empty
+	public class Cat { }
+#pragma warning restore S2094 // Classes should not be empty
+
+	public class ObjWithSingleIndexer
+	{
+		private readonly string[] _items;
+
+		public ObjWithSingleIndexer(params string[] items)
+		{
+			_items = items;
+		}
+
+		public int Length => _items.Length;
+
+#pragma warning disable CS8603 // Possible null reference return
+		public string this[int index] => _items[index];
+#pragma warning restore CS8603 // Possible null reference return
+	}
+
+	public class ObjWithStringIndexer
+	{
+		private readonly Dictionary<string, double> _data = new();
+
+		public void Set(string key, double value)
+		{
+			_data[key] = value;
+		}
+
+		public bool TryGetValue(string key, out double value)
+		{
+			return _data.TryGetValue(key, out value);
+		}
+
+#pragma warning disable CS8603 // Possible null reference return
+		public double this[string key] => _data[key];
+#pragma warning restore CS8603 // Possible null reference return
+	}
+
+	public class PersonValidator : AbstractValidator<Person>
+	{
+		public PersonValidator()
+		{
+			RuleFor(person => person.Cats)
+				.SetExpressValidator(builder => builder.Configure
+									((b) =>
+										b.AddProperty(p => p.Count)
+											.WithValidation((o, p) =>
+															p
+															.LessThan(o.CatsCount)
+															.GreaterThanOrEqualTo(o.CatsMinimum)))
+									.WithMessageTemplate((_, __, ___)
+										=> "{PropertyName} must contain fewer than {MaxElements} items " +
+										"and greater than or equal {MinElements} items.")
+									.WithTemplateArgument("MaxElements", (po) => po.CatsCount)
+									.WithTemplateArgument("MinElements", (po) => po.CatsMinimum)
+									, new CatsOptions() { CatsCount = 14, CatsMinimum = 1 });
+			RuleFor(person => person.Id)
+				.SetExpressValidator(
+					(config) =>
+							config.Configure((b) =>
+								b.AddFunc(p => p, "Id")
+								.WithValidation((o, p) =>
+									p.LessThan(o)
+									.LessThanOrEqualTo(o)))
+							, 1);
+		}
+	}
+
+    public class ObjWithIntIndexer
+    {
+        private readonly string[] _items;
+
+        public ObjWithIntIndexer(params string[] items)
+        {
+            _items = items;
+        }
+
+        public int Count => _items.Length;
+
+#pragma warning disable CS8603 // Possible null reference return
+        public string this[int index] => _items[index];
+#pragma warning restore CS8603 // Possible null reference return
+    }
+
+    public class ObjWithIntIndexerOptions
+    {
+        public int MinLength { get; set; }
+        public int MaxLength { get; set; }
+        public string ExpectedValue { get; set; } = string.Empty;
+        public int MaxItemCount { get; set; }
+    }
 }

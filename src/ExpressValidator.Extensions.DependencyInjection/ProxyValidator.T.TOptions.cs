@@ -9,7 +9,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 {
 	internal class ProxyValidator<T, TOptions> : IExpressValidatorWithReload<T> where TOptions : class
 	{
-		private readonly IValidatorConfigurator<T, TOptions> _innerConfigurator;
+		private readonly IServiceScopeFactory _scopeFactory;
 		private readonly IOptionsMonitor<TOptions> _optionsMonitor;
 		private readonly object _lock = new object();
 
@@ -34,21 +34,37 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			if (serviceProvider == null)
 				throw new ArgumentNullException(nameof(serviceProvider));
 
-			_innerConfigurator = serviceProvider.GetRequiredService<IValidatorConfigurator<T, TOptions>>();
+			// Resolve the transient configurator lazily per build via a dedicated scope
+			// to avoid a captive dependency (singleton holding a transient).
+			_scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
 
-			// Get the configuration section path from the configurator
-			var configSectionPath = _innerConfigurator.ConfigSectionPath;
-			if (string.IsNullOrWhiteSpace(configSectionPath))
-				throw new InvalidOperationException(
-					$"ConfigSectionPath for {_innerConfigurator.GetType().Name} cannot be null or whitespace.");
+			// Validate the configuration section path via a short-lived scope
+			using (var scope = _scopeFactory.CreateScope())
+			{
+				var configurator = scope.ServiceProvider.GetRequiredService<IValidatorConfigurator<T, TOptions>>();
+				var configSectionPath = configurator.ConfigSectionPath;
+				if (string.IsNullOrWhiteSpace(configSectionPath))
+					throw new InvalidOperationException(
+						$"ConfigSectionPath for {configurator.GetType().Name} cannot be null or whitespace.");
+			}
 
 			// Get or create the options monitor - this requires configuration to be bound
 			_optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<TOptions>>();
 
 			// Initialize with current options
 			var currentOptions = _optionsMonitor.CurrentValue;
-			var initialValidator = _innerConfigurator.Build(currentOptions);
+			var initialValidator = BuildValidator(currentOptions);
 			_currentSnapshot = new ValidatorSnapshot(initialValidator, currentOptions);
+		}
+
+		private IExpressValidator<T> BuildValidator(TOptions options)
+		{
+			// Transient configurator is resolved and disposed within a dedicated scope per call
+			using (var scope = _scopeFactory.CreateScope())
+			{
+				var configurator = scope.ServiceProvider.GetRequiredService<IValidatorConfigurator<T, TOptions>>();
+				return configurator.Build(options);
+			}
 		}
 
 		public ValidationResult Validate(T obj)
@@ -89,7 +105,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 				}
 
 				// Rebuild validator with current options
-				var newValidator = _innerConfigurator.Build(currentOptions);
+				var newValidator = BuildValidator(currentOptions);
 
 				// Atomically update snapshot reference using Interlocked
 				var newSnapshot = new ValidatorSnapshot(newValidator, currentOptions);

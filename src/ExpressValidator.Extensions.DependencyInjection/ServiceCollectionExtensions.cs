@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -27,8 +28,18 @@ namespace ExpressValidator.Extensions.DependencyInjection
 				throw new ArgumentNullException(nameof(services));
 
 			assemblyToScan = assemblyToScan ?? Assembly.GetCallingAssembly();
-			services.AddAllConfigurators(assemblyToScan, lifetime);
+
+			var optionsBoundPairs = services.AddAllConfigurators(assemblyToScan, lifetime);
+
 			services.TryAdd(new ServiceDescriptor(typeof(IExpressValidator<>), typeof(ProxyValidator<>), lifetime));
+
+			foreach (var (tType, tOptionsType) in optionsBoundPairs)
+			{
+				var proxyValidatorType = typeof(ProxyValidator<,>).MakeGenericType(tType, tOptionsType);
+				var expressValidatorWithReloadType = typeof(IExpressValidatorWithReload<>).MakeGenericType(tType);
+				services.TryAddSingleton(expressValidatorWithReloadType, proxyValidatorType);
+			}
+
 			return services;
 		}
 
@@ -207,13 +218,14 @@ namespace ExpressValidator.Extensions.DependencyInjection
 			return builder;
 		}
 
-		internal static IServiceCollection AddAllConfigurators(
+		internal static IEnumerable<(Type TType, Type TOptionsType)> AddAllConfigurators(
 			this IServiceCollection services,
 			Assembly assemblyToScan,
 			ServiceLifetime lifetime = ServiceLifetime.Transient)
 		{
 			var openGenericInterface = typeof(IValidatorConfigurator<>);
 			var openGenericInterfaceWithOptions = typeof(IValidatorConfigurator<,>);
+			var optionsBoundPairs = new List<(Type TType, Type TOptionsType)>();
 
 			var configuratorTypes = assemblyToScan.GetTypes()
 				.Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericTypeDefinition)
@@ -238,7 +250,7 @@ namespace ExpressValidator.Extensions.DependencyInjection
 						lifetime));
 				}
 
-				// Register IValidatorConfigurator<T, TOptions> and related services
+				// Register IValidatorConfigurator<T, TOptions> and bind options
 				if (registration.InterfaceTypeWithOptions != null)
 				{
 					services.Add(new ServiceDescriptor(
@@ -319,16 +331,12 @@ namespace ExpressValidator.Extensions.DependencyInjection
 							}
 						}
 
-						// Register ProxyValidator<T, TOptions> as IExpressValidatorWithReload<T>
-						var proxyValidatorType = typeof(ProxyValidator<,>).MakeGenericType(tType, tOptionsType);
-						var expressValidatorWithReloadType = typeof(IExpressValidatorWithReload<>).MakeGenericType(tType);
-
-						services.TryAddSingleton(expressValidatorWithReloadType, proxyValidatorType);
+						optionsBoundPairs.Add((tType, tOptionsType));
 					}
 				}
 			}
 
-			return services;
+			return optionsBoundPairs;
 		}
 	}
 }

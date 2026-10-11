@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace ExpressValidator
 {
@@ -28,8 +29,18 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IBuilderWithPropValidator<TObj, T> AddProperty<T>(Expression<Func<TObj, T>> func)
 		{
-			var memInfo = MemberInfoParser.ParseProperty(func);
-			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
+			if (MemberInfoParser.TryParse(func, MemberTypes.Property, out var prop))
+			{
+				return new BuilderWithPropValidator<TObj, T>(this, prop);
+			}
+			else if (MemberInfoParser.TryParseMethodCallExpression(func, out ParameterInfo[] parameters))
+			{
+				return new BuilderWithPropValidator<TObj, T>(this, func.Compile(), ValidatorBuilderHelpers.GetIndexerPropName(parameters));
+			}
+			else
+			{
+				throw new ArgumentException("Can not get property from expression.");
+			}
 		}
 
 		/// <summary>
@@ -42,6 +53,31 @@ namespace ExpressValidator
 		{
 			var memInfo = MemberInfoParser.ParseField(func);
 			return new BuilderWithPropValidator<TObj, T>(this, memInfo);
+		}
+
+		/// <summary>
+		/// Adds a property or field to validate.
+		/// Use this when the member kind (property vs field) is not known at the call site,
+		/// or to simplify call sites that previously had to choose between <see cref="AddProperty{T}"/> and <see cref="AddField{T}"/>.
+		/// Throws <see cref="ArgumentException"/> if the expression does not resolve to a property or field.
+		/// </summary>
+		/// <typeparam name="T">A type of <typeparamref name="TObj"/> object property or field.</typeparam>
+		/// <param name="func">An expression to get the property or field.</param>
+		/// <returns></returns>
+		public IBuilderWithPropValidator<TObj, T> AddMember<T>(Expression<Func<TObj, T>> func)
+		{
+			if (MemberInfoParser.TryParse(func, out MemberInfo memInfo))
+			{
+				return new BuilderWithPropValidator<TObj, T>(this, memInfo);
+			}
+			else if (MemberInfoParser.TryParseMethodCallExpression(func, out ParameterInfo[] parameters))
+			{
+				return new BuilderWithPropValidator<TObj, T>(this, func.Compile(), ValidatorBuilderHelpers.GetIndexerPropName(parameters));
+			}
+			else
+			{
+				throw new ArgumentException("Expression must refer to a property or field.");
+			}
 		}
 
 		/// <summary>
@@ -63,6 +99,10 @@ namespace ExpressValidator
 		/// <returns></returns>
 		public IExpressValidator<TObj> Build()
 		{
+			foreach (var validator in _objectValidators)
+			{
+				validator.Initialize();
+			}
 			return new ExpressValidator<TObj>(_objectValidators, _validationMode);
 		}
 

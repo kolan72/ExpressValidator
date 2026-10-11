@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace ExpressValidator.Extensions.DependencyInjection
 {
-	internal sealed class OptionsMonitorContext<TOptions> : IOptionsMonitorContext<TOptions>, IDisposable
+	internal sealed class OptionsMonitorContext<TOptions> : IOptionsMonitorContext<TOptions>
 	{
 		// Immutable snapshot for lock-free reads
 		private sealed class OptionsSnapshot

@@ -44,8 +44,10 @@ namespace ExpressValidator.Extensions.DependencyInjection
 				var configurator = scope.ServiceProvider.GetRequiredService<IValidatorConfigurator<T, TOptions>>();
 				var configSectionPath = configurator.ConfigSectionPath;
 				if (string.IsNullOrWhiteSpace(configSectionPath))
+				{
 					throw new InvalidOperationException(
 						$"ConfigSectionPath for {configurator.GetType().Name} cannot be null or whitespace.");
+				}
 			}
 
 			// Get or create the options monitor - this requires configuration to be bound

@@ -276,8 +276,8 @@ namespace ExpressValidator.Extensions.DependencyInjection
 						{
 							throw new InvalidOperationException(
 								$"The type '{registration.ImplementationType.FullName}' implements IValidatorConfigurator<{tType.Name}, {tOptionsType.Name}> " +
-								$"but does not have a public parameterless constructor. " +
-								$"Validators with options must have a public parameterless constructor to support automatic registration and configuration binding.");
+								"but does not have a public parameterless constructor. " +
+								"Validators with options must have a public parameterless constructor to support automatic registration and configuration binding.");
 						}
 
 						// Create a temporary instance to get ConfigSectionPath

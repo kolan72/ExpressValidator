@@ -1,3 +1,20 @@
+## 0.8.0
+
+- Introduced `IValidatorConfigurator<T, TOptions>` and `ValidatorConfigurator<T, TOptions>`.
+- Intoduced the `ProxyValidator<T, TOptions>` as the open-generic implementation of `IExpressValidatorWithReload<T>`.
+- Implement `IDisposable` on `IOptionsMonitorContext` to prevent memory leaks.
+- Add null-safety guards, use `TryAdd` for idempotent registration, and extract `ConfigureExpressValidatorOptions` and other methods to eliminate duplicated options configuration.
+- Uses Interlocked for atomic snapshot updates and immutable `ValidatorSnapshot` class to prevent concurrent rebuild issues under high load.
+- Use an immutable `OptionsSnapshot` class for atomic updates.
+- Add a sample project demonstrating the `ValidatorConfigurator<T, TOptions>` functionality.
+- Add NUnit tests for `ValidatorConfigurator<T,TOptions>` DI registration.
+- Document `ValidatorConfigurator<T, TOptions>` in README and NuGet docs.
+- Update Microsoft nuget packages.
+- Update to ExpressValidator 0.20.0.
+- Update tests to use ExpressValidator 0.20.0.
+- Update Shared.csproj to ExpressValidator 0.20.0.
+
+
 ## 0.5.0
 
 - Add `IServiceCollection` extensions `AddExpressValidationFromAssemblyContaining<T>` and `AddExpressValidationFromCurrentAssembly`.

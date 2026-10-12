@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "ConfiguratorWithOptionsDemo": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "dotnetRunMessages": true,
+      "launchUrl": "guess",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5251"
+    }
+  }
+}

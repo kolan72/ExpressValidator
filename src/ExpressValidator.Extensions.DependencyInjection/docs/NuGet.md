@@ -3,7 +3,7 @@
 ## Key Features
 
 - **Automatic DI Registration**: Configures and registers `IExpressValidator<T>` with Microsoft's Dependency Injection container.
-- **Class-Based Configuration**: Define validation rules via dedicated configurator classes inheriting from `ValidatorConfigurator<T>`, providing an alternative to inline configuration.
+- **Class-Based Configuration**: Define validation rules via dedicated configurator classes inheriting from `ValidatorConfigurator<T>` (static rules) or `ValidatorConfigurator<T, TOptions>` (configuration-driven rules with automatic options binding and hot reload), providing an alternative to inline configuration.
 - **Dynamic Parameter Updates**: Registers `IExpressValidatorBuilder<T, TOptions>` to automatically update validation parameters when configuration options change.
 - **Automatic Reload Capability**: Automatically reload validation rules when configuration changes using `IExpressValidatorWithReload<T>`.
 
@@ -114,6 +114,102 @@ If you want a shorthand for assembly scanning, you can also use:
 
 - `AddExpressValidationFromAssemblyContaining<T>()`
 - `AddExpressValidationFromCurrentAssembly()`
+
+## Quick Start: Using a `ValidatorConfigurator<T, TOptions>` (Class-Based Configuration with Options)
+
+For configuration-driven rules, inherit from `ValidatorConfigurator<T, TOptions>`, where `T` is the type being validated and `TOptions` is the options type. Rules are defined dynamically from options that are automatically bound from a configuration section, and the validator is automatically rebuilt whenever that section changes - without restarting the application:
+
+```csharp
+/// <summary>
+/// Configures validation rules for ObjToValidate using configuration-driven options.
+/// </summary>
+public class GuessValidatorConfigurator : ValidatorConfigurator<ObjToValidate, GuessValidationOptions>
+{
+	// Binds GuessValidationOptions from the "GuessValidation" configuration section.
+	public override string ConfigSectionPath => "GuessValidation";
+
+	public override void Configure(ExpressValidatorBuilder<ObjToValidate, GuessValidationOptions> expressValidatorBuilder)
+		=> expressValidatorBuilder
+			.AddProperty(o => o.I)
+			.WithValidation((val, options) => options
+				.GreaterThanOrEqualTo(val.MinValue)
+				.WithMessage($"Value must be at least {val.MinValue}")
+				.LessThanOrEqualTo(val.MaxValue)
+				.WithMessage($"Value must be at most {val.MaxValue}"));
+}
+
+// Options class bound from the "GuessValidation" configuration section.
+public class GuessValidationOptions
+{
+	public int MinValue { get; set; }
+	public int MaxValue { get; set; }
+}
+```
+
+In the *appsettings.json*
+
+```json
+{
+  "GuessValidation": {
+    "MinValue": 5,
+    "MaxValue": 10
+  }
+}
+```
+
+The same `AddExpressValidation` methods used for `ValidatorConfigurator<T>` discover these configurators during assembly scanning. For each discovered `ValidatorConfigurator<T, TOptions>` the package:
+
+- registers `IValidatorConfigurator<T, TOptions>`,
+- binds `TOptions` from the section returned by `ConfigSectionPath` (with hot reload support),
+- registers a singleton `IExpressValidatorWithReload<T>` proxy that automatically rebuilds the validator whenever the bound options change.
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+// Scans the assembly, registers configurators, binds options from each ConfigSectionPath,
+// and registers IExpressValidatorWithReload<T> proxies.
+builder.Services.AddExpressValidationFromCurrentAssembly();
+
+// Registers the service that will use the reloadable validator.
+builder.Services.AddTransient<IGuessTheNumberService, GuessTheNumberService>();
+
+// ... (Application build and run code omitted; same as in Quick Start)
+
+// Service implementation that uses the reloadable validator.
+public class GuessTheNumberService : IGuessTheNumberService
+{
+	private readonly IExpressValidatorWithReload<ObjToValidate> _expressValidatorWithReload;
+
+	public GuessTheNumberService(IExpressValidatorWithReload<ObjToValidate> expressValidatorWithReload)
+	{
+		_expressValidatorWithReload = expressValidatorWithReload;
+	}
+
+	public (bool Result, string Message) Guess()
+	{
+		...
+		var vr = _expressValidatorWithReload.Validate(objToValidate);
+		if (!vr.IsValid)
+		{
+			...
+		}
+		// ... (Additional logic)
+	}
+}
+// ... (Other code omitted for brevity)
+```
+
+To consume a validator defined via `ValidatorConfigurator<T, TOptions>`, inject `IExpressValidatorWithReload<T>` - it is the service registered for this configurator kind, and it transparently rebuilds the validator when the bound configuration changes.
+
+### Requirements for automatic registration
+
+A `ValidatorConfigurator<T, TOptions>` class must:
+
+1. Inherit from `ValidatorConfigurator<T, TOptions>`
+2. Have a public parameterless constructor
+3. Override `ConfigSectionPath` with a non-null, non-whitespace configuration section path
+
+If any of these requirements are not met, a descriptive exception is thrown at startup.
 
 ## Validation with Options
 
@@ -259,4 +355,4 @@ public class ReloadableNumberGuessingService : IReloadableNumberGuessingService
 
 ## Samples
 
-See samples folder for concrete example.
+See samples folder for concrete examples, including `ConfiguratorWithOptionsDemo`, which demonstrates `ValidatorConfigurator<T, TOptions>` with automatic configuration binding and hot reload.

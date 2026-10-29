@@ -143,6 +143,36 @@ namespace ExpressValidator.Tests
 		}
 
 		[Test]
+		public void Should_AppendArgumentsInferredFromExpressions_When_ExpressionOverloadIsUsed()
+		{
+			// Arrange
+			var builder = new ConfigurablePropertyValidatorBuilder<TestModel, NestedModel, TestOptions>();
+			builder.Configure(b => b
+				.AddProperty(n => n.Email)
+				.WithValidation((o, v) => v.NotEmpty()));
+
+			var options = new TestOptions { CustomMessage = "TestMessage", MaxLength = 50 };
+			builder.WithMessageTemplate((ctx, value, res) => "Error occurred")
+				.WithTemplateArgument(o => o.CustomMessage)
+				.WithTemplateArgument(o => o.MaxLength)
+				.WithTemplateArgument("CustomArg", o => o.CustomMessage);
+
+			var validator = builder.Build(options);
+			var context = new ValidationContext<TestModel>(new TestModel());
+			var invalidValue = new NestedModel { Email = "" };
+
+			// Act
+			validator.IsValid(context, invalidValue);
+
+			// Assert - names are inferred from members; the string overload keeps custom names working in the same chain
+			Assert.That(context.MessageFormatter.PlaceholderValues.ContainsKey("CustomMessage"), Is.True);
+			Assert.That(context.MessageFormatter.PlaceholderValues["CustomMessage"], Is.EqualTo("TestMessage"));
+			Assert.That(context.MessageFormatter.PlaceholderValues.ContainsKey("MaxLength"), Is.True);
+			Assert.That(context.MessageFormatter.PlaceholderValues["MaxLength"], Is.EqualTo(50));
+			Assert.That(context.MessageFormatter.PlaceholderValues.ContainsKey("CustomArg"), Is.True);
+		}
+
+		[Test]
 		public void Should_NotAppendArguments_When_TemplateFactoryIsNotSet()
 		{
 			// Arrange

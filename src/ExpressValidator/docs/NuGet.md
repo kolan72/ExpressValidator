@@ -246,6 +246,29 @@ var result = validator.Validate(person);
 // result.IsValid == true
 ```
 
+The `{...}` placeholders in the message template are supplied by `WithTemplateArgument`: each call registers a value computed from `CatsOptions` under a placeholder name that FluentValidation substitutes when the message is rendered — above, the argument named `MaxElements` supplies the `{MaxElements}` placeholder from `o => o.CatsCount`.
+
+The same rule can use the expression overload of `WithTemplateArgument`, which derives the placeholder name from the member itself:
+
+```csharp
+RuleFor(person => person.Cats)
+    .SetExpressValidator(
+        builder => builder
+            .Configure(b =>
+                b.AddProperty(p => p.Count)
+                    .WithValidation((options, prop) =>
+                        prop.LessThan(options.CatsCount)
+                            .GreaterThanOrEqualTo(options.MinimumCats)))
+            .WithMessageTemplate((ctx, value, result) =>
+                "{PropertyName} must contain fewer than {CatsCount} items " +
+                "and greater than or equal {MinimumCats} items.")
+            .WithTemplateArgument(o => o.CatsCount)
+            .WithTemplateArgument(o => o.MinimumCats),
+        new CatsOptions { CatsCount = 14, MinimumCats = 1 });
+```
+
+Here `o => o.CatsCount` registers the argument as `{CatsCount}` and `o => o.MinimumCats` as `{MinimumCats}`, so no string names can fall out of sync with the template. When the placeholder must be named differently from the member (e.g. `{MaxElements}` for `o => o.CatsCount`), use the string overload as in the example above.
+
 ### Comparison with FluentValidation's Approach
 
 **Traditional FluentValidation (requires inheritance):**
@@ -300,6 +323,12 @@ RuleFor(person => person.Cats)
 .WithTemplateArgument("MaxValue", options => options.MaxValue)
 .WithTemplateArgument("MinValue", options => options.MinValue)
 ```
+The argument name can also be inferred from the options member — the placeholder name equals the member name:
+```csharp
+.WithTemplateArgument(options => options.MaxValue)   // {MaxValue}
+.WithTemplateArgument(options => options.MinValue)   // {MinValue}
+```
+Use the string overload when the placeholder must differ from the member name (e.g. `{MaxValue}` for `o => o.Limit`).
 
 **Multiple Property Validation:**
 ```csharp

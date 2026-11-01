@@ -11,7 +11,7 @@ public class ObjToValidate
 	public int PercentValue2 { get; set; }
 }
 
-var result = new ExpressValidatorBuilder<ObjToValidate>()
+var result = ExpressValidator.For<ObjToValidate>()
 				//Choose property to validate
 				.AddProperty(o => o.I)
 				//Usual FluentValidation rules here
@@ -28,9 +28,7 @@ var result = new ExpressValidatorBuilder<ObjToValidate>()
 				.AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
 				//And set rules for the sum of percentages
 				.WithValidation(rbo => rbo.InclusiveBetween(0, 100))
-				//We get IExpressValidator<ObjToValidate> after calling the Build method
-				.Build()
-	 			//And finally validate the object
+				//And finally validate the object
 				.Validate(new ObjToValidate() { I = i, S = s, PercentValue1 = pv1, PercentValue2 = pv2 });
 if(!result.IsValid)
 {

@@ -99,5 +99,46 @@ namespace ExpressValidator
 			}
 			return member;
 		}
+
+		/// <summary>
+		/// Derives a message template argument name from the leaf member of an expression rooted at the
+		/// lambda parameter (e.g. <c>o => o.Inner.City</c> yields <c>"City"</c>).
+		/// Unwraps the conversion nodes the compiler inserts for the <c>object</c> return type, so both
+		/// value-type and reference-type members are accepted.
+		/// </summary>
+		/// <exception cref="ArgumentException">
+		/// The body is not a member access, or the member chain does not root at the lambda parameter
+		/// (static members and closure captures are rejected).
+		/// Use the <c>WithTemplateArgument</c> overload taking an explicit <c>argName</c> for custom names.
+		/// </exception>
+		public static string ParseArgumentName<TOptions>(Expression<Func<TOptions, object>> getExpression)
+		{
+			var body = getExpression.Body;
+			while (body is UnaryExpression unary)
+			{
+				body = unary.Operand;
+			}
+
+			var member = body as MemberExpression;
+			if (member != null)
+			{
+				var parameter = getExpression.Parameters[0];
+				Expression current = member.Expression;
+				while (current is MemberExpression chained)
+				{
+					current = chained.Expression;
+				}
+
+				if (ReferenceEquals(current, parameter))
+				{
+					return member.Member.Name;
+				}
+			}
+
+			throw new ArgumentException(
+				"Expression must be a property or field access rooted in the options parameter, e.g. o => o.Property. " +
+				"Use WithTemplateArgument(string, Func<TOptions, object>) to register an argument with a custom name.",
+				nameof(getExpression));
+		}
 	}
 }

@@ -356,6 +356,84 @@ namespace ExpressValidator.Tests.Net8
 			Assert.That(memberInfo, Is.Null);
 		}
 
+		[Test]
+		public void Should_ReturnArgumentName_When_ValueTypePropertyAccess()
+		{
+			Expression<Func<ObjWithTwoPublicProps, object>> expression = s => s.I;
+
+			Assert.That(MemberInfoParser.ParseArgumentName(expression), Is.EqualTo("I"));
+		}
+
+		[Test]
+		public void Should_ReturnArgumentName_When_ReferenceTypePropertyAccess()
+		{
+			Expression<Func<ObjWithTwoPublicProps, object>> expression = s => s.S!;
+
+			Assert.That(MemberInfoParser.ParseArgumentName(expression), Is.EqualTo("S"));
+		}
+
+		[Test]
+		public void Should_ReturnArgumentName_When_FieldAccess()
+		{
+			Expression<Func<ObjWithTwoPublicProps, object>> expression = s => s._sField!;
+
+			Assert.That(MemberInfoParser.ParseArgumentName(expression), Is.EqualTo("_sField"));
+		}
+
+		[Test]
+		public void Should_ReturnLeafMemberName_When_NestedPropertyAccess()
+		{
+			Expression<Func<OptionsWithNested, object>> expression = o => o.Nested.MaxDepth;
+
+			Assert.That(MemberInfoParser.ParseArgumentName(expression), Is.EqualTo("MaxDepth"));
+		}
+
+		[Test]
+		public void Should_ThrowArgumentException_When_StaticMemberAccess()
+		{
+			Expression<Func<OptionsWithNested, object>> expression = o => OptionsWithNested.Default;
+
+			Assert.That(() => MemberInfoParser.ParseArgumentName(expression), Throws.ArgumentException);
+		}
+
+		[Test]
+		public void Should_ThrowArgumentException_When_ClosureCapture()
+		{
+			var captured = 42;
+			Expression<Func<TestClass, object>> expression = _ => captured;
+
+			Assert.That(() => MemberInfoParser.ParseArgumentName(expression), Throws.ArgumentException);
+		}
+
+		[Test]
+		public void Should_ThrowArgumentException_When_MethodCall()
+		{
+			Expression<Func<TestClass, object>> expression = x => x.Method();
+
+			Assert.That(() => MemberInfoParser.ParseArgumentName(expression), Throws.ArgumentException);
+		}
+
+		[Test]
+		public void Should_ThrowArgumentException_When_ConstantExpression()
+		{
+			Expression<Func<TestClass, object>> expression = _ => 42;
+
+			Assert.That(() => MemberInfoParser.ParseArgumentName(expression), Throws.ArgumentException);
+		}
+
+		private class NestedOptions
+		{
+#pragma warning disable S3459 // Unassigned members should be removed
+			public int MaxDepth { get; }
+#pragma warning restore S3459 // Unassigned members should be removed
+		}
+
+		private class OptionsWithNested
+		{
+			public NestedOptions Nested { get; set; } = new NestedOptions();
+			public static OptionsWithNested Default { get; } = new OptionsWithNested();
+		}
+
 		private class ClassWithField
 		{
 #pragma warning disable S3459 // Unassigned members should be removed

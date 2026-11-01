@@ -3,7 +3,7 @@ ExpressValidator is a library that provides the ability to validate objects usin
 
 ## Key Features
 
-- Easy on-the-fly creation of object validator class called `ExpressValidator` by using `ExpressValidatorBuilder`.
+- Easy on-the-fly creation of object validator class called `ExpressValidator` by using `ExpressValidator.For<T>()`.
 - Possibility to dynamically change the parameters of the `FluentValidation` validators.
 - Supports adding a property or field for validation via `AddProperty`, `AddField`, or the unified `AddMember` method.
 - Supports validation of values supplied by `Func` delegates via the `AddFunc` method.
@@ -27,7 +27,7 @@ public class ObjToValidate
 	public int PercentValue2 { get; set; }
 }
 
-var result = new ExpressValidatorBuilder<ObjToValidate>()
+var result = ExpressValidator.For<ObjToValidate>()
 				//Choose property to validate
 				.AddProperty(o => o.I)
 				//Usual FluentValidation rules here
@@ -44,14 +44,22 @@ var result = new ExpressValidatorBuilder<ObjToValidate>()
 				.AddFunc(o => o.PercentValue1 + o.PercentValue2, "percentSum")
 				//And set rules for the sum of percentages
 				.WithValidation(rbo => rbo.InclusiveBetween(0, 100))
-				//We get IExpressValidator<ObjToValidate> after calling the Build method
-				.Build()
-	 			//And finally validate the object
+				//And finally validate the object
 				.Validate(new ObjToValidate() { I = i, S = s, PercentValue1 = pv1, PercentValue2 = pv2 });
 if(!result.IsValid)
 {
     //As usual with validation result...
 }
+```
+
+To build a validator once and validate many objects with it, use `ExpressValidatorBuilder` directly:
+```csharp
+var validator = new ExpressValidatorBuilder<ObjToValidate>()
+				.AddProperty(o => o.I)
+				.WithValidation(rbo => rbo.GreaterThan(0))
+				//IExpressValidator<ObjToValidate> after calling the Build method
+				.Build();
+var result = validator.Validate(new ObjToValidate() { I = i });
 ```
 
 ### Using `AddMember`

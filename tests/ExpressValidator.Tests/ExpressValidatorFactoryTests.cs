@@ -152,10 +152,10 @@ namespace ExpressValidator.Tests
 			int i = isValid ? 1 : -1;
 			var obj = new ObjWithTwoPublicProps() { I = i };
 
-			var result1 = ExpressValidator.For<ObjWithTwoPublicProps>()
-							.AddProperty(o => o.I)
-							.WithValidation(o => o.GreaterThan(0))
-							.BuildAndValidate(obj);
+			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>();
+			builder.AddProperty(o => o.I)
+				   .WithValidation(o => o.GreaterThan(0));
+			var result1 = builder.BuildAndValidate(obj);
 
 			var result2 = ExpressValidator.For<ObjWithTwoPublicProps>()
 							.AddProperty(o => o.I)
@@ -174,10 +174,10 @@ namespace ExpressValidator.Tests
 			int i = isValid ? 1 : -1;
 			var obj = new ObjWithTwoPublicProps() { I = i };
 
-			var result1 = await ExpressValidator.For<ObjWithTwoPublicProps>()
-							.AddProperty(o => o.I)
-							.WithAsyncValidation(o => o.GreaterThan(0))
-							.BuildAndValidateAsync(obj);
+			var builder = new ExpressValidatorBuilder<ObjWithTwoPublicProps>();
+			builder.AddProperty(o => o.I)
+				   .WithAsyncValidation(o => o.GreaterThan(0));
+			var result1 = await builder.BuildAndValidateAsync(obj);
 
 			var result2 = await ExpressValidator.For<ObjWithTwoPublicProps>()
 							.AddProperty(o => o.I)

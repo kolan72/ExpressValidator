@@ -14,7 +14,7 @@ namespace ExpressValidator
 	/// along with validation rules.
 	/// </summary>
 	/// <typeparam name="TObj">A type of object to validate.</typeparam>
-	public class ExpressValidatorBuilder<TObj> : IExpressValidatorBuilder<TObj>, IExpressValidatorFacade<TObj>
+	public class ExpressValidatorBuilder<TObj> : IExpressValidatorBuilder<TObj>, IExpressValidatorRules<TObj>
 	{
 		private readonly OnFirstPropertyValidatorFailed _validationMode;
 		private readonly List<IObjectValidator<TObj>> _objectValidators = new List<IObjectValidator<TObj>>();
@@ -121,22 +121,22 @@ namespace ExpressValidator
 			return new BuilderWithPropValidator<TObj, T>(this, func, propName, onSuccessValidation);
 		}
 
-		IFacadeBuilderWithPropValidator<TObj, T> IExpressValidatorFacade<TObj>.AddProperty<T>(Expression<Func<TObj, T>> func)
+		IExpressValidatorRuleStep<TObj, T> IExpressValidatorRules<TObj>.AddProperty<T>(Expression<Func<TObj, T>> func)
 			=> AddPropertyCore<T>(func);
 
-		IFacadeBuilderWithPropValidator<TObj, T> IExpressValidatorFacade<TObj>.AddField<T>(Expression<Func<TObj, T>> func)
+		IExpressValidatorRuleStep<TObj, T> IExpressValidatorRules<TObj>.AddField<T>(Expression<Func<TObj, T>> func)
 			=> AddFieldCore<T>(func);
 
-		IFacadeBuilderWithPropValidator<TObj, T> IExpressValidatorFacade<TObj>.AddMember<T>(Expression<Func<TObj, T>> func)
+		IExpressValidatorRuleStep<TObj, T> IExpressValidatorRules<TObj>.AddMember<T>(Expression<Func<TObj, T>> func)
 			=> AddMemberCore<T>(func);
 
-		IFacadeBuilderWithPropValidator<TObj, T> IExpressValidatorFacade<TObj>.AddFunc<T>(Func<TObj, T> func, string propName, Action<T> onSuccessValidation)
+		IExpressValidatorRuleStep<TObj, T> IExpressValidatorRules<TObj>.AddFunc<T>(Func<TObj, T> func, string propName, Action<T> onSuccessValidation)
 			=> AddFuncCore(func, propName, onSuccessValidation);
 
-		ValidationResult IExpressValidatorFacade<TObj>.Validate(TObj obj)
+		ValidationResult IExpressValidatorRules<TObj>.Validate(TObj obj)
 			=> Build().Validate(obj);
 
-		Task<ValidationResult> IExpressValidatorFacade<TObj>.ValidateAsync(TObj obj, CancellationToken token)
+		Task<ValidationResult> IExpressValidatorRules<TObj>.ValidateAsync(TObj obj, CancellationToken token)
 			=> Build().ValidateAsync(obj, token);
 
 		internal void AddValidator(IObjectValidator<TObj> objectValidator)

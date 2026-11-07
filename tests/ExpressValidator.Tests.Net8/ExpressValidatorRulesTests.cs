@@ -4,19 +4,19 @@ using NUnit.Framework.Legacy;
 using System;
 using System.Threading.Tasks;
 
-namespace ExpressValidator.Tests
+namespace ExpressValidator.Tests.Net8
 {
 	/// <summary>
-	/// Tests for the <see cref="IExpressValidatorFacade{TObj}"/> surface returned by <see cref="ExpressValidator.For{TObj}()"/>.
+	/// Tests for the <see cref="IExpressValidatorRules{TObj}"/> surface returned by <see cref="ExpressValidator.For{TObj}()"/>.
 	/// </summary>
 	[TestFixture]
-	internal class ExpressValidatorFacadeTests
+	internal class ExpressValidatorRulesTests
 	{
 		[Test]
-		public void Should_For_Return_IExpressValidatorFacade()
+		public void Should_For_Return_IExpressValidatorRules()
 		{
-			IExpressValidatorFacade<ObjWithTwoPublicProps> facade = ExpressValidator.For<ObjWithTwoPublicProps>();
-			Assert.That(facade, Is.Not.Null);
+			IExpressValidatorRules<ObjWithTwoPublicProps> rules = ExpressValidator.For<ObjWithTwoPublicProps>();
+			Assert.That(rules, Is.Not.Null);
 		}
 
 		[Test]
@@ -109,7 +109,7 @@ namespace ExpressValidator.Tests
 			var result = ExpressValidator.For<ObjWithTwoPublicProps>()
 						   .AddProperty(o => o.I)
 						   .WithValidation(o => o.GreaterThan(0))
-						   .Validate(null);
+						   .Validate(null!);
 
 			Assert.That(result.IsValid, Is.False);
 			Assert.That(result.Errors.Count, Is.EqualTo(1));
@@ -121,7 +121,7 @@ namespace ExpressValidator.Tests
 			var result = await ExpressValidator.For<ObjWithTwoPublicProps>()
 						   .AddProperty(o => o.I)
 						   .WithValidation(o => o.GreaterThan(0))
-						   .ValidateAsync(null);
+						   .ValidateAsync(null!);
 
 			Assert.That(result.IsValid, Is.False);
 			Assert.That(result.Errors.Count, Is.EqualTo(1));

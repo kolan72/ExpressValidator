@@ -7,7 +7,7 @@ namespace ExpressValidator
 	/// <summary>
 	/// This class is primarily for internal use by ExpressValidator.
 	/// </summary>
-	public class BuilderWithPropValidator<TObj, T> : IBuilderWithPropValidator<TObj, T>, IFacadeBuilderWithPropValidator<TObj, T>
+	public class BuilderWithPropValidator<TObj, T> : IBuilderWithPropValidator<TObj, T>, IExpressValidatorRuleStep<TObj, T>
 	{
 		private readonly string _propName;
 		private readonly Func<TObj, T> _propertyFunc;
@@ -46,10 +46,10 @@ namespace ExpressValidator
 
 		private ExpressValidatorBuilder<TObj> ExpressValidatorBuilder { get; }
 
-		IExpressValidatorFacade<TObj> IFacadeBuilderWithPropValidator<TObj, T>.WithValidation(Action<IRuleBuilderOptions<T, T>> action)
+		IExpressValidatorRules<TObj> IExpressValidatorRuleStep<TObj, T>.WithValidation(Action<IRuleBuilderOptions<T, T>> action)
 			=> WithValidation(action);
 
-		IExpressValidatorFacade<TObj> IFacadeBuilderWithPropValidator<TObj, T>.WithAsyncValidation(Action<IRuleBuilderOptions<T, T>> action)
+		IExpressValidatorRules<TObj> IExpressValidatorRuleStep<TObj, T>.WithAsyncValidation(Action<IRuleBuilderOptions<T, T>> action)
 			=> WithAsyncValidation(action);
 	}
 }

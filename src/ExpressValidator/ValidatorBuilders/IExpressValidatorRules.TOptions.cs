@@ -7,28 +7,29 @@ using System.Threading.Tasks;
 namespace ExpressValidator
 {
 	/// <summary>
-	/// Represents a facade for configuring and validating objects of type <typeparamref name="TObj"/>.
-	/// Returned by <see cref="ExpressValidator.For{TObj}()"/>, it exposes methods to add members to validate
+	/// Represents a set of rules for configuring and validating objects of type <typeparamref name="TObj"/> using <typeparamref name="TOptions"/>.
+	/// Returned by <see cref="ExpressValidator.For{TObj, TOptions}()"/>, it exposes methods to add members to validate
 	/// along with validation operations, without exposing the underlying builder's <c>Build</c> operation.
 	/// </summary>
 	/// <typeparam name="TObj">A type of object to validate.</typeparam>
-	public interface IExpressValidatorFacade<TObj>
+	/// <typeparam name="TOptions">A type of the options to use when validating.</typeparam>
+	public interface IExpressValidatorRules<TObj, TOptions>
 	{
 		/// <summary>
 		/// Adds property to validate.
 		/// </summary>
 		/// <typeparam name="T">A type of <typeparamref name="TObj"/> object property.</typeparam>
 		/// <param name="func">An expression to get property.</param>
-		/// <returns>The <see cref="IFacadeBuilderWithPropValidator{TObj, T}"/> to continue the configuration.</returns>
-		IFacadeBuilderWithPropValidator<TObj, T> AddProperty<T>(Expression<Func<TObj, T>> func);
+		/// <returns>The <see cref="IExpressValidatorRuleStep{TObj, TOptions, T}"/> to continue the configuration.</returns>
+		IExpressValidatorRuleStep<TObj, TOptions, T> AddProperty<T>(Expression<Func<TObj, T>> func);
 
 		/// <summary>
 		/// Add field to validate.
 		/// </summary>
 		/// <typeparam name="T">A type of <typeparamref name="TObj"/> object field.</typeparam>
 		/// <param name="func">An expression to get field.</param>
-		/// <returns>The <see cref="IFacadeBuilderWithPropValidator{TObj, T}"/> to continue the configuration.</returns>
-		IFacadeBuilderWithPropValidator<TObj, T> AddField<T>(Expression<Func<TObj, T>> func);
+		/// <returns>The <see cref="IExpressValidatorRuleStep{TObj, TOptions, T}"/> to continue the configuration.</returns>
+		IExpressValidatorRuleStep<TObj, TOptions, T> AddField<T>(Expression<Func<TObj, T>> func);
 
 		/// <summary>
 		/// Adds a property or field to validate.
@@ -38,8 +39,8 @@ namespace ExpressValidator
 		/// </summary>
 		/// <typeparam name="T">A type of <typeparamref name="TObj"/> object property or field.</typeparam>
 		/// <param name="func">An expression to get the property or field.</param>
-		/// <returns>The <see cref="IFacadeBuilderWithPropValidator{TObj, T}"/> to continue the configuration.</returns>
-		IFacadeBuilderWithPropValidator<TObj, T> AddMember<T>(Expression<Func<TObj, T>> func);
+		/// <returns>The <see cref="IExpressValidatorRuleStep{TObj, TOptions, T}"/> to continue the configuration.</returns>
+		IExpressValidatorRuleStep<TObj, TOptions, T> AddMember<T>(Expression<Func<TObj, T>> func);
 
 		/// <summary>
 		/// Add Func for object to get value to validate.
@@ -48,22 +49,24 @@ namespace ExpressValidator
 		/// <param name="func">Func for object.</param>
 		/// <param name="propName">A name of the property if the validation failed.</param>
 		/// <param name="onSuccessValidation">Specifies a method to execute when validation succeeds.</param>
-		/// <returns>The <see cref="IFacadeBuilderWithPropValidator{TObj, T}"/> to continue the configuration.</returns>
-		IFacadeBuilderWithPropValidator<TObj, T> AddFunc<T>(Func<TObj, T> func, string propName, Action<T> onSuccessValidation = null);
+		/// <returns>The <see cref="IExpressValidatorRuleStep{TObj, TOptions, T}"/> to continue the configuration.</returns>
+		IExpressValidatorRuleStep<TObj, TOptions, T> AddFunc<T>(Func<TObj, T> func, string propName, Action<T> onSuccessValidation = null);
 
 		/// <summary>
-		/// Builds a validator and validates the given object instance.
+		/// Builds a validator using <paramref name="options"/> and validates the given object instance.
 		/// </summary>
 		/// <param name="obj">An object instance to validate.</param>
+		/// <param name="options">Options for validator.</param>
 		/// <returns>A ValidationResult object containing any validation failures.</returns>
-		ValidationResult Validate(TObj obj);
+		ValidationResult Validate(TObj obj, TOptions options);
 
 		/// <summary>
-		/// Builds a validator and validates the given object instance asynchronously.
+		/// Builds a validator using <paramref name="options"/> and validates the given object instance asynchronously.
 		/// </summary>
 		/// <param name="obj">An object instance to validate.</param>
+		/// <param name="options">Options for validator.</param>
 		/// <param name="token">A cancellation token to cancel validation.</param>
 		/// <returns>A ValidationResult object containing any validation failures.</returns>
-		Task<ValidationResult> ValidateAsync(TObj obj, CancellationToken token = default);
+		Task<ValidationResult> ValidateAsync(TObj obj, TOptions options, CancellationToken token = default);
 	}
 }
